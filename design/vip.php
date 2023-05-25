@@ -1,12 +1,9 @@
 <?php
-	$db_connect->where('status_active', 1);
-	$db_connect->where('status_vip', 1);
-	$db_connect->orderBy('status_premium', 'DESC');
-	$db_connect->orderBy('date_top', 'DESC');
+	$itemsVips = db_connect()->where('status_active', 1)->where('status_vip', 1)->orderBy('status_premium', 'DESC')->orderBy('date_top', 'DESC');
 	if(isset($route[1]) && isset($types[$route[1]])) {
-		$db_connect->where('type', $route[1]);
+		$itemsVips->where('type', $route[1]);
 	}
-	$posts = $db_connect->get('item');
+	$posts = $itemsVips->get('item');
 ?>
 <div class="partVip">
 	<?= !isset($_SESSION['auth']) ? renderAdv('b1') : ''?>

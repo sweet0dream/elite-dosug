@@ -129,7 +129,7 @@
 	// meta data
 	function itMeta($route) {
 		if(is_array($route)) {
-			global $types, $db_connect;
+			global $types;
 			if(empty($route)) {
 				return '
 					<title>Проститутки Саратова готовы обслужить клиента - Элит Досуг Саратов</title>
@@ -139,7 +139,7 @@
 			} else {
 				if(isset($types[$route[1]])) {
 					if(isset($route[2])) {
-						if($item = item_decode($db_connect->where('id', $route[2])->getOne('item'))) {
+						if($item = item_decode(db_connect()->where('id', $route[2])->getOne('item'))) {
 							return '
 								<title>'.$types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'].' - Элит Досуг Саратов</title>
 								<meta name="description" content="'.$types[$route[1]]['names'][2].'. '.$item['dopinfo'].'">

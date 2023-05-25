@@ -9,14 +9,6 @@ ini_set('post_max_size', '200M');
 
 require_once('vendor.php');
 
-$db_connect = new PDODb([
-	'type' => 'mysql',
-	'username' => $db['user'], 
-	'password' => $db['password'],
-	'dbname'=> $db['name'],
-	'charset' => 'utf8'
-]);
-
 if(empty($route)) {
 	include_once $site['path'].'/design/view.php';
 	include $site['path'].'/design/head.php';

@@ -45,8 +45,8 @@
 	function item_add($data) {
 		global $types;
 		if($types[$data['type']]['validate']($data)) {
-			global $db_connect;
-			if($id = $db_connect->insert('item', item_encode($data))) {
+			
+			if($id = db_connect()->insert('item', item_encode($data))) {
 				(new Event(item_one($id)['user_id']))->add('Анкета ID '.$id.' была добавлена.');
 				global $site;
 				redirect($site['url'].'/item/photo/'.$id.'/');
@@ -57,11 +57,11 @@
 	function item_edit($data) {
 		global $types;
 		if($types[$data['type']]['validate']($data)) {
-			global $db_connect;
+			
 			$data = item_encode($data);
-			$data['date_edit'] = $db_connect->now();
+			$data['date_edit'] = db_connect()->now();
 			$id = $data['id']; unset($data['id']);
-			$db_connect->where('id', $id)->update('item', $data);
+			db_connect()->where('id', $id)->update('item', $data);
 			(new Event($data['user_id']))->add('Анкета ID '.$id.' была отредактирована.');
 		}
 	}
@@ -74,8 +74,8 @@
 			if($item = item_one($id, $user_id)) {
 				if(dirDel($site['path'].'/media/photo/'.$id.'/')) {
 					review_del_all($id);
-					global $db_connect;
-					$db_connect->where('id', $id)->where('user_id', $user_id)->delete('item');
+					
+					db_connect()->where('id', $id)->where('user_id', $user_id)->delete('item');
 					(new Event($user_id))->add('Анкета ID '.$id.' была удалена.');
 				}
 			} else {
@@ -104,8 +104,8 @@
 							}
 						}
 						if(!empty($photo)) {
-							global $db_connect;
-							$db_connect->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo), 'status_real' => 0]);
+							
+							db_connect()->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo), 'status_real' => 0]);
 						}
 					}
 				}
@@ -118,8 +118,8 @@
 						thumb_del($file, $id);
 						$photo = explode(',', $item['photo']);
 						unset($photo[array_search($file, $photo)]);
-						global $db_connect;
-						$db_connect->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo)]);
+						
+						db_connect()->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo)]);
 					}
 				}
 			}
@@ -135,7 +135,7 @@
 				$user_id = $data['user_id'];
 				if($user = user_one($user_id)) {
 					if($item = item_one($item_id, $user_id)) {
-						global $price_ank, $db_connect;
+						global $price_ank;
 
 						if($data['action'] == 'top') {
 
@@ -211,7 +211,8 @@
 
 						//update && events && send telegram
 						if(isset($result['update'])) {
-							$db_connect->where('id', $item['id'])->update('item', $result['update']);
+							$db = db_connect();
+							$db->where('id', $item['id'])->update('item', $result['update']);
 						}
 						if(isset($result['event'])) {
 							(new Event($user['id']))->add($result['event']);
@@ -230,37 +231,44 @@
 	}
 
 	function item_stat_add($id) {
-		global $db_connect;
-		$db_connect->where('id', $id)->update('item', ['view_day' => $db_connect->inc(1), 'view_month' => $db_connect->inc(1)]);
+
+		$db = db_connect();
+		
+		$db->where('id', $id)->update('item', ['view_day' => db_connect()->inc(1), 'view_month' => db_connect()->inc(1)]);
 	}
+
 	function item_stat_reset($id) {
-		global $db_connect;
+		
 		$stat['view_day'] = 0;
 		if(date('d') == '01') {
 			$stat['view_month'] = 0;
 		}
-		$db_connect->where('id', $id)->update('item', $stat);
+		db_connect()->where('id', $id)->update('item', $stat);
 	}
 
 	function item_one($id, $user_id = false) {
 		if($id) {
-			global $db_connect;
-			$db_connect->where('id', $id);
+			
+			$db = db_connect();
+
+			$db->where('id', $id);
 			if($user_id) {
-				$db_connect->where('user_id', $user_id);
+				$db->where('user_id', $user_id);
 			}
-			return $db_connect->getOne('item');
+			return $db->getOne('item');
 		} else {
 			return false;
 		}
 	}
 
 	function item_all($user_id = false) {
-		global $db_connect;
+
+		$db = db_connect();
+		
 		if($user_id) {
-			$db_connect->where('user_id', $user_id);
+			$db->where('user_id', $user_id);
 		}
-		return $db_connect->get('item');
+		return $db->get('item');
 	}
 
 	function item_all_sum($user_id) {
@@ -280,8 +288,10 @@
 	function item_all_reset_status($user_id) {
 		if($items = item_all($user_id)) {
 			foreach($items as $item) {
-				global $db_connect;
-				$db_connect->where('id', $item['id'])->update('item', [
+
+				$db = db_connect();
+				
+				$db->where('id', $item['id'])->update('item', [
 					'status_active' => 0,
 					'status_premium' => 0,
 					'status_vip' => 0,

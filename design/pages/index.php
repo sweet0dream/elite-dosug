@@ -16,7 +16,7 @@
 		<section class="partIntro">
 			<div class="row justify-content-md-center g-0">
 <?php
-	foreach($db_connect->where('status_active', 1)->orderBy('date_top','DESC')->get('item') as $post) {
+	foreach(db_connect()->where('status_active', 1)->orderBy('date_top','DESC')->get('item') as $post) {
 		echo '<div class="col-12 col-lg-4 col-md-6">'.viewIntro(item_decode($post)).'</div>';
 	}
 ?>

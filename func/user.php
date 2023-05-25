@@ -15,7 +15,9 @@
     //regin
     function user_regin($data) {
 		if(!in_array('', $data)) {
-			global $db_connect;
+			
+			$db = db_connect();
+
 			$user = [
 				'type' => 'reg',
 				'login' => $data['login'],
@@ -23,17 +25,17 @@
 				'password_view' => base64_encode($data['password']),
 				'phone' => $data['phone'],
 				'code' => base64_encode($data['code']),
-				'reg_date' => $db_connect->now()
+				'reg_date' => $db->now()
 			];
 
-			if(isset($db_connect->where('login', $data['login'])->getOne('user')['id'])) {
+			if(isset($db->where('login', $data['login'])->getOne('user')['id'])) {
 				$errors['login'] = 'dublicate';
 			}
 
 		}
 
 		if(!isset($errors)) {
-			if($db_connect->insert('user', $user)) {
+			if($db->insert('user', $user)) {
 				notify_sms('Личный кабинет на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'], $data['phone']);
 				user_login([
 					'login' => $data['login'],
@@ -54,8 +56,10 @@
     //login
     function user_login($data) {
 		if(!in_array('', $data)) {
-			global $db_connect;
-			if($user = $db_connect->where('login', $data['login'])->getOne('user')) {
+
+			$db = db_connect();
+			
+			if($user = $db->where('login', $data['login'])->getOne('user')) {
 				if(!password_verify($data['password'], $user['password'])) {
 					$errors['password'] = 'incorrect';
 				}
@@ -65,7 +69,7 @@
 		}
 
 		if(!isset($errors)) {
-			if($db_connect->where('id', $user['id'])->update('user', ['login_date' => $db_connect->now()])) {
+			if($db->where('id', $user['id'])->update('user', ['login_date' => $db->now()])) {
 				setcookie('auth[login]', $data['login'], time()+(60*60*24*30*365));
 				$_SESSION['auth'] = [
 					'id' => $user['id'],
@@ -85,10 +89,12 @@
 
 	//change balance
 	function user_change_balance($sum, $user_id) {
-		global $db_connect;
-		$user = $db_connect->where('id', $user_id)->getOne('user');
+		
+		$db = db_connect();
+
+		$user = $db->where('id', $user_id)->getOne('user');
 		if(isset($user['id']) && $user['balance'] >= $sum && $user['balance']-$sum >= 0) {
-			if($db_connect->where('id', $user['id'])->update('user', ['balance' => $user['balance']-$sum])) {
+			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']-$sum])) {
 				return true;
 			} else {
 				return false;
@@ -100,10 +106,12 @@
 
 	//add balance
 	function user_add_balance($sum, $user_id) {
-		global $db_connect;
-		$user = $db_connect->where('id', $user_id)->getOne('user');
+
+		$db = db_connect();
+		
+		$user = $db->where('id', $user_id)->getOne('user');
 		if($sum > 0) {
-			if($db_connect->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
+			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
 				admin_notification_tg('Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей');
 				(new Event($user['id']))->add('Вы пополнили: '.$sum.' рублей. Текущий баланс: '.$user['balance']+$sum.' рублей.');
 				return true;
@@ -117,18 +125,22 @@
 
 	//all users
 	function user_all($type = 'reg') {
-		global $db_connect;
+
+		$db = db_connect();
+
 		if($type) {
-			$db_connect->where('type', $type);
+			$db->where('type', $type);
 		}
-		return $db_connect->get('user');
+		return $db->get('user');
 	}
 
 	//one user
 	function user_one($id) {
 		if($id) {
-			global $db_connect;
-			$user = $db_connect->where('id', $id)->getOne('user');
+
+			$db = db_connect();
+
+			$user = $db->where('id', $id)->getOne('user');
 			return isset($user['id']) ? $user : false;
 		} else {
 			return false;

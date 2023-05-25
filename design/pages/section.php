@@ -1,6 +1,6 @@
 <?php
     $content = '';
-	if(isset($route[2]) && $item = item_decode($db_connect->where('id', $route[2])->getOne('item'))) {
+	if(isset($route[2]) && $item = item_decode(db_connect()->where('id', $route[2])->getOne('item'))) {
         if(isset($item['id'])) {
             if($route[1] == $item['type']) {
                 $content .= viewFull($item);
@@ -19,8 +19,8 @@
             }
         }
 
-        $items = $db_connect->where('type', $route[1])->where('status_active', 1)->orderBy('date_top','DESC')->paginate('item', (isset($current_page) ? $current_page : 1));
-        $total_pages = $db_connect->totalPages;
+        $items = db_connect()->where('type', $route[1])->where('status_active', 1)->orderBy('date_top','DESC')->paginate('item', (isset($current_page) ? $current_page : 1));
+        $total_pages = db_connect()->totalPages;
 
         if($total_pages > 1 && empty($items)) {
             $content = redirect('/'.$route[1].'/'.$route[2].'/'.$total_pages.'/');

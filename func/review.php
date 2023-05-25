@@ -42,7 +42,7 @@
 		}
 	}
 
-	//review_add
+	//review_reply
 	function review_reply($data) {
 		if(is_array($data)) {
 			if($data['reply'] != '') {

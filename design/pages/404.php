@@ -1,0 +1,1 @@
+<h1><?= http_response_code(); ?> Not Found</h1>

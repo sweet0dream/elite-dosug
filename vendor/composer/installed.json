@@ -1,0 +1,224 @@
+{
+    "packages": [
+        {
+            "name": "claviska/simpleimage",
+            "version": "3.7.0",
+            "version_normalized": "3.7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/claviska/SimpleImage.git",
+                "reference": "abd15ced313c7b8041d7d73d8d2398b4f2510cf1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/abd15ced313c7b8041d7d73d8d2398b4f2510cf1",
+                "reference": "abd15ced313c7b8041d7d73d8d2398b4f2510cf1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "league/color-extractor": "0.3.*",
+                "php": ">=5.6.0"
+            },
+            "time": "2022-07-05T13:18:44+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "claviska": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cory LaViska",
+                    "homepage": "http://www.abeautifulsite.net/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP class that makes working with images as simple as possible.",
+            "support": {
+                "issues": "https://github.com/claviska/SimpleImage/issues",
+                "source": "https://github.com/claviska/SimpleImage/tree/3.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/claviska",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../claviska/simpleimage"
+        },
+        {
+            "name": "league/color-extractor",
+            "version": "0.3.2",
+            "version_normalized": "0.3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/color-extractor.git",
+                "reference": "837086ec60f50c84c611c613963e4ad2e2aec806"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/color-extractor/zipball/837086ec60f50c84c611c613963e4ad2e2aec806",
+                "reference": "837086ec60f50c84c611c613963e4ad2e2aec806",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.4.0"
+            },
+            "replace": {
+                "matthecat/colorextractor": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2",
+                "phpunit/phpunit": "~5"
+            },
+            "time": "2016-12-15T09:30:02+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mathieu Lechat",
+                    "email": "math.lechat@gmail.com",
+                    "homepage": "http://matthecat.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Extract colors from an image as a human would do.",
+            "homepage": "https://github.com/thephpleague/color-extractor",
+            "keywords": [
+                "color",
+                "extract",
+                "human",
+                "image",
+                "palette"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/color-extractor/issues",
+                "source": "https://github.com/thephpleague/color-extractor/tree/master"
+            },
+            "install-path": "../league/color-extractor"
+        },
+        {
+            "name": "qiwi/bill-payments-php-sdk",
+            "version": "0.2.2",
+            "version_normalized": "0.2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/QIWI-API/bill-payments-php-sdk.git",
+                "reference": "b9deaea7c916dc7282779f01b821a3082504529d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/QIWI-API/bill-payments-php-sdk/zipball/b9deaea7c916dc7282779f01b821a3082504529d",
+                "reference": "b9deaea7c916dc7282779f01b821a3082504529d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "php-mock/php-mock-phpunit": "^1.1",
+                "phpdocumentor/phpdocumentor": "2.8.*",
+                "phpunit/phpunit": "5.7.27",
+                "squizlabs/php_codesniffer": "3.5.*"
+            },
+            "time": "2021-08-12T16:19:06+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Qiwi\\Api\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Universal payments API SDK",
+            "homepage": "https://github.com/QIWI-API/bill-payments-php-sdk",
+            "support": {
+                "issues": "https://github.com/QIWI-API/bill-payments-php-sdk/issues",
+                "source": "https://github.com/QIWI-API/bill-payments-php-sdk/tree/0.2.2"
+            },
+            "install-path": "../qiwi/bill-payments-php-sdk"
+        },
+        {
+            "name": "tommyknocker/pdo-database-class",
+            "version": "1.1.1",
+            "version_normalized": "1.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tommyknocker/pdo-database-class.git",
+                "reference": "c7c8c1d679d96e1fa68fda7970f0d11408825d15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tommyknocker/pdo-database-class/zipball/c7c8c1d679d96e1fa68fda7970f0d11408825d15",
+                "reference": "c7c8c1d679d96e1fa68fda7970f0d11408825d15",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0"
+            },
+            "time": "2021-12-20T03:49:18+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "PDODb.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Vasiliy A. Ulin",
+                    "email": "ulin.vasiliy@gmail.com",
+                    "homepage": "http://mysrv.ru",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP PDO Wrapper which utilizes PDO and prepared statements",
+            "homepage": "https://github.com/tommyknocker/pdo-database-class",
+            "keywords": [
+                "database",
+                "mssql",
+                "mysql",
+                "pdo",
+                "pdo_dblib",
+                "postgresql",
+                "sqlite"
+            ],
+            "support": {
+                "issues": "https://github.com/tommyknocker/pdo-database-class/issues",
+                "source": "https://github.com/tommyknocker/pdo-database-class/tree/v1.1.1"
+            },
+            "install-path": "../tommyknocker/pdo-database-class"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

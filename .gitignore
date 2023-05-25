@@ -1,0 +1,8 @@
+*.log
+media/photo/*
+media/rekl/*/*.gif
+!media/rekl/*/blank.gif
+!media/rekl/*/*.psd
+sitemap.xml
+robots.txt
+web.conf

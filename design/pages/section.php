@@ -19,8 +19,10 @@
             }
         }
 
-        $items = db_connect()->where('type', $route[1])->where('status_active', 1)->orderBy('date_top','DESC')->paginate('item', (isset($current_page) ? $current_page : 1));
-        $total_pages = db_connect()->totalPages;
+        $connect = db_connect();
+
+        $items = $connect->where('type', $route[1])->where('status_active', 1)->orderBy('date_top','DESC')->paginate('item', (isset($current_page) ? $current_page : 1));
+        $total_pages = $connect->totalPages;
 
         if($total_pages > 1 && empty($items)) {
             $content = redirect('/'.$route[1].'/'.$route[2].'/'.$total_pages.'/');

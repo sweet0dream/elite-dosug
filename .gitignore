@@ -7,3 +7,6 @@ sitemap.xml
 robots.txt
 web.conf
 client
+web.conf
+*.tpl
+*.stpl

@@ -9,6 +9,18 @@ ini_set('post_max_size', '200M');
 
 require_once('vendor.php');
 
+//route
+$route = array_diff(explode('/', explode('?', $_SERVER['REQUEST_URI'])[0]), array(''));
+
+// Обработка post и files
+if(isset($_POST) && is_array($_POST) && !empty($_POST)) {
+	if(isset($_FILES['upload']['tmp_name'])) {
+		post($_POST, $_FILES['upload']['tmp_name']);
+	} else {
+		post($_POST);
+	}
+}
+
 if(empty($route)) {
 	include_once $site['path'].'/design/view.php';
 	include $site['path'].'/design/head.php';

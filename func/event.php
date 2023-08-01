@@ -24,4 +24,20 @@
             }
         }
 
+        public function clear($date = false) {
+            $ids = [];
+            $currentDate = $date ? strtotime($date) : strtotime(date('Y-m-d H:i:s'));
+            foreach($this->getAll() as $i) {
+                if($currentDate > strtotime($i['created_at'])) {
+                    $ids[] = $i['id'].' '.$i['created_at'];
+                }
+            }
+            if(!empty($ids)) {
+                foreach($ids as $deleteEventId) {
+                    db_connect()->where('id', $deleteEventId)->delete($this->table);
+                }
+            }
+            return true;
+        }
+
     }

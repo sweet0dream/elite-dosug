@@ -18,6 +18,8 @@
                     }
                 }
             }
+            // clear event more month
+            (new Event($user['id']))->clear(date('Y-m-d H:i:s', strtotime('-1 months')));
         }
         // !change sum
         // reset stat

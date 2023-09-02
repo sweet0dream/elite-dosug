@@ -10,3 +10,4 @@ client
 web.conf
 *.tpl
 *.stpl
+conf/site.php

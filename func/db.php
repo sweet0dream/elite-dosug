@@ -3,12 +3,12 @@
         global $db;
 
         $database = new PDODb([
-            'type' => 'mysql',
-            'host' => '81.31.244.196',
+            'type' => $db['type'] ?? 'mysql',
+            'host' => $db['host'] ?? 'localhost',
             'username' => $db['user'], 
             'password' => $db['password'],
             'dbname'=> $db['name'],
-            'charset' => 'utf8'
+            'charset' => $db['charset'] ?? 'utf8'
         ]);
 
         return $database;

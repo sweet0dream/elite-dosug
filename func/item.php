@@ -1,6 +1,7 @@
 <?php
     //post
-	function item_post($data, $files = false) {
+	function item_post($data, $files = false): void
+    {
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('item_'.key($data))) {
 				if($files) {
@@ -11,12 +12,11 @@
 			} else {
 				die('no exist func: item_'.key($data).'()');
 			}
-		} else {
-
 		}
 	}
 
-	function item_encode($data) {
+	function item_encode($data): false|array
+    {
 		if(is_array($data)) {
 			foreach($data as $k => $v) {
 				if(is_array($v)) {
@@ -29,7 +29,8 @@
 		}
 	}
 
-	function item_decode($data) {
+	function item_decode($data): false|array
+    {
 		if(is_array($data)) {
 			foreach($data as $k => $v) {
 				if(is_object(json_decode($v))) {
@@ -42,7 +43,8 @@
 		}
 	}
 
-	function item_add($data) {
+	function item_add($data): void
+    {
 		global $types;
 		if($types[$data['type']]['validate']($data)) {
 			
@@ -54,7 +56,8 @@
 		}
 	}
 
-	function item_edit($data) {
+	function item_edit($data): void
+    {
 		global $types;
 		if($types[$data['type']]['validate']($data)) {
 			
@@ -230,14 +233,16 @@
 		}
 	}
 
-	function item_stat_add($id) {
+	function item_stat_add($id): void
+    {
 
 		$db = db_connect();
 		
 		$db->where('id', $id)->update('item', ['view_day' => db_connect()->inc(1), 'view_month' => db_connect()->inc(1)]);
 	}
 
-	function item_stat_reset($id) {
+	function item_stat_reset($id): void
+    {
 		
 		$stat['view_day'] = 0;
 		if(date('d') == '01') {
@@ -246,7 +251,8 @@
 		db_connect()->where('id', $id)->update('item', $stat);
 	}
 
-	function item_one($id, $user_id = false) {
+	function item_one($id, $user_id = false): false|array
+    {
 		if($id) {
 			
 			$db = db_connect();
@@ -261,8 +267,8 @@
 		}
 	}
 
-	function item_all($user_id = false) {
-
+	function item_all($user_id = false): array|Generator
+    {
 		$db = db_connect();
 		
 		if($user_id) {

@@ -19,7 +19,7 @@
     function notify_sms(string $text, int $phone): bool
     {
         return file_get_contents(
-            'https://api.elited.ru/notify/sms/add/',
+            'http://rest.elited.ru/notify/sms/add/',
             true,
             stream_context_create([
             'http' => [

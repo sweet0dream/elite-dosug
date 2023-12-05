@@ -1,19 +1,19 @@
 <?php
     //post
-	function user_post($data) {
+	function user_post($data): void
+    {
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('user_'.key($data))) {
 				call_user_func('user_'.key($data), $data[key($data)]);
 			} else {
 				die('no exist func: user_'.key($data).'()');
 			}
-		} else {
-			return false;
 		}
 	}
 
     //regin
-    function user_regin($data) {
+    function user_regin($data): void
+    {
 		if(!in_array('', $data)) {
 			
 			$db = db_connect();
@@ -36,7 +36,7 @@
 
 		if(!isset($errors)) {
 			if($db->insert('user', $user)) {
-				notify_sms('Личный кабинет на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'], $data['phone']);
+				notify_sms('Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'], $data['phone']);
 				user_login([
 					'login' => $data['login'],
 					'password' => $data['password']
@@ -54,7 +54,8 @@
     }
 
     //login
-    function user_login($data) {
+    function user_login($data): void
+    {
 		if(!in_array('', $data)) {
 
 			$db = db_connect();
@@ -88,7 +89,8 @@
     }
 
 	//change balance
-	function user_change_balance($sum, $user_id) {
+	function user_change_balance($sum, $user_id): bool
+    {
 		
 		$db = db_connect();
 
@@ -105,7 +107,8 @@
 	}
 
 	//add balance
-	function user_add_balance($sum, $user_id) {
+	function user_add_balance($sum, $user_id): bool
+    {
 
 		$db = db_connect();
 		
@@ -124,7 +127,8 @@
 	}
 
 	//all users
-	function user_all($type = 'reg') {
+	function user_all($type = 'reg'): array|Generator
+    {
 
 		$db = db_connect();
 
@@ -135,7 +139,8 @@
 	}
 
 	//one user
-	function user_one($id) {
+	function user_one($id): false|array
+    {
 		if($id) {
 
 			$db = db_connect();

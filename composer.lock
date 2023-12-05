@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d60fb52a9d36a4de3651b74e4325578",
+    "content-hash": "f3c23d78010028cb6f13857668545148",
     "packages": [
         {
             "name": "claviska/simpleimage",
-            "version": "3.7.0",
+            "version": "3.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/claviska/SimpleImage.git",
-                "reference": "abd15ced313c7b8041d7d73d8d2398b4f2510cf1"
+                "reference": "82dbef988e356baa5d73993a1351bcb6c0959269"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/abd15ced313c7b8041d7d73d8d2398b4f2510cf1",
-                "reference": "abd15ced313c7b8041d7d73d8d2398b4f2510cf1",
+                "url": "https://api.github.com/repos/claviska/SimpleImage/zipball/82dbef988e356baa5d73993a1351bcb6c0959269",
+                "reference": "82dbef988e356baa5d73993a1351bcb6c0959269",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
             "description": "A PHP class that makes working with images as simple as possible.",
             "support": {
                 "issues": "https://github.com/claviska/SimpleImage/issues",
-                "source": "https://github.com/claviska/SimpleImage/tree/3.7.0"
+                "source": "https://github.com/claviska/SimpleImage/tree/3.7.2"
             },
             "funding": [
                 {
@@ -53,7 +53,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-07-05T13:18:44+00:00"
+            "time": "2022-12-12T14:31:53+00:00"
         },
         {
             "name": "league/color-extractor",
@@ -157,6 +157,48 @@
             "time": "2021-08-12T16:19:06+00:00"
         },
         {
+            "name": "sweet0dream/intim-anketa-contract",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sweet0dream/intim-anketa-contract.git",
+                "reference": "f8fcc95b92787144bf4fb4ab85b103acf615b4be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sweet0dream/intim-anketa-contract/zipball/f8fcc95b92787144bf4fb4ab85b103acf615b4be",
+                "reference": "f8fcc95b92787144bf4fb4ab85b103acf615b4be",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sweet0dream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "sweet0dream",
+                    "email": "sweet0dream@proton.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Contract items for intim prepare types",
+            "support": {
+                "issues": "https://github.com/sweet0dream/intim-anketa-contract/issues",
+                "source": "https://github.com/sweet0dream/intim-anketa-contract/tree/main"
+            },
+            "time": "2023-12-05T19:51:15+00:00"
+        },
+        {
             "name": "tommyknocker/pdo-database-class",
             "version": "1.1.1",
             "source": {
@@ -216,10 +258,14 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "sweet0dream/intim-anketa-contract": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-curl": "*"
+    },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

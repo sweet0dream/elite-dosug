@@ -11,3 +11,5 @@ web.conf
 *.tpl
 *.stpl
 conf/site.php
+type.php.old
+/vendor/

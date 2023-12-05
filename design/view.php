@@ -698,7 +698,7 @@
 													</div>
 													<div class="modal fade" id="status_top'.$v['id'].'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 														<div class="modal-dialog">
-															<form method="post" class="modal-content m-0" id="request">
+															<form method="post" class="modal-content m-0" id="request'.$v['id'].'">
 																<input type="hidden" name="item[status][id]" value="'.$v['id'].'">
 																<input type="hidden" name="item[status][user_id]" value="'.$user['id'].'">
 																<div class="modal-header">
@@ -714,10 +714,10 @@
 																</div>
 																<div class="modal-footer">
 																	<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
-																	<button type="submit" name="item[status][action]" value="top" id="top" class="btn btn-success"'.(!check_price($user['balance'], $price_ank['top']) ? ' disabled' : '').'>Поднять</button>
+																	<button type="submit" name="item[status][action]" value="top" id="top'.$v['id'].'" class="btn btn-success"'.(!check_price($user['balance'], $price_ank['top']) ? ' disabled' : '').'>Поднять</button>
 																</div>
 															</form>
-															<div class="alert alert-success m-0 p-2 d-none" id="response">
+															<div class="alert alert-success m-0 p-2 d-none" id="response'.$v['id'].'">
 																<p class="text-center mb-1"><b>Поднятие и отправка анкеты в рассылку</b><br><small>Пожалуйста, ждите. По завершении процесса страница сама обновится.</small></p>
 																<div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 																	<div class="progress-bar progress-bar-striped progress-bar-animated bg-success font2" style="width: 100%">
@@ -726,9 +726,9 @@
 																</div>
 															</div>
 															<script>
-																$(\'#top\').on(\'click\', function () {
-																	$(\'#request\').addClass(\'d-none\');
-																	$(\'#response\').removeClass(\'d-none\');
+																$(\'#top'.$v['id'].'\').on(\'click\', function () {
+																	$(\'#request'.$v['id'].'\').addClass(\'d-none\');
+																	$(\'#response'.$v['id'].'\').removeClass(\'d-none\');
 																});
 															</script>
 														</div>
@@ -1166,4 +1166,69 @@
 		} else {
 			return false;
 		}
+	}
+
+	function viewFilter($route) {
+		global $types;
+		$filterType = [
+            'url' => isset($route[1]) && isset($types[$route[1]]) ? $route[1] : 'ind',
+            'name' => isset($route[1]) && isset($types[$route[1]]) ? $types[$route[1]]['names'][1] : 'Индивидуалки'
+        ];
+		return '
+			<ul class="list-unstyled ps-0 mt-1">
+				<li class="mb-1">
+					<ul class="btn-toggle-nav list-unstyled">
+						<li><a href="/'.$filterType['url'].'/f/new/" class="d-inline-flex btn btn-light w-100 mb-1">Новые анкеты</a></li>
+						<li><a href="/'.$filterType['url'].'/f/express/" class="d-inline-flex btn btn-light w-100 mb-1">С экспресс услугой</a></li>
+						<li><a href="/'.$filterType['url'].'/f/real/" class="d-inline-flex btn btn-light w-100 mb-1">С реальными фото</a></li>
+						<li><a href="/'.$filterType['url'].'/f/reviews/" class="d-inline-flex btn btn-light w-100">С отзывами</a></li>
+					</ul>
+				</li>
+				<li class="mb-1">
+					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-price">'.$filterType['name'].' по цене</button>
+					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-price">
+						<ul class="btn-toggle-nav list-unstyled">
+							<li><a href="/'.$filterType['url'].'/f/price_less_2000/" class="d-inline-flex btn btn-light w-100 mb-1">Дешевые до 2000 рублей</a></li>
+							<li><a href="/'.$filterType['url'].'/f/price_2000-4000/" class="d-inline-flex btn btn-light w-100 mb-1">От 2000 до 4000 рублей</a></li>
+							<li><a href="/'.$filterType['url'].'/f/price_4000-6000/" class="d-inline-flex btn btn-light w-100 mb-1">От 4000 до 6000 рублей</a></li>
+							<li><a href="/'.$filterType['url'].'/f/price_more_6000/" class="d-inline-flex btn btn-light w-100">Элитные от 6000 рублей</a></li>
+						</ul>
+					</div>
+				</li>
+				<li class="mb-1">
+					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-year">'.$filterType['name'].' по возрасту</button>
+					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-year">
+						<ul class="btn-toggle-nav list-unstyled">
+							<li><a href="/'.$filterType['url'].'/f/year_less_20/" class="d-inline-flex btn btn-light w-100 mb-1">Молоденькие до 20 лет</a></li>
+							<li><a href="/'.$filterType['url'].'/f/year_20-25/" class="d-inline-flex btn btn-light w-100 mb-1">От 20 до 25 лет</a></li>
+							<li><a href="/'.$filterType['url'].'/f/year_25-30/" class="d-inline-flex btn btn-light w-100 mb-1">От 25 до 30 лет</a></li>
+							<li><a href="/'.$filterType['url'].'/f/year_30-35/" class="d-inline-flex btn btn-light w-100 mb-1">От 30 до 35 лет</a></li>
+							<li><a href="/'.$filterType['url'].'/f/year_35-40/" class="d-inline-flex btn btn-light w-100 mb-1">От 35 до 40 лет</a></li>
+							<li><a href="/'.$filterType['url'].'/f/year_more_40/" class="d-inline-flex btn btn-light w-100">Зрелые от 40 лет</a></li>
+						</ul>
+					</div>
+				</li>
+				<li class="mb-1">
+					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-year">'.$filterType['name'].' по услугам</button>
+					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-year">
+						<ul class="btn-toggle-nav list-unstyled">
+							<li><a href="/'.$filterType['url'].'/f/serv_analnyi-seks/" class="d-inline-flex btn btn-light w-100 mb-1">Анальный секс</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_gruppovoi-seks/" class="d-inline-flex btn btn-light w-100 mb-1">Групповой секс</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_minet-bez-prezervativa/" class="d-inline-flex btn btn-light w-100 mb-1">Минет без резинки</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_okonchanie-na-lico/" class="d-inline-flex btn btn-light w-100 mb-1">Окончание на лицо</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_massazh/" class="d-inline-flex btn btn-light w-100 mb-1">Массаж</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_lesbi-shou/" class="d-inline-flex btn btn-light w-100 mb-1">Лесби-шоу</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_striptiz/" class="d-inline-flex btn btn-light w-100 mb-1">Стриптиз</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_igrushki/" class="d-inline-flex btn btn-light w-100 mb-1">Игрушки</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_kunilingus/" class="d-inline-flex btn btn-light w-100 mb-1">Кунилингус</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_poza-69/" class="d-inline-flex btn btn-light w-100 mb-1">Поза 69</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_zolotoi-dozhd/" class="d-inline-flex btn btn-light w-100 mb-1">Золотой дождь</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_fisting/" class="d-inline-flex btn btn-light w-100 mb-1">Фистинг</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_bdsm/" class="d-inline-flex btn btn-light w-100 mb-1">БДСМ</a></li>
+							<li><a href="/'.$filterType['url'].'/f/serv_foto-video/" class="d-inline-flex btn btn-light w-100">Фото/видео</a></li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		';
 	}

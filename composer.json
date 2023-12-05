@@ -3,6 +3,7 @@
         "tommyknocker/pdo-database-class": "^1.1",
         "claviska/simpleimage": "^3.6",
         "qiwi/bill-payments-php-sdk": "^0.2.2",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "sweet0dream/intim-anketa-contract": "dev-main"
     }
 }

@@ -43,7 +43,7 @@ main {
     flex-grow: 1;
 }
 nav {
-    background: #1B0320 url('/assets/images/bg-menu5.webp') center bottom;
+    background: #1B0320 url('/assets/images/bg-menu.webp') center bottom;
 }
 .menu li a {
     font-family: 'Cuprum', sans-serif;

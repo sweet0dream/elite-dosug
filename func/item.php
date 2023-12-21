@@ -294,17 +294,15 @@
 	function item_all_reset_status($user_id) {
 		if($items = item_all($user_id)) {
 			foreach($items as $item) {
-
 				$db = db_connect();
-				
 				$db->where('id', $item['id'])->update('item', [
 					'status_active' => 0,
 					'status_premium' => 0,
 					'status_vip' => 0,
 					'sum' => 0
 				]);
-				return true;
 			}
+			return true;
 		} else {
 			return false;
 		}

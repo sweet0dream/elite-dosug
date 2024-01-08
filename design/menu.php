@@ -3,10 +3,10 @@
 		<a class="navbar-brand m-0 logo" href="/">
 			<img src="/assets/images/logo-elite.webp" alt="Проститутки Саратова Элит Досуг" style="width:75%">
 		</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-expanded="false">
+		<button class="navbar-toggler mobile" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-expanded="false">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-collapse" id="menu">
+		<div class="collapse navbar-collapse text-end" id="menu">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0 menu">
 				<?php foreach($types as $k => $v) : ?>
 				<li class="nav-item">

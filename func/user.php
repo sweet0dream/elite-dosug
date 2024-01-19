@@ -115,7 +115,7 @@
 		$user = $db->where('id', $user_id)->getOne('user');
 		if($sum > 0) {
 			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
-				admin_notification_tg('Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей');
+				notify_sms('Элит Досуг Саратов: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей', 9053242575);
 				(new Event($user['id']))->add('Вы пополнили: '.$sum.' рублей. Текущий баланс: '.$user['balance']+$sum.' рублей.');
 				return true;
 			} else {
@@ -127,14 +127,18 @@
 	}
 
 	//all users
-	function user_all($type = 'reg'): array|Generator
+	function user_all($type = 'reg', $orderBy = [['id', 'DESC']]): array|Generator
     {
-
 		$db = db_connect();
 
 		if($type) {
 			$db->where('type', $type);
 		}
+
+		foreach($orderBy as $order) {
+			$db->orderBy($order[0], $order[1]);
+		}
+
 		return $db->get('user');
 	}
 

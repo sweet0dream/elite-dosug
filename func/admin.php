@@ -1,14 +1,34 @@
 <?php
-    function admin_notification_tg($message) {
-        $ch = curl_init('https://htmlweb.ru/api/service/tg_send/');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, [
-                'message' => $_SERVER['HTTP_HOST'].': '.$message,
-                'api_key' => '0c2383d6682b17b36138a65ec8b3c2f3'
-            ]);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_getinfo($ch);
-            curl_close($ch);
-        return curl_getinfo($ch)['http_code'] == 200 ? true : false;
+    //post
+	function admin_post($data): void
+    {
+		if(is_array($data) && isset($data[key($data)])) {
+			if(function_exists('admin_'.key($data))) {
+				call_user_func('admin_'.key($data), $data[key($data)]);
+			} else {
+				die('no exist func: admin_'.key($data).'()');
+			}
+		}
+	}
+
+    function admin_added_balance($data): void
+    {
+        $_SESSION['response']['added_balance'] = sendPostRequest('https://rest.elited.ru/user/balance/added/', $data);
+    }
+
+    function admin_change_status_for_item($data): void
+    {
+        $id = $data['item_id']; unset($data['item_id']);
+        
+        $price = $data['price']; unset($data['price']);
+        $action = key($data);
+        $value = $data[key($data)];
+
+        $request = [
+            'price' => $price,
+            'action' => $action,
+            'value' => $value
+        ];
+
+        $_SESSION['response']['change_status'] = sendPostRequest('https://rest.elited.ru/item/'.$id.'/activity', $request);
     }

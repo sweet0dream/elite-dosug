@@ -1,11 +1,18 @@
 <?php
     if(isset($_SESSION['auth'])) {
-        if(isset($route[2]) && $route[2] == 'add' || $route[2] == 'edit') {
+        if (isset($route[2]) && $route[2] == 'add' || $route[2] == 'edit') {
 
             //select for edit
-            if($route[2] == 'edit' && isset($route[3]) && !isset($value)) {
-                $value = item_decode(item_one($route[3], $_SESSION['auth']['id']));
-                if($_SESSION['auth']['id'] != $value['user_id']) {
+            if ($route[2] == 'edit' && isset($route[3]) && !isset($value)) {
+                if (isset($_GET['user_id'])) {
+                    if ($_SESSION['auth']['type'] == 'adm') {
+                        $userId = $_GET['user_id'];
+                    } else {
+                        $userId = $_SESSION['auth']['id'];
+                    }
+                }
+                $value = item_decode(item_one($route[3], $userId));
+                if ($userId != $value['user_id']) {
                     echo redirect($site['url'].'/user/');
                 }
             }
@@ -43,15 +50,20 @@
 <div class="row justify-content-md-center g-0 mt-1">
     <div class="col-12 col-md-10 col-lg-8">
         <?php if(isset($value['id'])) : ?>
-        <div class="alert alert-success mb-1 p-1" role="alert">
+        <div class="alert alert-info mb-1 p-1" role="alert">
             <div class="row g-1">
-                <div class="col-4 d-flex justify-content-center align-items-center">
-                    <a href="/user/" class="btn btn-success btn-sm w-100">Назад</a>
+                <div class="col-3 d-flex justify-content-center align-items-center">
+                    <a href="/user/" class="btn btn-info btn-sm w-100 text-white">Назад</a>
                 </div>
-                <div class="col-8 d-flex justify-content-center align-items-center">
+                <div class="col-9 d-flex justify-content-center align-items-center">
                     <p class="m-0 text-center">Последнее изменение: <br /><?= format_date($value['date_edit']) ?></p>
                 </div>
             </div>
+        </div>
+        <?php endif ?>
+        <?php if(isset($_SESSION['auth']['type']) == 'adm') : ?>
+        <div class="alert alert-danger mb-1 p-1 text-center" role="alert">
+            <p class="m-0">Вы редактируете данные анкеты пользователя ID: <?= $userId ?> в режиме администратора</p>
         </div>
         <?php endif ?>
         <form method="post">
@@ -62,7 +74,7 @@
         <?php
             }
         ?>
-            <input type="hidden" name="item[<?= $route[2] ?>][user_id]" value="<?= $_SESSION['auth']['id'] ?>">
+            <input type="hidden" name="item[<?= $route[2] ?>][user_id]" value="<?= $userId ?>">
             <input type="hidden" name="item[<?= $route[2] ?>][type]" value="<?= $type ?>">
             <div class="card <?= (isset($errors['info']) ? 'border-danger' : '') ?> mb-1">
                 <div class="card-header <?= (isset($errors['info']) ? 'text-danger' : '') ?> text-center"><b>Основная информация</b></div>
@@ -221,7 +233,14 @@
             }
         } elseif(isset($route[2]) && $route[2] == 'photo') {
             if(isset($route[3])) {
-                $item = item_one($route[3], $_SESSION['auth']['id']);
+                if (isset($_GET['user_id'])) {
+                    if ($_SESSION['auth']['type'] == 'adm') {
+                        $userId = $_GET['user_id'];
+                    } else {
+                        $userId = $_SESSION['auth']['id'];
+                    }
+                }
+                $item = item_one($route[3], $userId);
                 if(!empty($item)) {
 ?>
 <div class="row justify-content-md-center g-0">
@@ -229,11 +248,13 @@
         <div class="card <?= (isset($errors['info']) ? 'border-danger' : '') ?> my-1">
             <div class="card-header text-center">
                 <div class="row g-1">
-                    <div class="col-4 d-flex justify-content-center align-items-center">
-                        <a href="/user/" class="btn btn-secondary btn-sm w-100">Назад</a>
+                    <div class="col-3 d-flex justify-content-center align-items-center">
+                        <a href="/user/" class="btn btn-info btn-sm w-100 text-white">Назад</a>
                     </div>
-                    <div class="col-8 d-flex justify-content-center align-items-center">
-                        <b>Фото #<?= $item['id'] ?></b>
+                    <div class="col-9 d-flex justify-content-center align-items-center">
+                        <p class="m-0">
+                            Редактирование фото анкеты #<?= $item['id'] ?>
+                            <?= (isset($_SESSION['auth']['type']) == 'adm' ? '<br /><span class="text-danger">Вы редактируете фото в режиме администратора</span>' : '') ?></p>
                     </div>
                 </div>
             </div>
@@ -310,7 +331,7 @@
                             <input class="form-control" type="file" name="upload[]" multiple>
                         </div>
                         <div class="col-12 col-md-4">
-                            <button type="submit" class="btn btn-secondary w-100">Загрузить</button>
+                            <button type="submit" class="btn btn-primary w-100">Загрузить</button>
                         </div>
                     </div>
                 </form>

@@ -22,6 +22,24 @@
 		}
 	}
 
+	//send post request to api
+	function sendPostRequest($url, $data) {
+		$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_HEADER, false);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
+			curl_setopt($curl, CURLOPT_POST, true);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+
+		$response = [
+			'data' => json_decode(curl_exec($curl), true),
+			'code' => curl_getinfo($curl, CURLINFO_HTTP_CODE)
+		];
+			curl_close($curl);
+			
+		return $response;
+	}
+
 	// redirect
 	function redirect($url) { 
 		if(!headers_sent()) {

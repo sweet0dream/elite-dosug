@@ -309,8 +309,8 @@
 	}
 
 	function item_abuse($data) {
-		if(is_array($data)) {
-			if(admin_notification_tg('Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'])) {
+		if (is_array($data)) {
+			if (notify_sms('Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'], 9053242575)) {
 				setcookie('abuse[item][]', $data['id'], time()+(60*60*24*30*365));
 				header("Refresh:0");
 			}

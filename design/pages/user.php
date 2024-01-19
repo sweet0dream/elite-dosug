@@ -8,7 +8,12 @@
                     unset($_SESSION['auth']);
                     $content .= redirect($site['url']);
                 }
-                $content .= viewUser($user);
+                if($_SESSION['auth']['type'] == 'reg') {
+                    $content .= viewUser($user);
+                }
+                if($_SESSION['auth']['type'] == 'adm') {
+                    $content .= viewAdmin($user);
+                }
             } else {
                 $content .= redirect($site['url']);
             }

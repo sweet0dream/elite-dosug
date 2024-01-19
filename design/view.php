@@ -553,7 +553,6 @@
 				';
 			}
 
-
 			/*if($user['id'] == 24) {
 				$view .= '
 					<div class="alert alert-danger mt-1 mb-2 p-2">
@@ -566,7 +565,6 @@
 					</div>
 				';
 			}*/
-
 
 			if(empty($items)) {
 				$view .= '
@@ -1168,67 +1166,362 @@
 		}
 	}
 
-	function viewFilter($route) {
-		global $types;
-		$filterType = [
-            'url' => isset($route[1]) && isset($types[$route[1]]) ? $route[1] : 'ind',
-            'name' => isset($route[1]) && isset($types[$route[1]]) ? $types[$route[1]]['names'][1] : 'Индивидуалки'
-        ];
-		return '
-			<ul class="list-unstyled ps-0 mt-1">
-				<li class="mb-1">
-					<ul class="btn-toggle-nav list-unstyled">
-						<li><a href="/'.$filterType['url'].'/f/new/" class="d-inline-flex btn btn-light w-100 mb-1">Новые анкеты</a></li>
-						<li><a href="/'.$filterType['url'].'/f/express/" class="d-inline-flex btn btn-light w-100 mb-1">С экспресс услугой</a></li>
-						<li><a href="/'.$filterType['url'].'/f/real/" class="d-inline-flex btn btn-light w-100 mb-1">С реальными фото</a></li>
-						<li><a href="/'.$filterType['url'].'/f/reviews/" class="d-inline-flex btn btn-light w-100">С отзывами</a></li>
-					</ul>
-				</li>
-				<li class="mb-1">
-					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-price">'.$filterType['name'].' по цене</button>
-					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-price">
-						<ul class="btn-toggle-nav list-unstyled">
-							<li><a href="/'.$filterType['url'].'/f/price_less_2000/" class="d-inline-flex btn btn-light w-100 mb-1">Дешевые до 2000 рублей</a></li>
-							<li><a href="/'.$filterType['url'].'/f/price_2000-4000/" class="d-inline-flex btn btn-light w-100 mb-1">От 2000 до 4000 рублей</a></li>
-							<li><a href="/'.$filterType['url'].'/f/price_4000-6000/" class="d-inline-flex btn btn-light w-100 mb-1">От 4000 до 6000 рублей</a></li>
-							<li><a href="/'.$filterType['url'].'/f/price_more_6000/" class="d-inline-flex btn btn-light w-100">Элитные от 6000 рублей</a></li>
-						</ul>
+	function viewAdmin($user) {
+
+		global $site, $types, $price_ank, $response;
+
+		$allUsers = [];
+		$allSumBalance = 0;
+		$allItemsSummary = 0;
+		foreach(user_all('reg', [['balance', 'DESC'], ['reg_date', 'DESC']]) as $key => $regUser) {
+			if (
+				$regUser['reg_date'] == $regUser['login_date'] && 
+				$regUser['balance'] == 0 && 
+				(new DateTimeImmutable('now'))->diff(new DateTimeImmutable($regUser['reg_date']))->format('%a') >= 100
+			) {
+				$checkEmptyUser[$regUser['id']] = true;
+				$emptyUsers[$key] = $regUser;
+			} else {
+				if ($regUser['balance'] > 0 && !in_array($regUser['id'], [2,31,45])) { //exclude demo accounts balance
+					$allSumBalance += $regUser['balance'];
+				}
+	
+				$allUsers[$key] = $regUser;
+	
+				$allUsers[$key]['items'] = item_all($regUser['id']);
+	
+				$allUsers[$key]['summary'] = 0;
+				if (!empty($allUsers[$key]['items'])) {
+					foreach ($allUsers[$key]['items'] as $item) {
+						if ($item['sum'] == 0) {
+							continue;
+						}
+						$allUsers[$key]['summary'] += $item['sum'];
+					}
+				}
+				if (!in_array($regUser['id'], [2,31,45])) { //exclude demo accounts balance
+					$allItemsSummary += $allUsers[$key]['summary'];
+				}
+			}
+		}
+		if (!empty($emptyUsers)) {
+			$allUsers = array_merge($allUsers, $emptyUsers);
+		}
+
+		$view = '';
+
+		if (isset($response)) {
+			$key = key($response);
+			$code = $response[$key]['code'];
+			$response = $response[$key]['data'];
+			$fail = [
+				404 => [
+					'title' => 'Не найдено',
+					'text' => 'Запись не найдена'
+				],
+				400 => [
+					'title' => 'Нет параметров',
+					'text' => 'Неверные некоторые параметры'
+				]
+			];
+			if ($key == 'added_balance') {
+				notify_sms(
+					'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.',
+					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
+				);
+				sendPostRequest('https://rest.elited.ru/user/'.$response['userId'].'/addEvent', [
+					'event' => 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.'
+				]);
+				$message = 'Пополнение баланса на '.$response['addedSum'].' рублей.<br />Смс отправлено.';
+			}
+			if ($key == 'change_status') {
+				$termMessage = [
+					'active' => $response['valueAction'] == 1 ? 'опубликована' : 'скрыта',
+					'premium' => 'статус «Premium» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+					'vip' => 'статус «VIP» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+					'real' => 'статус «Реальное фото» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+					'top' => 'была поднята',
+				];
+				notify_sms(
+					'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : ''),
+					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
+				);
+				sendPostRequest('https://rest.elited.ru/user/'.$response['userId'].'/addEvent', [
+					'event' => 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано:: '.$response['userOutBalance'].' рублей.' : '')
+				]);
+				$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
+			}
+			$view .= '
+				<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+					<div id="response" class="toast bg-'.($code == 200?'primary' : 'danger').'-subtle" role="alert" data-bs-delay="10000" aria-live="assertive" aria-atomic="true">
+						<div class="toast-header bg-'.($code==200 ? 'primary' : 'danger').' text-white">
+							<strong class="me-auto">'.($code==200 ? 'ID: '.$response['userId'] : $fail[$code]['title']).'</strong>
+							<small>только что</small>
+							<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+						</div>
+						<div class="toast-body">'.($code==200 ? $message : $fail[$code]['text']).'</div>
 					</div>
-				</li>
-				<li class="mb-1">
-					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-year">'.$filterType['name'].' по возрасту</button>
-					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-year">
-						<ul class="btn-toggle-nav list-unstyled">
-							<li><a href="/'.$filterType['url'].'/f/year_less_20/" class="d-inline-flex btn btn-light w-100 mb-1">Молоденькие до 20 лет</a></li>
-							<li><a href="/'.$filterType['url'].'/f/year_20-25/" class="d-inline-flex btn btn-light w-100 mb-1">От 20 до 25 лет</a></li>
-							<li><a href="/'.$filterType['url'].'/f/year_25-30/" class="d-inline-flex btn btn-light w-100 mb-1">От 25 до 30 лет</a></li>
-							<li><a href="/'.$filterType['url'].'/f/year_30-35/" class="d-inline-flex btn btn-light w-100 mb-1">От 30 до 35 лет</a></li>
-							<li><a href="/'.$filterType['url'].'/f/year_35-40/" class="d-inline-flex btn btn-light w-100 mb-1">От 35 до 40 лет</a></li>
-							<li><a href="/'.$filterType['url'].'/f/year_more_40/" class="d-inline-flex btn btn-light w-100">Зрелые от 40 лет</a></li>
-						</ul>
+				</div>
+				<script>
+					bootstrap.Toast.getOrCreateInstance(document.getElementById(\'response\')).show();
+				</script>
+			';
+		}
+
+		$view .= '
+			<div class="row justify-content-center g-0 font2 admin">
+				<div class="col-11 col-lg-10">
+					<div class="mb-1 inner">
+						<div class="row">
+							<div class="col-12 col-md-6 d-flex align-items-center">
+								<div>
+									<span class="text-secondary">Общий баланс зарегистрированных в системе:</span> '.$allSumBalance.' рублей<br />
+									<span class="text-secondary">Общий по анкетам расход в день:</span> '.$allItemsSummary.' рублей<br />
+									'.(!isset($checkEmptyUser) ?: '<span class="text-secondary">Пустых пользователей:</span> '.count($checkEmptyUser).'<br />').'
+									<small class="text-danger">Из статистики исключены демо аккаунты ID 2, 31, 45</small>
+								</div>
+							</div>
+							<div class="col-12 col-md-6 d-flex align-items-center">
+								<a href="/user/logout/" class="btn btn-danger">Выход <i class="fa-solid fa-person-walking-arrow-right"></i></a>
+							</div>
+						</div>
 					</div>
-				</li>
-				<li class="mb-1">
-					<button class="btn btn-info btn-toggle d-inline-flex align-items-center w-100 mb-1" data-bs-toggle="collapse" data-bs-target="#filter-year">'.$filterType['name'].' по услугам</button>
-					<div class="collapse'.(empty($route) ? ' show' : '').'" id="filter-year">
-						<ul class="btn-toggle-nav list-unstyled">
-							<li><a href="/'.$filterType['url'].'/f/serv_analnyi-seks/" class="d-inline-flex btn btn-light w-100 mb-1">Анальный секс</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_gruppovoi-seks/" class="d-inline-flex btn btn-light w-100 mb-1">Групповой секс</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_minet-bez-prezervativa/" class="d-inline-flex btn btn-light w-100 mb-1">Минет без резинки</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_okonchanie-na-lico/" class="d-inline-flex btn btn-light w-100 mb-1">Окончание на лицо</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_massazh/" class="d-inline-flex btn btn-light w-100 mb-1">Массаж</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_lesbi-shou/" class="d-inline-flex btn btn-light w-100 mb-1">Лесби-шоу</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_striptiz/" class="d-inline-flex btn btn-light w-100 mb-1">Стриптиз</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_igrushki/" class="d-inline-flex btn btn-light w-100 mb-1">Игрушки</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_kunilingus/" class="d-inline-flex btn btn-light w-100 mb-1">Кунилингус</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_poza-69/" class="d-inline-flex btn btn-light w-100 mb-1">Поза 69</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_zolotoi-dozhd/" class="d-inline-flex btn btn-light w-100 mb-1">Золотой дождь</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_fisting/" class="d-inline-flex btn btn-light w-100 mb-1">Фистинг</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_bdsm/" class="d-inline-flex btn btn-light w-100 mb-1">БДСМ</a></li>
-							<li><a href="/'.$filterType['url'].'/f/serv_foto-video/" class="d-inline-flex btn btn-light w-100">Фото/видео</a></li>
-						</ul>
-					</div>
-				</li>
-			</ul>
+				</div>
+				<div class="col-11 col-lg-10">
+					<div class="mb-1 inner">
 		';
+		foreach($allUsers as $u) {
+			$class = 'success';
+			if ($u['balance'] == 0) {
+				$class = 'dark';
+			}
+			if ($u['reg_date'] == $u['login_date']) {
+				$class = 'danger';
+			}
+			if ($u['balance'] > 0 && $u['summary'] > 0 && $u['summary'] > $u['balance']) {
+				$class = 'warning';
+			}
+			if (in_array($u['id'], [2,31,45])) {
+				$class = 'primary';
+			}
+
+			$view .= '
+						<div class="card mb-2 p-0 border-'.$class.'-subtle">
+							<div class="card-header p-1 bg-'.$class.'-subtle">
+								<div class="row g-1">
+									<div class="col-8 col-md-9 d-flex align-items-center">
+										<div class="w-100 text-'.$class.' text-sm">
+											<a href="#" class="text-'.$class.'"><strong>ID: '.$u['id'].'</strong> • '.$u['login'].'</a> • <i class="fa-solid fa-mobile-screen-button"></i> +7'.$u['phone'].'
+										</div>
+									</div>
+									<div class="col-4 col-md-3 d-flex align-items-center">
+										<div class="w-100 text-right">
+											<div class="row g-1">
+												<div class="col-6">
+													<button type="button" class="w-100 btn btn-outline-'.$class.' btn-sm">
+														<i class="fa-solid fa-lock"></i><span class="d-none d-sm-inline"> Блокировка
+													</button>
+												</div>
+												<div class="col-6">
+													<button type="button" class="w-100 btn btn-outline-'.$class.' btn-sm">
+														<i class="fa-solid fa-trash"></i><span class="d-none d-sm-inline"> Удалить
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card-body p-1">
+								<div class="row g-1">
+									<div class="col-12 col-md-6 d-flex align-items-center">
+										<div class="w-100">
+			';
+			if (empty($u['items'])) {
+				$view .= '
+											<button type="button" class="btn btn-outline-secondary btn-sm my-1" disabled>
+												<i class="fa-solid fa-ban"></i> Анкет нет
+											</button>
+				';
+			} else {
+				$view .= '
+											<button type="button" class="btn btn-outline-'.$class.' btn-sm my-1" data-bs-toggle="collapse" data-bs-target="#items'.$u['id'].'" aria-expanded="false" aria-controls="items'.$u['id'].'">
+												'.count($u['items']).' '.format_num(count($u['items']), ['анкета', 'анкеты', 'анкет']).' <i class="fa-solid fa-chevron-down"></i>
+											</button>
+				';
+			}
+			$view .= '
+											<button type="button" class="btn btn-outline-'.$class.' btn-sm my-1" data-bs-toggle="collapse" data-bs-target="#activity'.$u['id'].'" aria-expanded="false" aria-controls="activity'.$u['id'].'">
+												<i class="fa-solid fa-address-book" aria-hidden="true"></i>
+											</button>
+										</div>
+									</div>
+									<div class="col-12 col-md-6 d-flex align-items-center">
+										<form method="post" class="m-0 w-100" id="balance'.$u['id'].'">
+											<input type="hidden" name="admin[added_balance][userId]" value="'.$u['id'].'">
+											<div class="input-group input-group-sm collapse show" id="addedBalance'.$u['id'].'">
+												'.(!isMobile() ? '<span class="input-group-text">Баланс:</span>' : '').'
+												<input type="text" class="form-control'.(isset($response['userId'])&&$response['userId']==$u['id']?' text-primary':'').'" value="'.($u['balance'] > 0 ? $u['balance'].'₽' : 'пустой').'" readonly>
+												'.(isset($u['summary'])&&$u['summary'] > 0 ? (!isMobile() ? '<span class="input-group-text">Расход:</span>' : '').'<input type="text" class="form-control" value="'.$u['summary'].'₽ на '.round($u['balance']/$u['summary']).' '.format_num(round($u['balance']/$u['summary']), ['день', 'дня', 'дней']).'" readonly>' : '').'
+												<button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#addedBalance'.$u['id'].'" aria-expanded="false" aria-controls="addedBalance'.$u['id'].'">Пополнить</button>
+											</div>
+											<div class="input-group input-group-sm collapse" id="addedBalance'.$u['id'].'">
+												<span class="input-group-text">Пополнить на:</span>
+												<input type="number" class="form-control" name="admin[added_balance][addedSum]" value="1000" min="100" step="100" required>
+												<button id="send" class="btn btn-secondary" type="submit"><i class="fa-solid fa-chevron-right"></i></button>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div class="collapse" id="activity'.$u['id'].'">
+									<div class="card mt-1">
+										<div class="card-header p-1 text-center">Лента действий пользователя ID: '.$u['id'].'</div>
+										<div class="card-body p-1">
+											!!!
+										</div>
+									</div>
+								</div>
+			';
+			if (!empty($u['items'])) {
+				$view .= '
+								<div class="collapse'.(isset($response['userId']) && $response['userId'] == $u['id'] ? ' show' : '').'" id="items'.$u['id'].'">
+									<div class="card mt-1">
+										<div class="card-header p-1 text-center">Управление анкетами пользователя ID: '.$u['id'].'</div>
+										<div class="card-body p-1">
+				';
+				krsort($u['items']);
+				foreach ($u['items'] as $item) {
+					$checkActivate = $u['balance'] > ($price_ank['activation']+$price_ank['blank']);
+					$view .= '
+											<div class="card my-2">
+												<div class="card-body w-100 p-2">
+													<div class="row g-1">
+														<div class="col-4 d-flex align-items-center">
+															<strong>#'.$item['id'].'</strong>&nbsp;
+															<span class="text-secondary">&laquo;'.$types[$item['type']]['names'][0].' '.json_decode($item['info'])->name.'&raquo;</span>
+															'.($item['sum'] > 0 ? '&nbsp;размещение '.$item['sum'].' рублей в день' : '').'
+														</div>
+														<div class="col-5 d-flex">
+															<form method="post" class="w-100">
+					';
+					if($checkActivate) {
+						$view .= '
+																<input type="hidden" name="admin[change_status_for_item][item_id]" value="'.$item['id'].'">
+																<input type="hidden" name="admin[change_status_for_item][price]" value="'.base64_encode(serialize($price_ank)).'">
+						';
+					}
+					$view .= '
+																
+					';
+					if ($item['status_active'] == 0) {
+						$view .= '
+															<button type="submit" class="btn btn-outline-danger btn-sm w-100" '.(!$checkActivate ? 'disabled': 'name="admin[change_status_for_item][active]" value="'.!$item['status_active'].'"').'>
+																<i class="fa-solid fa-toggle-off"></i> '.($checkActivate ? 'Активировать анкету' : 'Активация невозможна').'
+															</button>
+						';
+					} else {
+						$view .= '
+															<div class="row g-1 w-100">
+																<div class="col-3">
+																	<button type="submit" class="btn btn-danger btn-sm w-100" name="admin[change_status_for_item][active]" value="'.!$item['status_active'].'">
+																		<i class="fa-solid fa-toggle-on"></i> Скрыть
+																	</button>
+																</div>
+																<div class="col-3">
+																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][top]" value="1">
+																		<i class="fa-solid fa-chevron-up"></i> Поднять
+																	</button>
+																</div>
+						';
+						if ($item['status_premium'] == 1) {
+							$view .= '
+																<div class="col-4">
+																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'">
+																		<i class="fa-solid fa-toggle-on"></i> Premium
+																	</button>
+																</div>
+							';
+						} else {
+							$view .= '
+																<div class="col-2">
+																	<button type="submit" class="btn btn-outline-primary btn-sm w-100" '.($item['status_vip'] == 0 ? 'disabled' : 'name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'"').'>
+																		<i class="fa-solid fa-toggle-off"></i> Premium
+																	</button>
+																</div>
+																<div class="col-2">
+																	<button type="submit" class="btn btn-'.($item['status_vip'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][vip]" value="'.!$item['status_vip'].'">
+																		<i class="fa-solid fa-toggle-'.($item['status_vip'] == 0 ? 'off' : 'on').'"></i> VIP
+																	</button>
+																</div>
+							';
+						}
+						$view .= '
+																<div class="col-2">
+																	<button type="submit" class="btn btn-'.($item['status_real'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][real]" value="'.!$item['status_real'].'">
+																		<i class="fa-solid fa-toggle-'.($item['status_real'] == 0 ? 'off' : 'on').'"></i> Реал
+																	</button>
+																</div>
+															</div>
+						';
+					}
+					$view .= '
+															</form>
+														</div>
+														<div class="col-3 d-flex">
+															<div class="row g-1 w-100">
+																<div class="col-5">
+																	<a href="/item/edit/'.$item['id'].'/?user_id='.$u['id'].'" class="btn btn-outline-secondary btn-sm w-100">
+																		<i class="fa-solid fa-pencil"></i> Данные
+																	</a>
+																</div>
+																<div class="col-5">
+																	<a href="/item/photo/'.$item['id'].'/?user_id='.$u['id'].'" class="btn btn-outline-secondary btn-sm w-100">
+																		<i class="fa-solid fa-image"></i> Фото
+																	</a>
+																</div>
+																<div class="col-2">
+																	<button type="button" class="btn btn-outline-danger btn-sm w-100">
+																		<i class="fa-solid fa-trash"></i>
+																	</button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="card-footer text-secondary">
+													<div class="row g-1 w-100">
+														<div class="col-4">
+															<small><span class="text-uppercase text-body-tertiaryt">Регистрация:</span> '.format_date($item['date_add']).'</small>
+														</div>
+														<div class="col-4">
+															<small><span class="text-uppercase text-body-tertiary">Обновление:</span> '.format_date($item['date_edit']).'</small>
+														</div>
+														<div class="col-4">
+															<small><span class="text-uppercase text-body-tertiary">Поднятие:</span> '.format_date($item['date_top']).'</small>
+														</div>
+													</div>
+												</div>
+											</div>
+					';
+				}
+				$view .= '
+										</div>
+									</div>
+								</div>
+				';
+			}
+			$view .= '
+							</div>
+							<div class="card-footer p-1 bg-'.$class.'-subtle text-'.$class.'">
+								<small>Регистрация: '.format_date($u['reg_date']).' '.(isset($checkEmptyUser[$u['id']]) ? 'Пустой аккаунт' : ($u['reg_date'] != $u['login_date'] && $u['login_date'] != '0000-00-00 00:00:00' ? ' • Вход: '.format_date($u['login_date']) : '')).'</small>
+							</div>
+						</div>
+			';
+		}
+		$view .= '
+					</div>
+				</div>
+			</div>
+		';
+		return $view;
 	}

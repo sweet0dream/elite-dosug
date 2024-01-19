@@ -12,6 +12,7 @@
 		if(isset($_SESSION['response']['errors'])) {
 			$errors = $_SESSION['response']['errors'];
 		}
+		$response = $_SESSION['response'];
 		unset($_SESSION['response']);
 	}
 ?>

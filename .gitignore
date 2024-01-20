@@ -13,3 +13,4 @@ web.conf
 conf/site.php
 *.old
 /vendor/
+/admin/

@@ -1237,7 +1237,7 @@
 			if ($key == 'change_status') {
 				$termMessage = [
 					'active' => $response['valueAction'] == 1 ? 'опубликована' : 'скрыта',
-					'premium' => 'статус «Premium» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+					'premium' => 'статус «PREMIUM» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
 					'vip' => 'статус «VIP» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
 					'real' => 'статус «Реальное фото» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
 					'top' => 'была поднята',
@@ -1247,7 +1247,7 @@
 					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
 				);
 				sendPostRequest('https://rest.elited.ru/user/'.$response['userId'].'/addEvent', [
-					'event' => 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано:: '.$response['userOutBalance'].' рублей.' : '')
+					'event' => 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '')
 				]);
 				$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
 			}

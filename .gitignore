@@ -14,3 +14,4 @@ conf/site.php
 *.old
 /vendor/
 /admin/
+/des/

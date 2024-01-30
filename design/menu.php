@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 	<div class="container">
 		<a class="navbar-brand m-0 logo" href="/">
-			<img src="/assets/images/logo-elite.webp" alt="Проститутки Саратова Элит Досуг" style="width:75%">
+			<img src="/assets/images/logo-6400.webp" alt="Проститутки Саратова Элит Досуг" style="width:75%">
 		</a>
 		<button class="navbar-toggler mobile" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-expanded="false">
 			<span class="navbar-toggler-icon"></span>

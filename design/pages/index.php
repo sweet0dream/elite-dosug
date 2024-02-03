@@ -12,7 +12,7 @@
 	</div>
 </div>
 <div class="row g-0">
-	<div class="col-12 col-md-7 col-lg-9">
+	<div class="col-12">
 		<section class="partIntro">
 			<div class="row justify-content-md-center g-0">
 <?php
@@ -22,10 +22,5 @@
 ?>
 			</div>
 		</section>
-    </div>
-	<div class="col-12 col-md-5 col-lg-3">
-        <aside class="sideBar">
-                            
-        </aside>
     </div>
 </div>

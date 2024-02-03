@@ -59,16 +59,14 @@
 		$photos = explode(',', $post['photo']); shuffle($photos);
 
 		$url = $site['url'].'/'.$post['type'].'/'.$post['id'].'/';
-		$name = $types[$post['type']]['names'][0].' <b>'.$post['info']['name'].'</b>'.($post['type'] != 'sal' ? ', '.$types[$post['type']]['fields']['info']['year']['value'][$post['info']['year']] : '');
+		$urlAlt = $types[$post['type']]['names'][0].' '.$post['info']['name'];
+		$name = '<span class="type">'.$types[$post['type']]['names'][0].'</span> <span class="name">'.$post['info']['name'].'</span>';
 
 		unset($post['info']['name']);
-		if(isset($post['info']['year'])) {
-			unset($post['info']['year']);
-		}
 		
 		if($post['type'] != 'sal') {
 			foreach($post['info'] as $k => $v) {
-				$top[] = $types[$post['type']]['fields']['info'][$k]['value'][$v];
+				$top[] = '<div class="pr">'.$types[$post['type']]['fields']['info'][$k]['value'][$v].'</div>';
 			}
 		}
 
@@ -76,29 +74,26 @@
 			<div class="card m-1 item">
 				<div class="row g-0">
 		  			<div class="col-lg-4">
-						<div class="position-relative">
-							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/">
-								<img src="'.thumb($photos[0], $post['id'], ['width' => 300, 'height' => 300]).'" alt="'.$name.'" class="img-fluid rounded" style="width: 100%; aspect-ratio: 1/1.2">
+						<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 300, 'height' => 300]).'\')">
 		';
 		if($post['date_top'] > date('Y-m-d H:i:s', strtotime('-2 Days'))) {
 			$view .= '
-								<span class="position-absolute bottom-0 start-50 translate-middle-x m-1 font2 text-uppercase badge rounded-pill text-bg-primary now_free">
-									<i class="fa-solid fa-hand"></i> Сейчас свободна
-								</span>
+							<div class="now"><i>&#9829;</i> онлайн</div>
 			';
 		}
 		$view .= '
-							</a>
-						</div>
+							<div class="price">
+								<h6>'.$post['price']['onehour'].' за час</h6>
+							</div>
+						</a>
 		  			</div>
 		  			<div class="col-lg-8">
 						<div class="card-body p-2">
-			  				<h6 class="card-title">
-                                <a href="'.$url.'">'.$name.'</a>
-                            </h6>
-			  				'.(isset($top) && is_array($top) ? '<p class="card-text m-0"><small class="text-danger">'.implode('<span class="text-muted"> / </span>', $top).'</small></p>' : '').'
-			  				<p class="card-text m-0" style="overflow:hidden;height:70px"><small class="text-muted">'.$post['dopinfo'].'</small></p>
-							<p class="card-text m-0"><small class="text-danger">Один час: '.$post['price']['onehour'].' рублей</small></p>
+			  				<h5 class="card-title title">
+                                <a href="'.$url.'" title="'.$urlAlt.'">'.$name.'</a>
+                            </h5>
+			  				'.(isset($top) && is_array($top) ? '<div class="info">'.implode($top).'</div>' : '').'
+			  				<p class="card-text m-0 text">'.$post['dopinfo'].'</p>
 						</div>
 		  			</div>
 				</div>

@@ -292,23 +292,87 @@ nav .mobile:focus {
     opacity: 1;
 }
 .partIntro .item {
+    overflow: hidden;
+    background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+    z-index:1;
+    border: none;
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.12);
     border-radius: 10px;
 }
-.partIntro .item .now_free {
-    animation-name: now;
-    animation-timing-function: linear;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
+.partIntro .item a.photo {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-size: 120% 120%;
+    background-position: center 20%;
+    background-repeat: no-repeat;
+    box-shadow: 0px 0px 15px 5px inset rgba(0,0,0,0.65);
 }
-@-webkit-keyframes now {
-    50% {
-        opacity: .3;
-    }
+.partIntro .item a.photo .now {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 3px 8px 4px 5px;
+    background: rgba(0,0,0,0.45);
+    font: 12px/12px 'Cuprum', sans-serif;
+    font-weight: bold;
+    color: #0f0;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.45);
+    border-radius: 10px;
 }
-@keyframes now {
-    50% {
-        opacity: .3;
-    }
+.partIntro .item a.photo .price {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 30%,rgba(0,0,0,0.65) 100%);
+    padding-top: 20px;
+}
+.partIntro .item a.photo .price h6 {
+    background: #FFB76B;
+    background: linear-gradient(to top right, #FFB76B 0%, #FFA73D 30%, #FF7C00 60%, #FF7F04 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-right: 10px;
+    text-align: right;
+}
+.partIntro .item h5.title {
+    margin-bottom: 0px;
+}
+.partIntro .item h5.title a {
+    text-decoration: none;
+    display: inline-block;
+}
+.partIntro .item h5.title span.type {
+    display: block;
+    font: 12px/12px 'Cuprum', sans-serif;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.45);
+}
+.partIntro .item h5.title span.name {
+    font-size: 24px;
+    font-weight: bold;
+    background: #AA0000;
+    background: linear-gradient(to left, #AA0000 0%, #FF3333 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.partIntro .item .info .pr {
+    display: inline-block;
+    background: rgba(0,0,0,0.45);
+    padding: 3px 5px 4px 5px;
+    border-radius: 4px;
+    margin: 1px;
+    font: 12px/12px 'Cuprum', sans-serif;
+    color: #fff;
+}
+.partIntro .item p.text {
+    line-height: 1em;
+    overflow: hidden;
+    max-height: 70px
 }
 .full .service .part {
     position: relative;

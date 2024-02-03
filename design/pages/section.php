@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="row g-0">
-	            <div class="col-12 col-md-7 col-lg-9">
+	            <div class="col-12">
 		            <section class="partIntro">
                         <!--<h3 class="text-end m-0 me-3 pageTitle">'.$types[$route[1]]['names'][2].'</h3>-->
                         '.(!isset([0,1][$current_page]) ? '<hr class="my-1 mx-3" /><p class="text-muted text-end m-0 me-5"><strong>'.$current_page.'</strong> страница</p>' : '').'
@@ -117,11 +117,6 @@
         }
         $content .= '
                     </section>
-                </div>
-                <div class="col-12 col-md-5 col-lg-3">
-                    <aside class="sideBar">
-                            
-                    </aside>
                 </div>
             </div>
         ';

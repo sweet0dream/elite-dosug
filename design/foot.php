@@ -5,7 +5,7 @@
         <div class="col-12 col-md-4">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a href="/" class="nav-link p-1 text-white">Главная</a>
+              <a href="/" class="nav-link p-1 text-white">Проститутки Саратова</a>
             </li>
             <li class="nav-item">
               <a href="/ind/" class="nav-link p-1 text-white">Индивидуалки Саратова</a>

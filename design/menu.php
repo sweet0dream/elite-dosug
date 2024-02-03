@@ -10,7 +10,7 @@
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0 menu">
 				<?php foreach($types as $k => $v) : ?>
 				<li class="nav-item">
-					<a class="nav-link<?= (isset($route[1]) && $route[1] == $k ? ' active' : '') ?> text-center" aria-current="page" href="/<?= $k ?>/"><?= $v['names'][1] ?></a>
+					<a class="nav-link<?= (isset($route[1]) && $route[1] == $k ? ' active' : '') ?> text-center" title="<?= $types[$k]['names'][2]?>" href="/<?= $k ?>/"><?= $v['names'][1] ?></a>
 				</li>
 				<?php endforeach ?>
 			</ul>

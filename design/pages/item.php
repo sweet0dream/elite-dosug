@@ -4,17 +4,17 @@
 
             //select for edit
             if ($route[2] == 'edit' && isset($route[3]) && !isset($value)) {
-                if (isset($_GET['user_id'])) {
-                    if ($_SESSION['auth']['type'] == 'adm') {
-                        $userId = $_GET['user_id'];
-                    } else {
-                        $userId = $_SESSION['auth']['id'];
-                    }
+                if ($_SESSION['auth']['type'] == 'adm' && isset($_GET['user_id'])) {
+                    $userId = $_GET['user_id'];
+                } else {
+                    $userId = $_SESSION['auth']['id'];
                 }
                 $value = item_decode(item_one($route[3], $userId));
                 if ($userId != $value['user_id']) {
                     echo redirect($site['url'].'/user/');
                 }
+            } elseif($route[2] == 'add') {
+                $userId = $_SESSION['auth']['id'];
             }
 ?>
 <?php
@@ -61,7 +61,7 @@
             </div>
         </div>
         <?php endif ?>
-        <?php if(isset($_SESSION['auth']['type']) == 'adm') : ?>
+        <?php if(isset($_SESSION['auth']['type']) && $_SESSION['auth']['type'] == 'adm') : ?>
         <div class="alert alert-danger mb-1 p-1 text-center" role="alert">
             <p class="m-0">Вы редактируете данные анкеты пользователя ID: <?= $userId ?> в режиме администратора</p>
         </div>
@@ -233,12 +233,10 @@
             }
         } elseif(isset($route[2]) && $route[2] == 'photo') {
             if(isset($route[3])) {
-                if (isset($_GET['user_id'])) {
-                    if ($_SESSION['auth']['type'] == 'adm') {
-                        $userId = $_GET['user_id'];
-                    } else {
-                        $userId = $_SESSION['auth']['id'];
-                    }
+                if ($_SESSION['auth']['type'] == 'adm' && isset($_GET['user_id'])) {
+                    $userId = $_GET['user_id'];
+                } else {
+                    $userId = $_SESSION['auth']['id'];
                 }
                 $item = item_one($route[3], $userId);
                 if(!empty($item)) {
@@ -254,7 +252,7 @@
                     <div class="col-9 d-flex justify-content-center align-items-center">
                         <p class="m-0">
                             Редактирование фото анкеты #<?= $item['id'] ?>
-                            <?= (isset($_SESSION['auth']['type']) == 'adm' ? '<br /><span class="text-danger">Вы редактируете фото в режиме администратора</span>' : '') ?></p>
+                            <?= ($_SESSION['auth']['type'] == 'adm' ? '<br /><span class="text-danger">Вы редактируете фото в режиме администратора</span>' : '') ?></p>
                     </div>
                 </div>
             </div>

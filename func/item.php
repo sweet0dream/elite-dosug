@@ -222,7 +222,7 @@
 						}
 						if(isset($result['telegram'])) {
 							global $site;
-							file_get_contents($site['url'].'/bots/telegram/send.php?type='.$item['type'].'&id='.$item['id']);
+							//file_get_contents($site['url'].'/bots/telegram/send.php?type='.$item['type'].'&id='.$item['id']);
 						}
 
 					}

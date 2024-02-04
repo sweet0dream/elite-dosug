@@ -1,5 +1,6 @@
 *.log
 media/photo/*
+media/rekl/*/*.jpg
 media/rekl/*/*.gif
 !media/rekl/*/blank.gif
 !media/rekl/*/*.psd

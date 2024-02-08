@@ -1165,6 +1165,8 @@
 
 		global $site, $types, $price_ank, $response;
 
+		$demoAccounts = [2]; //demo accounts in system
+
 		$allUsers = [];
 		$allSumBalance = 0;
 		$allItemsSummary = 0;
@@ -1177,7 +1179,7 @@
 				$checkEmptyUser[$regUser['id']] = true;
 				$emptyUsers[$key] = $regUser;
 			} else {
-				if ($regUser['balance'] > 0 && !in_array($regUser['id'], [2,31,45])) { //exclude demo accounts balance
+				if ($regUser['balance'] > 0 && !in_array($regUser['id'], $demoAccounts)) { //exclude demo accounts balance
 					$allSumBalance += $regUser['balance'];
 				}
 	
@@ -1194,7 +1196,7 @@
 						$allUsers[$key]['summary'] += $item['sum'];
 					}
 				}
-				if (!in_array($regUser['id'], [2,31,45])) { //exclude demo accounts balance
+				if (!in_array($regUser['id'], $demoAccounts)) { //exclude demo accounts balance
 					$allItemsSummary += $allUsers[$key]['summary'];
 				}
 			}
@@ -1272,8 +1274,8 @@
 								<div>
 									<span class="text-secondary">Общий баланс зарегистрированных в системе:</span> '.$allSumBalance.' рублей<br />
 									<span class="text-secondary">Общий по анкетам расход в день:</span> '.$allItemsSummary.' рублей<br />
-									'.(!isset($checkEmptyUser) ?: '<span class="text-secondary">Пустых пользователей:</span> '.count($checkEmptyUser).'<br />').'
-									<small class="text-danger">Из статистики исключены демо аккаунты ID 2, 31, 45</small>
+									'.(isset($checkEmptyUser) ? '<span class="text-secondary">Пустых пользователей:</span> '.count($checkEmptyUser).'<br />' : '').'
+									<small class="text-danger">Из статистики исключены демо аккаунты ID '.implode(', ', $demoAccounts).'</small>
 								</div>
 							</div>
 							<div class="col-12 col-md-6 d-flex align-items-center">

@@ -213,16 +213,21 @@
 						}
 
 						//update && events && send telegram
-						if(isset($result['update'])) {
+						if (isset($result['update'])) {
 							$db = db_connect();
 							$db->where('id', $item['id'])->update('item', $result['update']);
 						}
-						if(isset($result['event'])) {
+						if (isset($result['event'])) {
 							(new Event($user['id']))->add($result['event']);
 						}
-						if(isset($result['telegram'])) {
-							global $site;
-							//file_get_contents($site['url'].'/bots/telegram/send.php?type='.$item['type'].'&id='.$item['id']);
+						if (isset($result['telegram'])) {
+							global $site, $channel;
+							if (isset($channel['telegram']) && $channel['telegram'] != '') {
+								send_item_to_telegram_channel([
+									'itemId' => $item['id'],
+									'chatId' => $channel['telegram']
+								]);
+							}
 						}
 
 					}

@@ -4,3 +4,7 @@
         'user' => '',
         'password' => ''
     ];
+
+    $channel = [
+        'telegram' => '' //tg channel
+    ];

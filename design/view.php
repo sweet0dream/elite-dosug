@@ -1239,6 +1239,16 @@
 					'real' => 'статус «Реальное фото» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
 					'top' => 'была поднята',
 				];
+				//send top to channels
+				if ($response['actionItem'] == 'top') {
+					global $channel;
+					if (isset($channel['telegram']) && $channel['telegram'] != '') {
+						send_item_to_telegram_channel([
+							'itemId' => $response['itemId'],
+							'chatId' => $channel['telegram']
+						]);
+					}
+				}
 				notify_sms(
 					'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : ''),
 					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone

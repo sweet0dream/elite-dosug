@@ -32,3 +32,7 @@
             ],
         ]));
     }
+
+    function send_item_to_telegram_channel(array $data) {
+        return(sendPostRequest('https://rest.elited.ru/notify/telegram/send_item_to_channel', $data));
+    }

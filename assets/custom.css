@@ -510,3 +510,45 @@ footer {
     background: #1B0320 url('/assets/images/bg-foot.webp') top center;
     flex-shrink: 0;
 }
+footer .widget {
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.65);
+}
+footer .widget.telegram {
+    background: #05abe0;
+    background: linear-gradient(45deg,  #87e0fd 0%,#05abe0 100%);
+}
+footer .widget.telegram .icon {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+footer .widget.telegram .avatar {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    box-shadow: 1px 1px 3px inset rgba(0,0,0,0.4);
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+footer .widget.telegram h5.title {
+    color: #fff;
+    text-shadow: 1px 1px 1px #039bce;
+    margin: 0px;
+}
+footer .widget.telegram .meta {
+    margin-bottom: 3px;
+}
+footer .widget.telegram a.button {
+    display: inline-block;
+    padding: 3px;
+    border-radius: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 1px #006c91;
+    text-decoration: none;
+    background: #039bce;
+}

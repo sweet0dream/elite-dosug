@@ -2,7 +2,7 @@
   <footer class="py-3 font2 bg-dark">
     <div class="container">
       <div class="row g-1">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-3">
           <ul class="nav flex-column">
             <li class="nav-item">
               <a href="/" class="nav-link p-1 text-white">Проститутки Саратова</a>
@@ -24,10 +24,15 @@
             </li>
           </ul>
         </div>
-        <div class="col-12 col-md-4">
-          !
+        <div class="col-12 col-md-6">
+          <div class="row g-1">
+            <div class="col-12 col-lg-6">
+              <?= isset($channel['telegram']) && $channel['telegram'] != '' ? viewWidgetTelegramFooter($channel['telegram']) : '' ?>
+            </div>
+            <div class="col-12 col-lg-6"></div>
+          </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-3">
           <p class="text-center text-white my-2">Категория информационных материалов этого сайта <strong>18+</strong>.</p>
           <p class="text-center text-white my-2">Этот сайт использует куки (COOKIES) файлы собирая предпочтения посетителей, это важно знать.</p>
           <div class="w-100 text-center">

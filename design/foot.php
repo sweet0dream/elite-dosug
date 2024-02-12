@@ -27,7 +27,7 @@
         <div class="col-12 col-md-6">
           <div class="row g-1">
             <div class="col-12 col-lg-6">
-              <?= isset($channel['telegram']) && $channel['telegram'] != '' ? viewWidgetTelegramFooter($channel['telegram']) : '' ?>
+              <?= isset($telegramChannelIngo) ? viewWidgetTelegramFooter($telegramChannelIngo) : '' ?>
             </div>
             <div class="col-12 col-lg-6"></div>
           </div>

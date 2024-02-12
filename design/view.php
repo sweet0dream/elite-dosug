@@ -1533,9 +1533,7 @@
 		return $view;
 	}
 
-	function viewWidgetTelegramFooter($chatId) {
-		$result = widgetTelegramInFooter($chatId)['data']['channelInfo'];
-		//print_r($result);
+	function viewWidgetTelegramFooter($data) {
 		$view = '
 			<div class="widget telegram text-center">
 				<div class="icon">
@@ -1543,15 +1541,15 @@
 				</div>
 				<div class="row g-1">
 					<div class="col-3">
-						<div class="avatar" style="background-image: url(\''.$result['avatar'].'\')"></div>
+						<div class="avatar" style="background-image: url(\''.$data['avatar'].'\')"></div>
 					</div>
 					<div class="col-9">
-						<h5 class="title">'.$result['title'].'</h5>
+						<h5 class="title">'.$data['title'].'</h5>
 						<div class="row meta">
-							<div class="col-6 text-left"><small class="username">@'.$result['username'].'</small></div>
-							<div class="col-6 text-right"><small class="members">'.$result['members'].' '.format_num($result['members'], ['подписчик', 'подписчика', 'подписчиков']).'</small></div>
+							<div class="col-6 text-left"><small class="username">@'.$data['username'].'</small></div>
+							<div class="col-6 text-right"><small class="members">'.$data['members'].' '.format_num($data['members'], ['подписчик', 'подписчика', 'подписчиков']).'</small></div>
 						</div>
-						<a href="'.$result['invite'].'" target="_blank" class="w-100 button">Подписаться на канал</a>
+						<a href="'.$data['invite'].'" target="_blank" class="w-100 button">Подписаться на канал</a>
 					</div>
 				</div>
 			</div>

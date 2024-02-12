@@ -13,6 +13,7 @@
 					<a class="nav-link<?= (isset($route[1]) && $route[1] == $k ? ' active' : '') ?> text-center" title="<?= $types[$k]['names'][2]?>" href="/<?= $k ?>/"><?= $v['names'][1] ?></a>
 				</li>
 				<?php endforeach ?>
+				<?= isset($telegramChannelIngo) ? '<li class="nav-item"><a href="'.$telegramChannelIngo['invite'].'" target="_blank" class="nav-link text-info text-center"><i class="fa-brands fa-telegram"></i> Telegram</a></li>' : '' ?>
 			</ul>
 			<?php if(isset($_SESSION['auth']) && isset($_SESSION['auth']['type'])) : ?>
 			<a href="<?= $site['url'].'/user/' ?>" class="btn btn-light"><?= ($_SESSION['auth']['type'] == 'adm' ? 'Админпанель' : 'Личный кабинет') ?></a>

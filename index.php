@@ -16,6 +16,11 @@ if(isset($_GET['bug']) && $_GET['bug'] == 1) {
 	//debuging
 }
 
+//get data channel telegram
+if (isset($channel['telegram']) && $channel['telegram']) {
+	$telegramChannelIngo = getTelegramChannelInfo($channel['telegram'])['data']['channelInfo'];
+}
+
 if(empty($route)) {
 	include_once $site['path'].'/design/view.php';
 	include $site['path'].'/design/head.php';

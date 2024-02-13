@@ -36,7 +36,10 @@
 
 		if(!isset($errors)) {
 			if($db->insert('user', $user)) {
-				notify_sms('Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'], $data['phone']);
+				(new Notify())->sendSms(
+					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'],
+					$data['phone']
+				);
 				user_login([
 					'login' => $data['login'],
 					'password' => $data['password']
@@ -115,7 +118,10 @@
 		$user = $db->where('id', $user_id)->getOne('user');
 		if($sum > 0) {
 			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
-				notify_sms('Элит Досуг Саратов: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей', 9053242575);
+				(new Notify())->sendSms(
+					'Элит Досуг Саратов: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей',
+					9053242575
+				);
 				(new Event($user['id']))->add('Вы пополнили: '.$sum.' рублей. Текущий баланс: '.$user['balance']+$sum.' рублей.');
 				return true;
 			} else {

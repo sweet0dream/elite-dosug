@@ -1222,13 +1222,8 @@
 				]
 			];
 			if ($key == 'added_balance') {
-				notify_sms(
-					'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.',
-					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
-				);
-				sendPostRequest('https://rest.elited.ru/user/'.$response['userId'].'/addEvent', [
-					'event' => 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.'
-				]);
+				$sms = 'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.';
+				$event = 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.';
 				$message = 'Пополнение баланса на '.$response['addedSum'].' рублей.<br />Смс отправлено.';
 			}
 			if ($key == 'change_status') {
@@ -1243,20 +1238,24 @@
 				if ($response['actionItem'] == 'top') {
 					global $channel;
 					if (isset($channel['telegram']) && $channel['telegram'] != '') {
-						send_item_to_telegram_channel([
+						(new Notify())->sendItemToTelegramChannel([
 							'itemId' => $response['itemId'],
 							'chatId' => $channel['telegram']
 						]);
 					}
 				}
-				notify_sms(
-					'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : ''),
+				$sms = 'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');
+				$event = 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '');
+				$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
+			}
+			if (isset($event)) {
+				(new Event($response['userId']))->add($event);
+			}
+			if (isset($sms)) {
+				(new Notify())->sendSms(
+					$sms,
 					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
 				);
-				sendPostRequest('https://rest.elited.ru/user/'.$response['userId'].'/addEvent', [
-					'event' => 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '')
-				]);
-				$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
 			}
 			$view .= '
 				<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">

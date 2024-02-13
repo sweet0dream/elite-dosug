@@ -223,7 +223,7 @@
 						if (isset($result['telegram'])) {
 							global $site, $channel;
 							if (isset($channel['telegram']) && $channel['telegram'] != '') {
-								send_item_to_telegram_channel([
+								(new Notify())->sendItemToTelegramChannel([
 									'itemId' => $item['id'],
 									'chatId' => $channel['telegram']
 								]);
@@ -315,7 +315,10 @@
 
 	function item_abuse($data) {
 		if (is_array($data)) {
-			if (notify_sms('Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'], 9053242575)) {
+			if ((new Notify())->sendSms(
+				'Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'],
+				9053242575
+			)) {
 				setcookie('abuse[item][]', $data['id'], time()+(60*60*24*30*365));
 				header("Refresh:0");
 			}

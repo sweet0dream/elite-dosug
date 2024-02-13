@@ -1,4 +1,3 @@
-<?php //notify_sms('Люблю тебя, зайка =)', '79991843805'); ?>
 <div class="row justify-content-md-center g-0 placement">
     <div class="col-12 col-lg-10">
         <div class="p-1 inner">

@@ -9,13 +9,19 @@
                         //add history change balance
                         $text = 'За размещение списано: '.$sum.' рублей, остаток баланса: '.$user['balance']-$sum.' рублей.';
                         (new Event($user['id']))->add($text);
-                        notify_sms('Элит Досуг Саратов: '.$text.' Этого хватит на '.floor(($user['balance']-$sum)/$sum).' '.format_num(floor(($user['balance']-$sum)/$sum), ['день', 'дня', 'дней']).'. Рекомендуется своевременно пополнять баланс во избежании отключения активных анкет.', $user['phone']);
+                        (new Notify())->sendSms(
+                            'Элит Досуг Саратов: '.$text.' Этого хватит на '.floor(($user['balance']-$sum)/$sum).' '.format_num(floor(($user['balance']-$sum)/$sum), ['день', 'дня', 'дней']).'. Рекомендуется своевременно пополнять баланс во избежании отключения активных анкет.',
+                            $user['phone']
+                        );
                     } else {
                         if(item_all_reset_status($user['id'])) {
                             //add history reset status all items
                             $text = 'Ваши анкеты скрыты. Недостаточно средств на балансе.';
                             (new Event($user['id']))->add('Ваши анкеты скрыты. Недостаточно средств на балансе.');
-                            notify_sms('Элит Досуг Саратов: '.$text.' Для оплаты размещения необходимо пополнить баланс.', $user['phone']);
+                            (new Notify())->sendSms(
+                                'Элит Досуг Саратов: '.$text.' Для оплаты размещения необходимо пополнить баланс.',
+                                $user['phone']
+                            );
                         }
                     }
                 }

@@ -31,7 +31,10 @@
 			} else {
 				unset($data['captcha_q']); unset($data['captcha_a']);
 				if($id = db_connect()->insert('item_reviews', $data)) {
-					notify_sms('Элит Досуг Саратов: Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.', 9053242575);
+					(new Notify())->sendSms(
+						'Элит Досуг Саратов: Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.',
+						9053242575
+					);
 					(new Event(item_one($data['item_id'])['user_id']))->add('Добавлен новый отзыв к анкете ID '.$data['item_id']);
 					setcookie('review['.$data['item_id'].'][]', $id, time()+(60*60*24*30*365));
 					header("Refresh:0");

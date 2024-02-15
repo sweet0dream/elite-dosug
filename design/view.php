@@ -1240,7 +1240,8 @@
 					if (isset($channel['telegram']) && $channel['telegram'] != '') {
 						(new Notify())->sendItemToTelegramChannel([
 							'itemId' => $response['itemId'],
-							'chatId' => $channel['telegram']
+							'chatId' => $channel['telegram'],
+							'siteUrl' => $site['url']
 						]);
 					}
 				}

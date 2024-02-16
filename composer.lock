@@ -162,12 +162,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sweet0dream/intim-anketa-contract.git",
-                "reference": "7fdbc93b82525b1679e8421a0145cdfad4f38a67"
+                "reference": "6595047fe01e9fe97f415ae3d4e6f2b837574ce7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sweet0dream/intim-anketa-contract/zipball/7fdbc93b82525b1679e8421a0145cdfad4f38a67",
-                "reference": "7fdbc93b82525b1679e8421a0145cdfad4f38a67",
+                "url": "https://api.github.com/repos/sweet0dream/intim-anketa-contract/zipball/6595047fe01e9fe97f415ae3d4e6f2b837574ce7",
+                "reference": "6595047fe01e9fe97f415ae3d4e6f2b837574ce7",
                 "shasum": ""
             },
             "require": {
@@ -196,7 +196,7 @@
                 "issues": "https://github.com/sweet0dream/intim-anketa-contract/issues",
                 "source": "https://github.com/sweet0dream/intim-anketa-contract/tree/main"
             },
-            "time": "2023-12-08T14:20:41+00:00"
+            "time": "2024-02-16T12:45:13+00:00"
         },
         {
             "name": "tommyknocker/pdo-database-class",

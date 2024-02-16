@@ -602,9 +602,7 @@
 				foreach($items as $v) {
 
 					// скидка поднятия анкет для PREMIUM анкет
-					if($v['status_premium'] == 1) {
-						$price_ank['top'] = $price_ank['top']/2;
-					}
+					$topPrice = $v['status_premium'] == 1 ? $price_ank['top']/2 : $price_ank['top'];
 
 					// отзывы анкеты
 					$reviews = review_render_all($v['id']);
@@ -699,15 +697,15 @@
 																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 																</div>
 																<div class="modal-body">
-																	'.check_price($user['balance'], $price_ank['top'], '
+																	'.check_price($user['balance'], $topPrice, '
 																	'.($v['date_top'] != $v['date_add'] ? '<p class="text-center text-muted">Последний раз поднималась: <br>'.format_date($v['date_top']).'</p>' : '').'
-																	<p class="text-center">С баланса спишется <br>стоимость поднятия: <b>'.$price_ank['top'].' рублей</b></p>
+																	<p class="text-center">С баланса спишется <br>стоимость поднятия: <b>'.$topPrice.' рублей</b></p>
 																	<p class="m-0 text-center">Поднятие <b class="text-uppercase">автоматически</b> отправляет <br>анкету в рассылку телеграм канала: <br> <a href="https://t.me/elitedosug64" class="btn btn-outline-success mt-2" target="_blank"><i class="fa-brands fa-telegram"></i> Элит Досуг Саратов</a></p>
 																	').'
 																</div>
 																<div class="modal-footer">
 																	<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
-																	<button type="submit" name="item[status][action]" value="top" id="top'.$v['id'].'" class="btn btn-success"'.(!check_price($user['balance'], $price_ank['top']) ? ' disabled' : '').'>Поднять</button>
+																	<button type="submit" name="item[status][action]" value="top" id="top'.$v['id'].'" class="btn btn-success"'.(!check_price($user['balance'], $topPrice) ? ' disabled' : '').'>Поднять</button>
 																</div>
 															</form>
 															<div class="alert alert-success m-0 p-2 d-none" id="response'.$v['id'].'">

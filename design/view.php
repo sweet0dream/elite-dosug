@@ -1033,7 +1033,7 @@
 			$view .= '
 						</div>
 					</div>
-					<div class="umenu">
+					<div class="umenu" style="z-index:1">
 						<ul>
 							<li>
 								<span data-bs-toggle="modal" data-bs-target="#user_'.$user['id'].'_edit"><i class="fa-solid fa-address-card"></i> '.$user['id'].'</span>
@@ -1075,7 +1075,7 @@
 		}
 		$view .= '
 									<div class="form-floating mt-2">
-										<input type="number" min="1000" max="200000" step="500" class="form-control" name="payment[create_invoice][amount]" value="'.((count($items)*1500 > 0 ? count($items)*1500 : 1000)).'" required>
+										<input type="number" min="1000" max="200000" step="500" class="form-control" name="payment[create_invoice][amount]" value="'.((count($items) > 0 ? count($items)*1000 : 1000)).'" required>
 										<label for="userLoginLogin">Сумма пополнения</label>
 									</div>
 								</div>

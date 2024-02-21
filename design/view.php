@@ -1401,12 +1401,18 @@
 											<div class="card my-2">
 												<div class="card-body w-100 p-2">
 													<div class="row g-1">
-														<div class="col-4 d-flex align-items-center">
-															<strong>#'.$item['id'].'</strong>&nbsp;
-															<span class="text-secondary">&laquo;'.$types[$item['type']]['names'][0].' '.json_decode($item['info'])->name.'&raquo;</span>
-															'.($item['sum'] > 0 ? '&nbsp;размещение '.$item['sum'].' рублей в день' : '').'
+														<div class="col-12 col-md-4 d-flex align-items-center">
+															<div class="row g-1">
+																<div class="col-12 col-md-6">
+																	<strong>#'.$item['id'].'</strong>&nbsp;
+																	<span class="text-secondary">&laquo;'.$types[$item['type']]['names'][0].' '.json_decode($item['info'])->name.'&raquo;</span>
+																</div>
+																<div class="col-12 col-md-6">
+																	'.($item['sum'] > 0 ? 'Размещение: '.$item['sum'].' рублей в день' : '').'
+																</div>
+															</div>
 														</div>
-														<div class="col-5 d-flex">
+														<div class="col-12 col-md-5 d-flex">
 															<form method="post" class="w-100">
 					';
 					if($checkActivate) {
@@ -1427,12 +1433,12 @@
 					} else {
 						$view .= '
 															<div class="row g-1 w-100">
-																<div class="col-3">
+																<div class="col-12 col-md-3">
 																	<button type="submit" class="btn btn-danger btn-sm w-100" name="admin[change_status_for_item][active]" value="'.!$item['status_active'].'">
 																		<i class="fa-solid fa-toggle-on"></i> Скрыть
 																	</button>
 																</div>
-																<div class="col-3">
+																<div class="col-12 col-md-3">
 																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][top]" value="1">
 																		<i class="fa-solid fa-chevron-up"></i> Поднять
 																	</button>
@@ -1440,7 +1446,7 @@
 						';
 						if ($item['status_premium'] == 1) {
 							$view .= '
-																<div class="col-4">
+																<div class="col-12 col-md-4">
 																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'">
 																		<i class="fa-solid fa-toggle-on"></i> Premium
 																	</button>
@@ -1448,12 +1454,12 @@
 							';
 						} else {
 							$view .= '
-																<div class="col-2">
+																<div class="col-12 col-md-2">
 																	<button type="submit" class="btn btn-outline-primary btn-sm w-100" '.($item['status_vip'] == 0 ? 'disabled' : 'name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'"').'>
 																		<i class="fa-solid fa-toggle-off"></i> Premium
 																	</button>
 																</div>
-																<div class="col-2">
+																<div class="col-12 col-md-2">
 																	<button type="submit" class="btn btn-'.($item['status_vip'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][vip]" value="'.!$item['status_vip'].'">
 																		<i class="fa-solid fa-toggle-'.($item['status_vip'] == 0 ? 'off' : 'on').'"></i> VIP
 																	</button>
@@ -1461,7 +1467,7 @@
 							';
 						}
 						$view .= '
-																<div class="col-2">
+																<div class="col-12 col-md-2">
 																	<button type="submit" class="btn btn-'.($item['status_real'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][real]" value="'.!$item['status_real'].'">
 																		<i class="fa-solid fa-toggle-'.($item['status_real'] == 0 ? 'off' : 'on').'"></i> Реал
 																	</button>
@@ -1472,7 +1478,7 @@
 					$view .= '
 															</form>
 														</div>
-														<div class="col-3 d-flex">
+														<div class="col-12 col-md-3 d-flex">
 															<div class="row g-1 w-100">
 																<div class="col-5">
 																	<a href="/item/edit/'.$item['id'].'/?user_id='.$u['id'].'" class="btn btn-outline-secondary btn-sm w-100">

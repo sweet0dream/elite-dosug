@@ -1401,8 +1401,8 @@
 											<div class="card my-2">
 												<div class="card-body w-100 p-2">
 													<div class="row g-1">
-														<div class="col-12 col-md-4 d-flex align-items-center">
-															<div class="row g-1">
+														<div class="col-12 col-lg-4 d-flex align-items-center">
+															<div class="row g-1 w-100">
 																<div class="col-12 col-md-6">
 																	<strong>#'.$item['id'].'</strong>&nbsp;
 																	<span class="text-secondary">&laquo;'.$types[$item['type']]['names'][0].' '.json_decode($item['info'])->name.'&raquo;</span>
@@ -1412,7 +1412,7 @@
 																</div>
 															</div>
 														</div>
-														<div class="col-12 col-md-5 d-flex">
+														<div class="col-12 col-lg-5 d-flex">
 															<form method="post" class="w-100">
 					';
 					if($checkActivate) {
@@ -1478,7 +1478,7 @@
 					$view .= '
 															</form>
 														</div>
-														<div class="col-12 col-md-3 d-flex">
+														<div class="col-12 col-lg-3 d-flex">
 															<div class="row g-1 w-100">
 																<div class="col-5">
 																	<a href="/item/edit/'.$item['id'].'/?user_id='.$u['id'].'" class="btn btn-outline-secondary btn-sm w-100">

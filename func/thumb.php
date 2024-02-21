@@ -29,7 +29,7 @@
                     if(isset($param['opacity'])) {
                         $photo->opacity($param['opacity']);
                     }
-                    if($photo->toFile($thumb_path, 'image/webp', 80)) {
+                    if($photo->toFile($thumb_path, 'image/webp', 100)) {
 						return $thumb_url;
 					}
                 } else {

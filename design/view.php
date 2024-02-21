@@ -74,7 +74,7 @@
 			<div class="card m-1 item">
 				<div class="row g-0">
 		  			<div class="col-lg-4">
-						<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 300, 'height' => 300]).'\')">
+						<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'height' => 700]).'\')">
 		';
 		if($post['date_top'] > date('Y-m-d H:i:s', strtotime('-2 Days'))) {
 			$view .= '
@@ -125,14 +125,14 @@
 						<div class="card-body p-0">
 							<div class="row g-0">
 								<div class="col-12 col-lg-3 d-flex align-items-stretch">
-									<div class="p-1 d-flex align-items-center" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 500, 'opacity' => 0.35]).'\'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
+									<div class="p-1 d-flex align-items-center" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'opacity' => 0.35]).'\'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
 										<div class="row justify-content-md-center g-2">
 			';
 			foreach($photos as $photo) {
 				$view .= '
 											<div class="col-12 col-md-3 col-lg-6 d-flex justify-content-center">
 												<a href="/media/photo/'.$post['id'].'/'.$photo.'.jpg" class="w-100">
-													<img src="'.thumb($photo, $post['id'], ['width' => 480, 'height' => 480]).'" class="border border-2 rounded-4 w-100">
+													<img src="'.thumb($photo, $post['id'], ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
 												</a>
 											</div>
 				';

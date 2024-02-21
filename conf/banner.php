@@ -16,12 +16,12 @@
                 $view .= '
                     <div class="col-12 col-lg-4 col-md-6">
                         <div class="ad">
-                            <img src="'.$v[0].'" alt="'.(isset($v['name']) ? '&laquo;'.$v['name'].'&raquo;' : $v[0]).'" class="img-fluid">
+                            <img src="'.$v[0].'" alt="'.(isset($v['value']) ? '&laquo;'.$v['value'].'&raquo;' : $v[0]).'" class="img-fluid">
                 ';
                 if(isMobile()) {
                     $view .= '
                             <div class="hov d-flex justify-content-center align-items-center">
-                                <a href="tel:'.$v['phone'].'" class="btn btn-danger">Позвонить '.(isset($v['name']) ? 'в &laquo;'.$v['name'].'&raquo;' : $v[0]).'</a>
+                                <a href="tel:'.$v['phone'].'" class="btn btn-danger">Позвонить '.(isset($v['value']) ? 'в &laquo;'.$v['value'].'&raquo;' : $v[0]).'</a>
                             </div>
                     ';
                 }

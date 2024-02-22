@@ -74,7 +74,7 @@
 			<div class="card m-1 item">
 				<div class="row g-0">
 		  			<div class="col-lg-4">
-						<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'height' => 700]).'\')">
+						<div class="inner_photo">
 		';
 		if($post['date_top'] > date('Y-m-d H:i:s', strtotime('-2 Days'))) {
 			$view .= '
@@ -85,7 +85,20 @@
 							<div class="price">
 								<h6>'.$post['price']['onehour'].' за час</h6>
 							</div>
-						</a>
+		';
+		if (isMobile()) {
+			$view .= '
+							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'">
+								<img src="'.thumb($photos[0], $post['id'], ['width' => 700]).'" class="img-fluid">
+							</a>
+			';
+		} else {
+			$view .= '
+							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'height' => 700]).'\')"></a>
+			';
+		}
+		$view .= '
+						</div>
 		  			</div>
 		  			<div class="col-lg-8">
 						<div class="card-body p-2">
@@ -132,7 +145,7 @@
 				$view .= '
 											<div class="col-12 col-md-3 col-lg-6 d-flex justify-content-center">
 												<a href="/media/photo/'.$post['id'].'/'.$photo.'.jpg" class="w-100">
-													<img src="'.thumb($photo, $post['id'], ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
+													<img src="'.thumb($photo, $post['id'], isMobile() ? ['width' => 700] : ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
 												</a>
 											</div>
 				';

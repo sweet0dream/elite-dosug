@@ -1,6 +1,5 @@
 <?php
     $price_ank = [
-        'activation' => 50,
         'blank' => 10,
         'vip' => 20,
         'premium' => 20,

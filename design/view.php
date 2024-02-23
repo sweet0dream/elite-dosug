@@ -847,17 +847,16 @@
 																	<p class="m-0 text-center"><b>Уверены?</b></p>									
 						';
 					} else {
-						$view .= check_price($user['balance'], $price_ank['activation']+$price_ank['blank'], '
-																	<p class="m-0 text-center">Cтоимость активации анкеты: <b>'.$price_ank['activation'].' рублей</b> 
-																	<br>Стоимость размещения обычной анкеты: <b>'.$price_ank['blank'].' рублей в день</b> 
-																	<br><br>С вашего баланса спишется: <b>'.$price_ank['activation']+$price_ank['blank'].' рублей</b></p>
+						$view .= check_price($user['balance'], $price_ank['blank'], '
+																	<p class="m-0 text-center">Стоимость размещения обычной анкеты: <b>'.$price_ank['blank'].' рублей в день</b> 
+																	<br><br>С вашего баланса спишется: <b>'.$price_ank['blank'].' рублей</b></p>
 						');
 					}
 					$view .= '
 																</div>
 																<div class="modal-footer">
 																	<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
-																	<button type="submit" name="item[status][action]" value="active" class="btn btn-success"'.(!check_price($user['balance'], $price_ank['activation']+$price_ank['blank']) && $v['status_active'] == 0 ? ' disabled' : '').'>'.($v['status_active'] == 1 ? 'Скрыть' : 'Опубликовать').'</button>
+																	<button type="submit" name="item[status][action]" value="active" class="btn btn-success"'.(!check_price($user['balance'], $price_ank['blank']) && $v['status_active'] == 0 ? ' disabled' : '').'>'.($v['status_active'] == 1 ? 'Скрыть' : 'Опубликовать').'</button>
 																</div>
 															</form>
 														</div>
@@ -1225,41 +1224,45 @@
 			$fail = [
 				404 => [
 					'title' => 'Не найдено',
-					'text' => 'Запись не найдена'
+					'text' => $response['message'] ?? 'Запись не найдена'
 				],
 				400 => [
 					'title' => 'Нет параметров',
-					'text' => 'Неверные некоторые параметры'
+					'text' => $response['message'] ?? 'Неверные некоторые параметры'
 				]
 			];
-			if ($key == 'added_balance') {
-				$sms = 'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.';
-				$event = 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.';
-				$message = 'Пополнение баланса на '.$response['addedSum'].' рублей.<br />Смс отправлено.';
-			}
-			if ($key == 'change_status') {
-				$termMessage = [
-					'active' => $response['valueAction'] == 1 ? 'опубликована' : 'скрыта',
-					'premium' => 'статус «PREMIUM» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
-					'vip' => 'статус «VIP» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
-					'real' => 'статус «Реальное фото» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
-					'top' => 'была поднята',
-				];
-				//send top to channels
-				if ($response['actionItem'] == 'top') {
-					global $channel;
-					if (isset($channel['telegram']) && $channel['telegram'] != '') {
-						(new Notify())->sendItemToTelegramChannel([
-							'itemId' => $response['itemId'],
-							'chatId' => $channel['telegram'],
-							'siteUrl' => $site['url']
-						]);
-					}
+
+			if ($code == 200) {
+				if ($key == 'added_balance') {
+					$sms = 'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.';
+					$event = 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.';
+					$message = 'Пополнение баланса на '.$response['addedSum'].' рублей.<br />Смс отправлено.';
 				}
-				$sms = 'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');
-				$event = 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '');
-				$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
+				if ($key == 'change_status') {
+					$termMessage = [
+						'active' => $response['valueAction'] == 1 ? 'опубликована' : 'скрыта',
+						'premium' => 'статус «PREMIUM» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+						'vip' => 'статус «VIP» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+						'real' => 'статус «Реальное фото» '.($response['valueAction'] == 1 ? 'назначен' : 'снят'),
+						'top' => 'была поднята',
+					];
+					//send top to channels
+					if ($response['actionItem'] == 'top') {
+						global $channel;
+						if (isset($channel['telegram']) && $channel['telegram'] != '') {
+							(new Notify())->sendItemToTelegramChannel([
+								'itemId' => $response['itemId'],
+								'chatId' => $channel['telegram'],
+								'siteUrl' => $site['url']
+							]);
+						}
+					}
+					$sms = 'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');
+					$event = 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '');
+					$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
+				}
 			}
+			
 			if (isset($event)) {
 				(new Event($response['userId']))->add($event);
 			}
@@ -1409,7 +1412,8 @@
 				';
 				krsort($u['items']);
 				foreach ($u['items'] as $item) {
-					$checkActivate = $u['balance'] > ($price_ank['activation']+$price_ank['blank']);
+					$checkActivate = $u['balance'] > $price_ank['blank'];
+					$checkTop = $u['balance'] > ($item['status_premium'] == 1 ? $price_ank['top']/2 : $price_ank['top']);
 					$view .= '
 											<div class="card my-2">
 												<div class="card-body w-100 p-2">
@@ -1428,7 +1432,7 @@
 														<div class="col-12 col-lg-5 d-flex">
 															<form method="post" class="w-100">
 					';
-					if($checkActivate) {
+					if($checkActivate || $item['status_active'] == 1) {
 						$view .= '
 																<input type="hidden" name="admin[change_status_for_item][item_id]" value="'.$item['id'].'">
 																<input type="hidden" name="admin[change_status_for_item][price]" value="'.base64_encode(serialize($price_ank)).'">
@@ -1452,7 +1456,7 @@
 																	</button>
 																</div>
 																<div class="col-12 col-md-3">
-																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][top]" value="1">
+																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][top]" value="1"'.(!$checkTop ? ' disabled' : '').'>
 																		<i class="fa-solid fa-chevron-up"></i> Поднять
 																	</button>
 																</div>

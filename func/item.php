@@ -159,11 +159,11 @@
 						} elseif($data['action'] == 'active') {
 
 							if($item['status_active'] == 0) {
-								if($user['balance'] >= $price_ank['activation']+$price_ank['blank']) {
-									if(user_change_balance($price_ank['activation']+$price_ank['blank'], $user_id)) {
+								if($user['balance'] >= $price_ank['blank']) {
+									if(user_change_balance($price_ank['blank'], $user_id)) {
 										$result = [
 											'update' => ['status_active' => 1, 'sum' => $price_ank['blank']],
-											'event' => 'Анкета ID '.$item['id'].' опубликована. С баланса списано: '.$price_ank['activation']+$price_ank['blank'].' рублей.'
+											'event' => 'Анкета ID '.$item['id'].' опубликована. С баланса списано: '.$price_ank['blank'].' рублей.'
 										];
 									}
 								}

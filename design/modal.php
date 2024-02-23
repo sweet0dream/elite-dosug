@@ -97,18 +97,6 @@
 									<li class="list-group-item">
 										<div class="row g-2">
 											<div class="col-6 d-flex align-items-center">
-												<span class="text-muted w-100 text-center">Активация <br>анкеты</span>
-											</div>
-											<div class="col-6 d-flex align-items-center">
-												<span class="w-100 text-center">
-													<b><?= $price_ank['activation'] ?></b> руб. <br><span class="text-muted">единоразово</span>
-												</span>
-											</div>
-										</div>
-									</li>
-									<li class="list-group-item">
-										<div class="row g-2">
-											<div class="col-6 d-flex align-items-center">
 												<span class="text-muted w-100 text-center">Обычное <br>размещение</span>
 											</div>
 											<div class="col-6 d-flex align-items-center">

@@ -136,6 +136,18 @@
 							
 						</div>
 						<div class="card-body p-0">
+			';
+			if (isMobile() && $post['status_active'] == 1) {
+				$view .= '
+											
+							<div class="alert alert-primary text-center p-1 m-1 fixed-bottom">
+								<a href="#" class="text-decoration-none d-block mb-1 fs-4"><i class="fa-solid fa-phone"></i> '.format_phone($post['phone']).'</a>
+								<p class="mb-1"><small>...звоню с сайта Элит Досуг Саратов...</small></p>
+								<a href="tel:'.format_phone($post['phone']).'" class="btn btn-primary w-100"><i class="fa-solid fa-mobile"></i> Позвонить сейчас</a>
+							</div>
+				';
+			}
+			$view .= '
 							<div class="row g-0">
 								<div class="col-12 col-lg-3 d-flex align-items-stretch">
 									<div class="p-1 d-flex align-items-center" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'opacity' => 0.35]).'\'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
@@ -159,16 +171,22 @@
 										<div class="row g-2 mb-2">
 											<div class="col-12 col-md-4 d-flex align-items-center">
 												<div class="w-100">
-													<div class="alert alert-secondary mb-1 p-2 text-center" role="alert">
+													<div class="alert alert-secondary mb-1 p-2 text-center">
 														<i class="fa-solid fa-location-dot"></i> '.$rao[$post['rao']].'
 													</div>
-													<div class="alert alert-info d-flex align-items-center justify-content-center mb-0 w-100 p-2" role="alert">
+			';
+			if (!isMobile()) {
+				$view .= '
+													<div class="alert alert-info d-flex align-items-center justify-content-center mb-0 w-100 p-2">
 														<div class="m-0 w-100 text-center">
-															'.($post['status_active'] == 1 ? (isMobile() ? '<a href="tel:+7'.$post['phone'].'" class="btn btn-primary w-100"><i class="fa-solid fa-mobile"></i> Позвонить</a>' : '<i class="fa-solid fa-phone opacity-25"></i> <b>'.format_phone($post['phone']).'</b>') : '<b>Номер телефона скрыт</b>').'
+															'.($post['status_active'] == 1 ? '<i class="fa-solid fa-phone opacity-25"></i> <b>'.format_phone($post['phone']).'</b>' : '<b>Номер телефона скрыт</b>').'
 															<hr class="border border-info border-2 opacity-25 my-2" />
 															<span class="opacity-50"><i>Сообщите нашли анкету на сайте Элит Досуг</i></span>
 														</div>
 													</div>
+				';
+			}
+			$view .= '
 												</div>
 											</div>
 											<div class="col-12 col-md-4 d-flex align-items-center">

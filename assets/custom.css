@@ -378,7 +378,7 @@ nav .mobile:focus {
 }
 .full .service .part {
     position: relative;
-    padding-top: 32px !important;
+    padding-top: 16px !important;
 }
 .full .service .part .name {
     position: absolute;

@@ -1,8 +1,8 @@
 <?php
     $price_ank = [
-        'blank' => 10,
+        'blank' => 20,
         'vip' => 20,
-        'premium' => 20,
+        'premium' => 10,
         'top' => 100,
         'delete_review' => 500
     ];

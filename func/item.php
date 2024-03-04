@@ -221,11 +221,11 @@
 							(new Event($user['id']))->add($result['event']);
 						}
 						if (isset($result['telegram'])) {
-							global $site, $channel;
-							if (isset($channel['telegram']) && $channel['telegram'] != '') {
+							global $site, $city;
+							if (isset($city['social']['telegamChannelId'])) {
 								(new Notify())->sendItemToTelegramChannel([
 									'itemId' => $item['id'],
-									'chatId' => $channel['telegram'],
+									'chatId' => $city['social']['telegamChannelId'],
 									'siteUrl' => $site['url']
 								]);
 							}
@@ -275,11 +275,16 @@
 
 	function item_all($user_id = false): array|Generator
     {
+		global $city;
+
 		$db = db_connect();
+
+		$db->where('city_id', $city['id']);
 		
 		if($user_id) {
 			$db->where('user_id', $user_id);
 		}
+		
 		return $db->get('item');
 	}
 

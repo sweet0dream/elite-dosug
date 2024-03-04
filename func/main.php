@@ -40,6 +40,12 @@
 		return $response;
 	}
 
+	//get city
+	function getCity($key) {
+		$city = json_decode(file_get_contents('https://rest.elited.ru/config/get_city/' . $key), true);
+		return isset($city['id']) ? $city : null;
+	}
+
 	// redirect
 	function redirect($url) { 
 		if(!headers_sent()) {
@@ -182,74 +188,75 @@
 
 	// meta data
 	function itMeta($route) {
+		global $city;
 		if(is_array($route)) {
 			global $types;
 			if(empty($route)) {
 				return '
-					<title>Проститутки Саратова готовы обслужить клиента - Элит Досуг Саратов</title>
-					<meta name="description" content="Круглосуточно проститутки Саратова с нашего сайта обслуживают много клиентов. Индивидуалки Саратова работают в разных концах города для Вашего досуга и отдыха.">
-					<meta name="keywords" content="проститутки саратова, индивидуалки саратова, интим салоны саратова, мужчины по вызову саратова, трансы саратова">
+					<title>Проститутки ' . $city['value'][1] . ' готовы обслужить клиента - Элит Досуг ' . $city['value'][0] . '</title>
+					<meta name="description" content="Круглосуточно проститутки ' . $city['value'][1] . ' с нашего сайта обслуживают много клиентов. Индивидуалки ' . $city['value'][1] . ' работают в разных концах города для Вашего досуга и отдыха.">
+					<meta name="keywords" content="проститутки ' . $city['value'][1] . ', индивидуалки ' . $city['value'][1] . ', интим салоны ' . $city['value'][1] . ', мужчины по вызову ' . $city['value'][1] . ', трансы ' . $city['value'][1] . '">
 				';
 			} else {
 				if(isset($types[$route[1]])) {
 					if(isset($route[2])) {
 						if($item = item_decode(db_connect()->where('id', $route[2])->getOne('item'))) {
 							return '
-								<title>'.$types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'].' - Элит Досуг Саратов</title>
+								<title>'.$types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'].' - Элит Досуг '.$city['value'][0].'</title>
 								<meta name="description" content="'.$types[$route[1]]['names'][2].'. '.$item['dopinfo'].'">
 								<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
 							';
 						} elseif($route[2] == 'p') {
 							return '
-								<title>'.$types[$route[1]]['meta']['title'].(isset($route[3]) ? ', '.$route[3].' страница' : '').' - Элит Досуг Саратов</title>
+								<title>'.$types[$route[1]]['meta']['title'].(isset($route[3]) ? ', '.$route[3].' страница' : '').' - Элит Досуг ' . $city['value'][0] . '</title>
 								<meta name="description" content="'.$types[$route[1]]['meta']['description'].(isset($route[3]) ? ' '.$route[3].' страница' : '').'">
 								<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
 							';
 						}
 					} else {
 						return '
-							<title>'.$types[$route[1]]['meta']['title'].' - Элит Досуг Саратов</title>
+							<title>'.$types[$route[1]]['meta']['title'].' - Элит Досуг ' . $city['value'][0] . '</title>
 							<meta name="description" content="'.$types[$route[1]]['meta']['description'].'">
 							<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
 						';
 					}
 				} elseif($route[1] == 'user') {
 					return '
-						<title>Личный кабинет - Элит Досуг Саратов</title>
+						<title>Личный кабинет - Элит Досуг ' . $city['value'][0] . '</title>
 						<meta name="description" content="Личный кабинет сайта Элит Досуг для управления рекламой.">
-						<meta name="keywords" content="личный кабинет, проститутки саратова">
+						<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
 					';
 				} elseif($route[1] == 'item') {
 					if(isset($route[2])) {
 						if($route[2] == 'add') {
 							return '
-								<title>Добавление анкеты - Элит Досуг Саратов</title>
+								<title>Добавление анкеты - Элит Досуг ' . $city['value'][0] . '</title>
 								<meta name="description" content="Добавление анкеты.">
-								<meta name="keywords" content="добавление анкеты, проститутки саратова">
+								<meta name="keywords" content="добавление анкеты, проститутки ' . $city['value'][1] . '">
 							';
 						} elseif($route[2] == 'edit') {
 							return '
-								<title>Редактирование анкеты - Элит Досуг Саратов</title>
+								<title>Редактирование анкеты - Элит Досуг ' . $city['value'][0] . '</title>
 								<meta name="description" content="Редактирование анкеты.">
-								<meta name="keywords" content="личный кабинет, проститутки саратова">
+								<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
 							';
 						} elseif($route[2] == 'photo') {
 							return '
-								<title>Фото анкеты - Элит Досуг Саратов</title>
+								<title>Фото анкеты - Элит Досуг ' . $city['value'][0] . '</title>
 								<meta name="description" content="Фото анкеты.">
-								<meta name="keywords" content="личный кабинет, проститутки саратова">
+								<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
 							';
 						}
 					}
 				} elseif($route[1] == 'placement') {
 					return '
-						<title>Размещение рекламы - Элит Досуг Саратов</title>
+						<title>Размещение рекламы - Элит Досуг ' . $city['value'][0] . '</title>
 						<meta name="description" content="Информация и стоимость размещения рекламы">
 						<meta name="keywords" content="реклама сайт досуг, размещение элит досуг">
 					';
 				} elseif($route[1] == 'agreement') {
 					return '
-						<title>Пользовательское соглашение - Элит Досуг Саратов</title>
+						<title>Пользовательское соглашение - Элит Досуг ' . $city['value'][0] . '</title>
 						<meta name="description" content="Пользовательское соглашение и положение об использовании Сайта Элит Досуг">
 						<meta name="keywords" content="соглашение об использовании">
 					';
@@ -258,4 +265,53 @@
 		} else {
 			return false;
 		}
+	}
+
+	function generate_sitemap($city) {
+		header("Content-Type: text/xml;");
+
+		$data = json_decode(file_get_contents('https://rest.elited.ru/config/sitemap/' . $city), true);
+
+		$date = date('Y-m-dTH:i:sP');
+		
+		$sitemap = '
+			<urlset xmlns="https://www.livemaps.org/schemas/sitemap/0.9">
+				<url>
+					<loc>https://'.$_SERVER['HTTP_HOST'].'/</loc>
+					<lastmod>'.$date.'</lastmod>
+					<changefreq>daily</changefreq>
+					<priority>1.0</priority>
+				</url>
+		';
+		foreach($data as $k => $v) {
+			$sitemap .= '
+				<url>
+					<loc>https://'.$_SERVER['HTTP_HOST'].'/'.$k.'/</loc>
+					<lastmod>'.$date.'</lastmod>
+					<changefreq>weekly</changefreq>
+					<priority>0.8</priority>
+				</url>
+			';
+			foreach($v as $id) {
+				$sitemap .= '
+				<url>
+					<loc>https://'.$_SERVER['HTTP_HOST'].'/'.$k.'/'.$id.'/</loc>
+					<lastmod>'.$date.'</lastmod>
+					<changefreq>weekly</changefreq>
+					<priority>0.6</priority>
+				</url>
+				';
+			}
+		}
+		$sitemap .= '
+			</urlset>
+		';
+
+		echo $sitemap;
+	}
+
+	function generate_robots() {
+		header("Content-Type: text/plain;");
+		$robots = "User-agent: *\nHost: ".$_SERVER['HTTP_HOST']."\nSitemap: https://".$_SERVER['HTTP_HOST']."/sitemap.xml";
+		echo $robots;
 	}

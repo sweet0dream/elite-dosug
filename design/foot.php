@@ -5,19 +5,19 @@
         <div class="col-12 col-md-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a href="/" class="nav-link p-1 text-white">Проститутки Саратова</a>
+              <a href="/" class="nav-link p-1 text-white">Проститутки <?= $city['value'][1] ?></a>
             </li>
             <li class="nav-item">
-              <a href="/ind/" class="nav-link p-1 text-white">Индивидуалки Саратова</a>
+              <a href="/ind/" class="nav-link p-1 text-white">Индивидуалки <?= $city['value'][1] ?></a>
             </li>
             <li class="nav-item">
-              <a href="/sal/" class="nav-link p-1 text-white">Интим салоны Саратова</a>
+              <a href="/sal/" class="nav-link p-1 text-white">Интим салоны <?= $city['value'][1] ?></a>
             </li>
             <li class="nav-item">
-              <a href="/man/" class="nav-link p-1 text-white">Мужчины по вызову Саратова</a>
+              <a href="/man/" class="nav-link p-1 text-white">Мужчины по вызову <?= $city['value'][1] ?></a>
             </li>
             <li class="nav-item">
-              <a href="/tsl/" class="nav-link p-1 text-white">Трансы Саратова</a>
+              <a href="/tsl/" class="nav-link p-1 text-white">Трансы <?= $city['value'][1] ?></a>
             </li>
             <li class="nav-item">
               <a href="/placement/" class="nav-link p-1 text-white">Размещение рекламы</a>
@@ -27,7 +27,7 @@
         <div class="col-12 col-md-6">
           <div class="row g-1">
             <div class="col-12 col-lg-6">
-              <?= isset($telegramChannelIngo) ? viewWidgetTelegramFooter($telegramChannelIngo) : '' ?>
+              <?= isset($telegramChannelInfo) ? viewWidgetTelegramFooter($telegramChannelInfo) : '' ?>
             </div>
             <div class="col-12 col-lg-6"></div>
           </div>
@@ -37,7 +37,7 @@
           <p class="text-center text-white my-2">Этот сайт использует куки (COOKIES) файлы собирая предпочтения посетителей, это важно знать.</p>
           <div class="w-100 text-center">
             <img width="88" height="31" alt="" border="0" src="https://yandex.ru/cycounter?https://sar1.elited.ru&theme=dark&lang=ru"/>
-            <!-- Yandex.Metrika informer --> <a href="https://metrika.yandex.ru/stat/?id=87671265&amp;from=informer" target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/87671265/2_0_FFFFFFFF_FFFFFFFF_0_pageviews" style="width:80px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры)" class="ym-advanced-informer" data-cid="87671265" data-lang="ru" /></a> <!-- /Yandex.Metrika informer --> <!-- Yandex.Metrika counter --> <script type="text/javascript" > (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date(); for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }} k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym"); ym(87671265, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); </script> <noscript><div><img src="https://mc.yandex.ru/watch/87671265" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+            <?= isset($city['counter']) ? $city['counter'] : '' ?>
           </div>
           <p class="text-center text-white mt-2">Интим портал &laquo;Элит Досуг&raquo; работает с 2010 года <br>
           <a href="/agreement/" class="text-white">Cоглашение</a> <span class="text-muted">/</span> <a href="#" class="text-white">Администрация</a></p>

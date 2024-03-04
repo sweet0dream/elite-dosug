@@ -1,7 +1,5 @@
 <?php
 
-global $site, $types;
-
 session_start();
 
 date_default_timezone_set('Europe/Samara');
@@ -16,9 +14,13 @@ if(isset($_GET['bug']) && $_GET['bug'] == 1) {
 	//debuging
 }
 
+if (is_null($city)) {
+	page404(); die();
+}
+
 //get data channel telegram
-if (isset($channel['telegram']) && $channel['telegram']) {
-	$telegramChannelIngo = getTelegramChannelInfo($channel['telegram'])['data']['channelInfo'];
+if (isset($city['social']['telegamChannelId'])) {
+	$telegramChannelInfo = getTelegramChannelInfo($city['social']['telegamChannelId'])['data']['channelInfo'];
 }
 
 if(empty($route)) {
@@ -43,6 +45,10 @@ if(empty($route)) {
 		}
 	} elseif($route[1] == 'crontab') {
 		cron_task();
+	} elseif($route[1] == 'sitemap.xml') {
+		generate_sitemap($city['domain']);
+	} elseif($route[1] == 'robots.txt') {
+		generate_robots($city['domain']);
 	} else {
 		page404();
 	}

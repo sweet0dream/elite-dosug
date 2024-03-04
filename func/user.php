@@ -14,11 +14,15 @@
     //regin
     function user_regin($data): void
     {
+		global $city, $site;
 		if(!in_array('', $data)) {
+
+			global $city;
 			
 			$db = db_connect();
 
 			$user = [
+				'city_id' => $city['id'],
 				'type' => 'reg',
 				'login' => $data['login'],
 				'password' => password_hash($data['password'], PASSWORD_DEFAULT),
@@ -37,7 +41,7 @@
 		if(!isset($errors)) {
 			if($db->insert('user', $user)) {
 				(new Notify())->sendSms(
-					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг Саратов. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'],
+					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг '.$city['value'][0].' - '.$site['url'].'. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'],
 					$data['phone']
 				);
 				user_login([
@@ -61,7 +65,11 @@
     {
 		if(!in_array('', $data)) {
 
+			global $city;
+
 			$db = db_connect();
+
+			$db->where('city_id', $city['id']);
 			
 			if($user = $db->where('login', $data['login'])->getOne('user')) {
 				if(!password_verify($data['password'], $user['password'])) {
@@ -119,7 +127,7 @@
 		if($sum > 0) {
 			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
 				(new Notify())->sendSms(
-					'Элит Досуг Саратов: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей',
+					'Элит Досуг: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей',
 					9053242575
 				);
 				(new Event($user['id']))->add('Вы пополнили: '.$sum.' рублей. Текущий баланс: '.$user['balance']+$sum.' рублей.');
@@ -135,7 +143,10 @@
 	//all users
 	function user_all($type = 'reg', $orderBy = [['id', 'DESC']]): array|Generator
     {
+		global $city;
 		$db = db_connect();
+
+		$db->where('city_id', $city['id']);
 
 		if($type) {
 			$db->where('type', $type);
@@ -153,7 +164,11 @@
     {
 		if($id) {
 
+			global $city;
+
 			$db = db_connect();
+
+			$db->where('city_id', $city['id']);
 
 			$user = $db->where('id', $id)->getOne('user');
 			return isset($user['id']) ? $user : false;

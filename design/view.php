@@ -118,7 +118,7 @@
 	function viewFull($post) {
 		if($post['status_active'] == 1) item_stat_add($post['id']);
 
-		global $types, $rao;
+		global $city, $types, $rao;
 		$photos = explode(',', $post['photo']); shuffle($photos);
 		$view = '
 			<div class="row justify-content-md-center g-0 full">
@@ -142,7 +142,7 @@
 											
 							<div class="alert alert-primary text-center p-1 m-1 fixed-bottom">
 								<a href="#" class="text-decoration-none d-block mb-1 fs-4"><i class="fa-solid fa-phone"></i> '.format_phone($post['phone']).'</a>
-								<p class="mb-1"><small>...звоню с сайта Элит Досуг Саратов...</small></p>
+								<p class="mb-1"><small>...звоню с сайта Элит Досуг '.$city['value'][0].'...</small></p>
 								<a href="tel:'.format_phone($post['phone']).'" class="btn btn-primary w-100"><i class="fa-solid fa-mobile"></i> Позвонить сейчас</a>
 							</div>
 				';
@@ -181,7 +181,7 @@
 														<div class="m-0 w-100 text-center">
 															'.($post['status_active'] == 1 ? '<i class="fa-solid fa-phone opacity-25"></i> <b>'.format_phone($post['phone']).'</b>' : '<b>Номер телефона скрыт</b>').'
 															<hr class="border border-info border-2 opacity-25 my-2" />
-															<span class="opacity-50"><i>Сообщите нашли анкету на сайте Элит Досуг</i></span>
+															<span class="opacity-50"><i>Сообщите нашли анкету на сайте Элит Досуг '.$city['value'][0].'</i></span>
 														</div>
 													</div>
 				';
@@ -453,7 +453,7 @@
 											<form method="post" class="mx-2 my-0">
 												<input type="hidden" name="item[abuse][id]" value="'.$post['id'].'">
 												<div class="alert alert-danger m-0 p-1 text-center">
-													<small class="m-0 font2"><strong>Ваш номер телефона</strong> <br>необходим для оперативной связи с администратором сайта. <br>Никому другому указанный номер не будет известен.</small>
+													<small class="m-0 font2"><strong>Ваш номер телефона</strong> <br>необходим для оперативной связи с менеджером сайта. <br>Никому другому указанный номер не будет известен.</small>
 												</div>
 												<div class="form-floating my-1">
 													<input type="tel" pattern="[0-9]{10}" class="form-control" id="abusePhone" name="item[abuse][phone]" placeholder="Введите значение" required>
@@ -482,7 +482,7 @@
 	function viewUser($user) {
 		if(is_array($user)) {
 
-			global $types;
+			global $city, $types;
 			
 			$items = item_all($user['id']); krsort($items);
 
@@ -556,7 +556,7 @@
 					],
 					'unpaid' => [
 						'class' => 'danger',
-						'notify' => 'Пополнение на '.$response_added_balance['amount'].' рублей неудачное, если деньги со счёта сняли - звоните администратору',
+						'notify' => 'Пополнение на '.$response_added_balance['amount'].' рублей неудачное, если деньги со счёта сняли - звоните менеджеру',
 						'button' => '<a href="tel:+79279174870" class="btn btn-sm btn-danger w-100 text-uppercase"><i class="fa-solid fa-phone"></i> '.(isMobile() ? 'Звонить' : '+7.927.917.48.70').'</a>'
 					],
 					'waiting' => [
@@ -578,19 +578,6 @@
 			  		</div>
 				';
 			}
-
-			/*if($user['id'] == 24) {
-				$view .= '
-					<div class="alert alert-danger mt-1 mb-2 p-2">
-						<p class="text-center">Ваша анкета <strong class="text-uppercase">скрыта администратором</strong> в связи с нарушением правил публикации.</p>
-						<p class="m-0"><strong class="text-uppercase">Комментарий администратора:</strong> Тип вашей анкеты &laquo;Индивидуалка&raquo;, 
-						тип данных в анкете должен соответствовать разделу. Разместить объявление 
-						о трудоустройстве пока что можно в виде баннера. В самое ближайшее время планируется разработка раздела 
-						&laquo;Объявления&raquo;, потом объявления о наборе девушек можно будет публиковать там. 
-						Устраните нарушения в течении суток, иначе учётная запись будет заблокирована.</p>
-					</div>
-				';
-			}*/
 
 			if(empty($items)) {
 				$view .= '
@@ -628,7 +615,7 @@
 						</div>
 				';
 			} else {
-				global $types, $site, $price_ank;
+				global $types, $city, $site, $price_ank;
 
 				foreach($items as $v) {
 
@@ -731,7 +718,7 @@
 																	'.check_price($user['balance'], $topPrice, '
 																	'.($v['date_top'] != $v['date_add'] ? '<p class="text-center text-muted">Последний раз поднималась: <br>'.format_date($v['date_top']).'</p>' : '').'
 																	<p class="text-center">С баланса спишется <br>стоимость поднятия: <b>'.$topPrice.' рублей</b></p>
-																	<p class="m-0 text-center">Поднятие <b class="text-uppercase">автоматически</b> отправляет <br>анкету в рассылку телеграм канала: <br> <a href="https://t.me/elitedosug64" class="btn btn-outline-success mt-2" target="_blank"><i class="fa-brands fa-telegram"></i> Элит Досуг Саратов</a></p>
+																	<p class="m-0 text-center">Поднятие <b class="text-uppercase">автоматически</b> отправляет <br>анкету в рассылку телеграм канала: <br> <a href="https://t.me/elitedosug64" class="btn btn-outline-success mt-2" target="_blank"><i class="fa-brands fa-telegram"></i> Элит Досуг '.$city['value'][0].'</a></p>
 																	').'
 																</div>
 																<div class="modal-footer">
@@ -1189,9 +1176,9 @@
 		}
 	}
 
-	function viewAdmin($user) {
+	function viewManager($user) {
 
-		global $site, $types, $price_ank, $response;
+		global $site, $city, $types, $price_ank, $response;
 
 		$demoAccounts = [2]; //demo accounts in system
 
@@ -1252,8 +1239,8 @@
 
 			if ($code == 200) {
 				if ($key == 'added_balance') {
-					$sms = 'Элит Досуг Саратов: Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.';
-					$event = 'Администратор пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.';
+					$sms = 'Элит Досуг '.$city['value'][0].': Пополнение на '.$response['addedSum'].' рублей. Ваш баланс: '.$response['userBalance'].' рублей.';
+					$event = 'Менеджер пополнил на '.$response['addedSum'].' рублей. Текущий баланс: '.$response['userBalance'].' рублей.';
 					$message = 'Пополнение баланса на '.$response['addedSum'].' рублей.<br />Смс отправлено.';
 				}
 				if ($key == 'change_status') {
@@ -1267,16 +1254,16 @@
 					//send top to channels
 					if ($response['actionItem'] == 'top') {
 						global $channel;
-						if (isset($channel['telegram']) && $channel['telegram'] != '') {
+						if (isset($city['social']['telegamChannelId'])) {
 							(new Notify())->sendItemToTelegramChannel([
 								'itemId' => $response['itemId'],
-								'chatId' => $channel['telegram'],
+								'chatId' => $city['social']['telegamChannelId'],
 								'siteUrl' => $site['url']
 							]);
 						}
 					}
-					$sms = 'Элит Досуг Саратов: Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');
-					$event = 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' администратором.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '');
+					$sms = 'Элит Досуг '.$city['value'][0].': Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' менеджером.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');
+					$event = 'Анкета ID '.$response['itemId'].' '.$termMessage[$response['actionItem']].' менеджером.'.(isset($response['userOutBalance']) ? ' С баланса списано: '.$response['userOutBalance'].' рублей.' : '');
 					$message = 'Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].'. '.(isset($response['sumItem']) ? '<br />Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? '<br />Списано с баланса: '.$response['userOutBalance'].' рублей.' : '').'<br />Смс отправлено.';
 				}
 			}
@@ -1308,7 +1295,7 @@
 		}
 
 		$view .= '
-			<div class="row justify-content-center g-0 font2 admin">
+			<div class="row justify-content-center g-0 font2 manager">
 				<div class="col-11 col-lg-10">
 					<div class="mb-1 inner">
 						<div class="row">
@@ -1397,7 +1384,7 @@
 									</div>
 									<div class="col-12 col-md-6 d-flex align-items-center">
 										<form method="post" class="m-0 w-100" id="balance'.$u['id'].'">
-											<input type="hidden" name="admin[added_balance][userId]" value="'.$u['id'].'">
+											<input type="hidden" name="manager[added_balance][userId]" value="'.$u['id'].'">
 											<div class="input-group input-group-sm collapse show" id="addedBalance'.$u['id'].'">
 												'.(!isMobile() ? '<span class="input-group-text">Баланс:</span>' : '').'
 												<input type="text" class="form-control'.(isset($response['userId'])&&$response['userId']==$u['id']?' text-primary':'').'" value="'.($u['balance'] > 0 ? $u['balance'].'₽' : 'пустой').'" readonly>
@@ -1406,7 +1393,7 @@
 											</div>
 											<div class="input-group input-group-sm collapse" id="addedBalance'.$u['id'].'">
 												<span class="input-group-text">Пополнить на:</span>
-												<input type="number" class="form-control" name="admin[added_balance][addedSum]" value="1000" min="100" step="100" required>
+												<input type="number" class="form-control" name="manager[added_balance][addedSum]" value="1000" min="100" step="100" required>
 												<button id="send" class="btn btn-secondary" type="submit"><i class="fa-solid fa-chevron-right"></i></button>
 											</div>
 										</form>
@@ -1452,8 +1439,8 @@
 					';
 					if($checkActivate || $item['status_active'] == 1) {
 						$view .= '
-																<input type="hidden" name="admin[change_status_for_item][item_id]" value="'.$item['id'].'">
-																<input type="hidden" name="admin[change_status_for_item][price]" value="'.base64_encode(serialize($price_ank)).'">
+																<input type="hidden" name="manager[change_status_for_item][item_id]" value="'.$item['id'].'">
+																<input type="hidden" name="manager[change_status_for_item][price]" value="'.base64_encode(serialize($price_ank)).'">
 						';
 					}
 					$view .= '
@@ -1461,7 +1448,7 @@
 					';
 					if ($item['status_active'] == 0) {
 						$view .= '
-															<button type="submit" class="btn btn-outline-danger btn-sm w-100" '.(!$checkActivate ? 'disabled': 'name="admin[change_status_for_item][active]" value="'.!$item['status_active'].'"').'>
+															<button type="submit" class="btn btn-outline-danger btn-sm w-100" '.(!$checkActivate ? 'disabled': 'name="manager[change_status_for_item][active]" value="'.!$item['status_active'].'"').'>
 																<i class="fa-solid fa-toggle-off"></i> '.($checkActivate ? 'Активировать анкету' : 'Активация невозможна').'
 															</button>
 						';
@@ -1469,12 +1456,12 @@
 						$view .= '
 															<div class="row g-1 w-100">
 																<div class="col-12 col-md-3">
-																	<button type="submit" class="btn btn-danger btn-sm w-100" name="admin[change_status_for_item][active]" value="'.!$item['status_active'].'">
+																	<button type="submit" class="btn btn-danger btn-sm w-100" name="manager[change_status_for_item][active]" value="'.!$item['status_active'].'">
 																		<i class="fa-solid fa-toggle-on"></i> Скрыть
 																	</button>
 																</div>
 																<div class="col-12 col-md-3">
-																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][top]" value="1"'.(!$checkTop ? ' disabled' : '').'>
+																	<button type="submit" class="btn btn-primary btn-sm w-100" name="manager[change_status_for_item][top]" value="1"'.(!$checkTop ? ' disabled' : '').'>
 																		<i class="fa-solid fa-chevron-up"></i> Поднять
 																	</button>
 																</div>
@@ -1482,7 +1469,7 @@
 						if ($item['status_premium'] == 1) {
 							$view .= '
 																<div class="col-12 col-md-4">
-																	<button type="submit" class="btn btn-primary btn-sm w-100" name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'">
+																	<button type="submit" class="btn btn-primary btn-sm w-100" name="manager[change_status_for_item][premium]" value="'.!$item['status_premium'].'">
 																		<i class="fa-solid fa-toggle-on"></i> Premium
 																	</button>
 																</div>
@@ -1490,12 +1477,12 @@
 						} else {
 							$view .= '
 																<div class="col-12 col-md-2">
-																	<button type="submit" class="btn btn-outline-primary btn-sm w-100" '.($item['status_vip'] == 0 ? 'disabled' : 'name="admin[change_status_for_item][premium]" value="'.!$item['status_premium'].'"').'>
+																	<button type="submit" class="btn btn-outline-primary btn-sm w-100" '.($item['status_vip'] == 0 ? 'disabled' : 'name="manager[change_status_for_item][premium]" value="'.!$item['status_premium'].'"').'>
 																		<i class="fa-solid fa-toggle-off"></i> Premium
 																	</button>
 																</div>
 																<div class="col-12 col-md-2">
-																	<button type="submit" class="btn btn-'.($item['status_vip'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][vip]" value="'.!$item['status_vip'].'">
+																	<button type="submit" class="btn btn-'.($item['status_vip'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="manager[change_status_for_item][vip]" value="'.!$item['status_vip'].'">
 																		<i class="fa-solid fa-toggle-'.($item['status_vip'] == 0 ? 'off' : 'on').'"></i> VIP
 																	</button>
 																</div>
@@ -1503,7 +1490,7 @@
 						}
 						$view .= '
 																<div class="col-12 col-md-2">
-																	<button type="submit" class="btn btn-'.($item['status_real'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="admin[change_status_for_item][real]" value="'.!$item['status_real'].'">
+																	<button type="submit" class="btn btn-'.($item['status_real'] == 0 ? 'outline-' : '').'primary btn-sm w-100" name="manager[change_status_for_item][real]" value="'.!$item['status_real'].'">
 																		<i class="fa-solid fa-toggle-'.($item['status_real'] == 0 ? 'off' : 'on').'"></i> Реал
 																	</button>
 																</div>

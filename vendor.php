@@ -4,6 +4,10 @@
 
     require_once('vendor/autoload.php');
     require_once('func/main.php');
+
+    //load city config
+    $city = getCity(explode('.', $_SERVER['HTTP_HOST'])[0]);
+
     require_once('conf/main.php');
 
     // Обработка post и files

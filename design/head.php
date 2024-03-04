@@ -63,7 +63,7 @@
 	<script defer src="/assets/custom.js"></script>
 </head>
 <body>
-	<?= !isset($_SESSION['auth']) ? renderAdv('b0') : '' ?>
+	<?= $city['id'] == 1 && !isset($_SESSION['auth']) ? renderAdv('b0') : '' ?>
 	<? include 'menu.php'; ?>
 <?php
 		if(!isset($_SESSION['auth'])) {

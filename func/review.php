@@ -14,6 +14,7 @@
 
 	//review_add
 	function review_add($data) {
+		global $city;
 		if(is_array($data)) {
 			if(isset($data['captcha_q'])) {
 				if(!isset($data['captcha_a']) || array_sum(explode('.', $data['captcha_q'])) != $data['captcha_a']) {
@@ -32,7 +33,7 @@
 				unset($data['captcha_q']); unset($data['captcha_a']);
 				if($id = db_connect()->insert('item_reviews', $data)) {
 					(new Notify())->sendSms(
-						'Элит Досуг Саратов: Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.',
+						'Элит Досуг '.$city['value'][0].': Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.',
 						9053242575
 					);
 					(new Event(item_one($data['item_id'])['user_id']))->add('Добавлен новый отзыв к анкете ID '.$data['item_id']);

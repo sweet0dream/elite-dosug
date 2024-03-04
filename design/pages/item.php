@@ -4,7 +4,7 @@
 
             //select for edit
             if ($route[2] == 'edit' && isset($route[3]) && !isset($value)) {
-                if ($_SESSION['auth']['type'] == 'adm' && isset($_GET['user_id'])) {
+                if ($_SESSION['auth']['type'] == 'man' && isset($_GET['user_id'])) {
                     $userId = $_GET['user_id'];
                 } else {
                     $userId = $_SESSION['auth']['id'];
@@ -61,9 +61,9 @@
             </div>
         </div>
         <?php endif ?>
-        <?php if(isset($_SESSION['auth']['type']) && $_SESSION['auth']['type'] == 'adm') : ?>
+        <?php if(isset($_SESSION['auth']['type']) && $_SESSION['auth']['type'] == 'man') : ?>
         <div class="alert alert-danger mb-1 p-1 text-center" role="alert">
-            <p class="m-0">Вы редактируете данные анкеты пользователя ID: <?= $userId ?> в режиме администратора</p>
+            <p class="m-0">Вы редактируете данные анкеты пользователя ID: <?= $userId ?> в режиме менеджера</p>
         </div>
         <?php endif ?>
         <form method="post">
@@ -74,6 +74,7 @@
         <?php
             }
         ?>
+            <input type="hidden" name="item[<?= $route[2] ?>][city_id]" value="<?= $city['id'] ?>">
             <input type="hidden" name="item[<?= $route[2] ?>][user_id]" value="<?= $userId ?>">
             <input type="hidden" name="item[<?= $route[2] ?>][type]" value="<?= $type ?>">
             <div class="card <?= (isset($errors['info']) ? 'border-danger' : '') ?> mb-1">
@@ -233,7 +234,7 @@
             }
         } elseif(isset($route[2]) && $route[2] == 'photo') {
             if(isset($route[3])) {
-                if ($_SESSION['auth']['type'] == 'adm' && isset($_GET['user_id'])) {
+                if ($_SESSION['auth']['type'] == 'man' && isset($_GET['user_id'])) {
                     $userId = $_GET['user_id'];
                 } else {
                     $userId = $_SESSION['auth']['id'];
@@ -252,7 +253,7 @@
                     <div class="col-9 d-flex justify-content-center align-items-center">
                         <p class="m-0">
                             Редактирование фото анкеты #<?= $item['id'] ?>
-                            <?= ($_SESSION['auth']['type'] == 'adm' ? '<br /><span class="text-danger">Вы редактируете фото в режиме администратора</span>' : '') ?></p>
+                            <?= ($_SESSION['auth']['type'] == 'man' ? '<br /><span class="text-danger">Вы редактируете фото в режиме менеджера</span>' : '') ?></p>
                     </div>
                 </div>
             </div>
@@ -262,7 +263,7 @@
 ?>
             <div class="alert alert-success text-center p-2 mb-1">
                 <p class="mb-1">На этой анкете установлен статус <b>&laquo;Реальное фото&raquo;</b></p>
-                <p class="m-0"><b>Обратите внимание:</b> при загрузке новых фотографий статус снимается и необходимо будет заново запросить подтверждение у администратора.</p>
+                <p class="m-0"><b>Обратите внимание:</b> при загрузке новых фотографий статус снимается и необходимо будет заново запросить подтверждение у менеджера.</p>
             </div>
 <?php
         }

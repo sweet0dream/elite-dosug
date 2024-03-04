@@ -11,8 +11,8 @@
                 if($_SESSION['auth']['type'] == 'reg') {
                     $content .= viewUser($user);
                 }
-                if($_SESSION['auth']['type'] == 'adm') {
-                    $content .= viewAdmin($user);
+                if($_SESSION['auth']['type'] == 'man') {
+                    $content .= viewManager($user);
                 }
             } else {
                 $content .= redirect($site['url']);

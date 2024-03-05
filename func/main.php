@@ -312,6 +312,6 @@
 
 	function generate_robots() {
 		header("Content-Type: text/plain;");
-		$robots = "User-agent: *\nHost: ".$_SERVER['HTTP_HOST']."\nSitemap: https://".$_SERVER['HTTP_HOST']."/sitemap.xml";
+		$robots = "User-agent: *\nDisallow: /item/*\nDisallow: /user/*\nHost: ".$_SERVER['HTTP_HOST']."\nSitemap: https://".$_SERVER['HTTP_HOST']."/sitemap.xml";
 		echo $robots;
 	}

@@ -8,11 +8,11 @@
                     unset($_SESSION['auth']);
                     $content .= redirect($site['url']);
                 }
-                if($_SESSION['auth']['type'] == 'reg') {
-                    $content .= viewUser($user);
-                }
-                if($_SESSION['auth']['type'] == 'man') {
-                    $content .= viewManager($user);
+                if (isset($_SESSION['auth']['type'])) {
+                    $content .= match ($_SESSION['auth']['type']) {
+                        'reg' => viewUser($user),
+                        'man' => viewManager($user)
+                    };
                 }
             } else {
                 $content .= redirect($site['url']);

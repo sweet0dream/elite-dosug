@@ -272,7 +272,7 @@
 
 		$data = json_decode(file_get_contents('https://rest.elited.ru/config/sitemap/' . $city), true);
 
-		$date = date('Y-m-dTH:i:sP');
+		$date = date('Y-m-d H:i:s');
 		
 		$sitemap = '
 			<urlset xmlns="https://www.livemaps.org/schemas/sitemap/0.9">

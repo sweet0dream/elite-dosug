@@ -29,7 +29,8 @@
 				'password_view' => base64_encode($data['password']),
 				'phone' => $data['phone'],
 				'code' => base64_encode($data['code']),
-				'reg_date' => $db->now()
+				'reg_date' => $db->now(),
+				'balance' => $data['balance'] ?? 0
 			];
 
 			if(isset($db->where('login', $data['login'])->getOne('user')['id'])) {
@@ -38,12 +39,15 @@
 
 		}
 
-		if(!isset($errors)) {
-			if($db->insert('user', $user)) {
+		if (!isset($errors)) {
+			if ($user_id = $db->insert('user', $user)) {
 				(new Notify())->sendSms(
-					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг '.$city['value'][0].' - '.$site['url'].'. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'],
+					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг '.$city['value'][0].' - '.$site['url'].'. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'].(isset($data['balance']) ? '. На баланс зачислен бонусные: '.$data['balance'].' рублей.' : ''),
 					$data['phone']
 				);
+				if (isset($data['balance'])) {
+					(new Event($user_id))->add('Бонус зачислен. Ваш баланс: '.$data['balance'].' рублей');
+				}
 				user_login([
 					'login' => $data['login'],
 					'password' => $data['password']

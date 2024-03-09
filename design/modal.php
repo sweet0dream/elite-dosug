@@ -34,6 +34,13 @@
 						</div>
 						<div class="tab-pane fade <?= (isset($modalTab) && $modalTab == 'regin' ? 'show active' : '') ?>" id="nav-regin" role="tabpanel" aria-labelledby="nav-regin-tab" tabindex="0">
 							<form method="post" class="mt-2 mb-0">
+								<? if($city['user_start_balance']) : ?>
+								<input type="hidden" name="user[regin][balance]" value="<?= $city['user_start_balance'] ?>">
+								<div class="alert alert-success text-center mb-2 p-1">
+									<p class="mb-1"><strong>Приятный бонус!</strong></p>
+									<p class="m-0">При регистрации Вам автоматически зачисляется <br />бонус <?= $city['user_start_balance'] ?> рублей для оплаты размещения анкет.</p>
+								</div>
+								<? endif ?>
 								<?= isset($errors) && !is_array($errors) ? '<div class="alert alert-danger text-center mb-2" role="alert"><strong>Неизвестная ошибка</strong></div>' : '' ?>
 								<div class="form-floating mb-2">
 									<input type="text" class="form-control<?= isset($errors['regin']['login']) ? ' is-invalid' : '' ?>" id="userReginLogin" name="user[regin][login]" <?= (isset($value['regin']['login']) && $value['regin']['login'] != '' ? 'value="'.$value['regin']['login'].'"' : '') ?> required>

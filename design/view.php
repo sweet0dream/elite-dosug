@@ -522,62 +522,11 @@
 				}
 			}
 
-			if(isset($_GET['invoice'])) {
-				$_SESSION['invoice'] = $_GET['invoice'];
-				$view = redirect('/user/');
-			}
-
-			if(isset($_SESSION['invoice'])) {
-				if(isset($_SESSION['invoice'])) {
-					$response_added_balance = payment_check_invoice($_SESSION['invoice']);
-					if($response_added_balance['status'] == 'waiting') {
-						$_SESSION['invoice'] = $response_added_balance['invoice'];
-					} else {
-						unset($_SESSION['invoice']);
-					}
-				}
-			}
-
 			$view = '
 				<div class="row justify-content-md-center g-0 user">
 					<div class="col-12 col-lg-10">
 						<div class="p-1 inner">
 			';
-			if(isset($response_added_balance) && is_array($response_added_balance)) {
-
-				//reload balance after added
-				$user['balance'] = user_one($user['id'])['balance'];
-
-				$response = [
-					'paid' => [
-						'class' => 'success',
-						'notify' => 'Баланс пополнен на '.$response_added_balance['amount'].' рублей',
-						'button' => '<button type="button" class="btn btn-sm btn-success w-100 text-uppercase" data-bs-dismiss="alert">Спасибо <i class="fa-solid fa-face-smile-beam"></i></button>'
-					],
-					'unpaid' => [
-						'class' => 'danger',
-						'notify' => 'Пополнение на '.$response_added_balance['amount'].' рублей неудачное, если деньги со счёта сняли - звоните менеджеру',
-						'button' => '<a href="tel:+79279174870" class="btn btn-sm btn-danger w-100 text-uppercase"><i class="fa-solid fa-phone"></i> '.(isMobile() ? 'Звонить' : '+7.927.917.48.70').'</a>'
-					],
-					'waiting' => [
-						'class' => 'secondary',
-						'notify' => 'Вы создали счёт на '.$response_added_balance['amount'].' рублей. Если уже оплатили то обновите страницу, если нет - то можете оплатить счёт позже или удалить его',
-						'button' => '<a href="'.payment_get_link_invoice($response_added_balance['invoice']).'" class="btn btn-sm btn-secondary w-100 text-uppercase mx-1">Оплатить сейчас</a>'
-					]
-				];
-				$view .= '
-					<div class="alert alert-'.$response[$response_added_balance['status']]['class'].' alert-dismissible mt-1 mb-2 p-2 fade show" role="alert">
-						<div class="row g-1">
-							<div class="col-12 col-md-9 d-flex align-items-center justify-content-md-center">
-								<p class="m-0"><strong>'.$response[$response_added_balance['status']]['notify'].'</strong></p>
-							</div>
-							<div class="col-12 col-md-3 d-flex align-items-center justify-content-md-center">
-								'.$response[$response_added_balance['status']]['button'].'
-							</div>
-						</div>
-			  		</div>
-				';
-			}
 
 			if(empty($items)) {
 				$view .= '
@@ -1091,13 +1040,21 @@
 			';
 		}
 		$view .= '
-									<div class="form-floating mt-2">
+									<div class="alert alert-success text-center mt-2 mb-0 p-2">
+										Пополнение баланса ВРЕМЕННО возможно <br />
+										только в ручном режиме, <br />
+										для пополнения баланса свяжитесь с менеджером<br />
+										<a href="tel:+7(937)222-78-88" class="btn btn-success mt-1">+7(937)222-78-88</a>
+										<a href="tg://resolve?domain=elited_admin" class="btn btn-success mt-1"><i class="fa-solid fa-paper-plane"></i></a>
+										<a href="https://wa.me/+79372227888" class="btn btn-success mt-1"><i class="fa-brands fa-whatsapp"></i></a>
+									</div>
+									<!--<div class="form-floating mt-2">
 										<input type="number" min="1000" max="200000" step="500" class="form-control" name="payment[create_invoice][amount]" value="'.((count($items) > 0 ? count($items)*1000 : 1000)).'" required>
 										<label for="userLoginLogin">Сумма пополнения</label>
-									</div>
+									</div>-->
 								</div>
 								<div class="modal-footer p-1">
-									<button class="btn btn-sm btn-primary" type="submit" name="payment[create_invoice][user_id]" value="'.$user['id'].'">Оплатить</button>
+									<!--<button class="btn btn-sm btn-primary" type="submit" name="payment[create_invoice][user_id]" value="'.$user['id'].'">Оплатить</button>-->
 									<button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Закрыть</button>
 								</div>
 								</form>

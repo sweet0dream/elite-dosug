@@ -74,7 +74,7 @@
 						<p class="mb-1">По всем вопросам <br>по размещению рекламы <br>обращаться к администратору:</p>
 						<div class="row g-2">
 							<div class="col">
-								<a href="tg://resolve?domain=elited64" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-solid fa-paper-plane"></i></a>
+								<a href="tg://resolve?domain=elited_admin" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-solid fa-paper-plane"></i></a>
 							</div>
 							<div class="col">
 								<a href="https://wa.me/+79372227888" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-whatsapp"></i></a>

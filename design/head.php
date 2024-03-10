@@ -29,11 +29,15 @@
 	<!--charset-->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<?= itMeta($route) ?>
 
-	<link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon">
-	<link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon">
-
+	<link rel="icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+	<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
+                                              
 	<!--touchicon-->
 	<link rel="apple-touch-icon" sizes="57x57" href="/assets/touch-icons/<?= $city['name'] ?>/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/assets/touch-icons/<?= $city['name'] ?>/apple-icon-60x60.png">

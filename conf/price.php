@@ -1,5 +1,5 @@
 <?php
-    $price_ank = [
+    $price_ank = $city['price'] ?? [
         'blank' => 20,
         'vip' => 20,
         'premium' => 10,

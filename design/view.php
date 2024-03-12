@@ -66,7 +66,7 @@
 		
 		if($post['type'] != 'sal') {
 			foreach($post['info'] as $k => $v) {
-				$top[] = '<div class="pr">'.$types[$post['type']]['fields']['info'][$k]['value'][$v].'</div>';
+				$top[] = '<div class="pr '.$k.'">'.str_replace('.', '', $types[$post['type']]['fields']['info'][$k]['value'][$v]).'</div>';
 			}
 		}
 

@@ -2,13 +2,14 @@
 
 session_start();
 
-date_default_timezone_set('Europe/Samara');
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 ini_set('upload_max_filesize', '50M');
 ini_set('post_max_size', '200M');
 
 require('vendor.php');
+
+date_default_timezone_set($city['timezone']);
 
 if(isset($_GET['bug']) && $_GET['bug'] == 1) {
 	//debuging

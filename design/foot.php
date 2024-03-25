@@ -37,7 +37,7 @@
           <p class="text-center text-white my-2">Этот сайт использует куки (COOKIES) файлы собирая предпочтения посетителей, это важно знать.</p>
           <div class="w-100 text-center">
             <img width="88" height="31" alt="" border="0" src="https://yandex.ru/cycounter?https://sar1.elited.ru&theme=dark&lang=ru"/>
-            <?= isset($city['counter']) ? $city['counter'] : '' ?>
+            <?= isset($counter[$city['domain']]) ? $counter[$city['domain']] : '' ?>
           </div>
           <p class="text-center text-white mt-2">Интим портал &laquo;Элит Досуг&raquo; работает с 2010 года <br>
           <a href="/agreement/" class="text-white">Cоглашение</a> <span class="text-muted">/</span> <a href="#" class="text-white">Администрация</a></p>

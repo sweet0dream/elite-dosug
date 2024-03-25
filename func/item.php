@@ -320,10 +320,11 @@
 	}
 
 	function item_abuse($data) {
+		global $city;
 		if (is_array($data)) {
 			if ((new Notify())->sendSms(
 				'Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'],
-				9053242575
+				$city['manager']['phone']
 			)) {
 				setcookie('abuse[item][]', $data['id'], time()+(60*60*24*30*365));
 				header("Refresh:0");

@@ -1044,9 +1044,9 @@
 										Пополнение баланса ВРЕМЕННО возможно <br />
 										только в ручном режиме, <br />
 										для пополнения баланса свяжитесь с менеджером<br />
-										<a href="tel:+7(937)222-78-88" class="btn btn-success mt-1">+7(937)222-78-88</a>
+										<a href="tel:'.format_phone($city['manager']['phone']).'" class="btn btn-success mt-1">'.format_phone($city['manager']['phone']).'</a>
 										<a href="tg://resolve?domain=elited_admin" class="btn btn-success mt-1"><i class="fa-solid fa-paper-plane"></i></a>
-										<a href="https://wa.me/+79372227888" class="btn btn-success mt-1"><i class="fa-brands fa-whatsapp"></i></a>
+										<a href="https://wa.me/+7'.$city['manager']['phone'].'" class="btn btn-success mt-1"><i class="fa-brands fa-whatsapp"></i></a>
 									</div>
 									<!--<div class="form-floating mt-2">
 										<input type="number" min="1000" max="200000" step="500" class="form-control" name="payment[create_invoice][amount]" value="'.((count($items) > 0 ? count($items)*1000 : 1000)).'" required>

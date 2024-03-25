@@ -130,11 +130,6 @@
 		$user = $db->where('id', $user_id)->getOne('user');
 		if($sum > 0) {
 			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
-				(new Notify())->sendSms(
-					'Элит Досуг: Юзер ID: '.$user['id'].' залил '.$sum.' рублей. Баланс: '.$user['balance']+$sum.' рублей',
-					9053242575
-				);
-				(new Event($user['id']))->add('Вы пополнили: '.$sum.' рублей. Текущий баланс: '.$user['balance']+$sum.' рублей.');
 				return true;
 			} else {
 				return false;

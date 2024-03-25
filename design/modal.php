@@ -77,13 +77,13 @@
 								<a href="tg://resolve?domain=elited_admin" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-solid fa-paper-plane"></i></a>
 							</div>
 							<div class="col">
-								<a href="https://wa.me/+79372227888" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-whatsapp"></i></a>
+								<a href="https://wa.me/+7<?= $city['manager']['phone'] ?>" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-whatsapp"></i></a>
 							</div>
 							<div class="col">
-								<a href="viber://chat?number=%2B9372227888" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-viber"></i></a>
+								<a href="viber://chat?number=%2B<?= $city['manager']['phone'] ?>" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-viber"></i></a>
 							</div>
 						</div>
-						<a href="tel:+79372227888" class="btn btn-info w-100 text-white my-1"><i class="fa-solid fa-mobile-screen-button"></i> +7.937.222.78.88</a>
+						<a href="tel:+7<?= $city['manager']['phone'] ?>" class="btn btn-info w-100 text-white my-1"><i class="fa-solid fa-mobile-screen-button"></i> +7<?= $city['manager']['phone'] ?></a>
 					</div>
 
 				</div>

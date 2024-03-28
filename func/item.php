@@ -47,8 +47,14 @@
     {
 		global $types;
 		if($types[$data['type']]['validate']($data)) {
+
+			$date = array_fill_keys([
+				'date_add',
+				'date_edit',
+				'date_top'
+			], getDateTime());
 			
-			if($id = db_connect()->insert('item', item_encode($data))) {
+			if($id = db_connect()->insert('item', item_encode(array_merge($date, $data)))) {
 				(new Event(item_one($id)['user_id']))->add('Анкета ID '.$id.' была добавлена.');
 				global $site;
 				redirect($site['url'].'/item/photo/'.$id.'/');
@@ -62,7 +68,7 @@
 		if($types[$data['type']]['validate']($data)) {
 			
 			$data = item_encode($data);
-			$data['date_edit'] = db_connect()->now();
+			$data['date_edit'] = getDateTime();
 			$id = $data['id']; unset($data['id']);
 			db_connect()->where('id', $id)->update('item', $data);
 			(new Event($data['user_id']))->add('Анкета ID '.$id.' была отредактирована.');
@@ -149,7 +155,7 @@
 							if($user['balance'] >= $price_ank['top']) {
 								if(user_change_balance($price_ank['top'], $user_id)) {
 									$result = [
-										'update' => ['date_top' => date('Y-m-d H:i:s')],
+										'update' => ['date_top' => getDateTime()],
 										'event' => 'Анкета ID '.$item['id'].' поднята. С баланса списано: '.$price_ank['top'].' рублей.',
 										'telegram' => true
 									];

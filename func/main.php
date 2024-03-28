@@ -22,6 +22,12 @@
 		}
 	}
 
+	//get datetime now per city
+	function getDateTime() {
+		global $city;
+		return (new DateTimeImmutable('now', new DateTimeZone($city['timezone'])))->format('Y-m-d H:i:s');
+	}
+
 	//send post request to api
 	function sendPostRequest($url, $data) {
 		$curl = curl_init($url);
@@ -272,7 +278,7 @@
 
 		$data = json_decode(file_get_contents('https://rest.elited.ru/config/sitemap/' . $city), true);
 
-		$date = date('Y-m-d H:i:s');
+		$date = getDateTime();
 		
 		$sitemap = '
 			<urlset xmlns="https://www.livemaps.org/schemas/sitemap/0.9">

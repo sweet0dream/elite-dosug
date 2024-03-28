@@ -29,7 +29,7 @@
 				'password_view' => base64_encode($data['password']),
 				'phone' => $data['phone'],
 				'code' => base64_encode($data['code']),
-				'reg_date' => $db->now(),
+				'reg_date' => getDateTime(),
 				'balance' => $data['balance'] ?? 0
 			];
 
@@ -85,7 +85,7 @@
 		}
 
 		if(!isset($errors)) {
-			if($db->where('id', $user['id'])->update('user', ['login_date' => $db->now()])) {
+			if($db->where('id', $user['id'])->update('user', ['login_date' => getDateTime()])) {
 				setcookie('auth[login]', $data['login'], time()+(60*60*24*30*365));
 				$_SESSION['auth'] = [
 					'id' => $user['id'],

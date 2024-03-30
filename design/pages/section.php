@@ -92,10 +92,23 @@
                         '.(!isset([0,1][$current_page]) ? '<hr class="my-1 mx-3" /><p class="text-muted text-end m-0 me-5"><strong>'.$current_page.'</strong> страница</p>' : '').'
 			            <div class="row justify-content-md-center g-0">
         ';
-        foreach($items as $item) {
-            $content .= '
+        if (isset($items) && count($items) > 0) {
+            foreach($items as $item) {
+                $content .= '
                             <div class="col-12 col-lg-4 col-md-6">
                                 '.viewIntro(item_decode($item)).'
+                            </div>
+                ';
+            }
+        } else {
+            $content .= '
+                            <div class="p-2">
+                                <div class="alert alert-warning mx-2">
+                                    <p class="text-center mb-2">
+                                        <img src="/assets/images/nothing.webp" class="img-thumbnail">
+                                    </p>
+                                    <p class="text-center m-0">К сожалению в разделе отсутствуют активные анкеты...</p>
+                                </div>
                             </div>
             ';
         }

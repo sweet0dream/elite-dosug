@@ -66,7 +66,7 @@
             <p class="m-0">Вы редактируете данные анкеты пользователя ID: <?= $userId ?> в режиме менеджера</p>
         </div>
         <?php endif ?>
-        <form method="post">
+        <form method="post" id="form">
         <?php
             if($route[2] == 'edit' && $route[3] == $value['id']) {
         ?>
@@ -224,10 +224,17 @@
             </div>
             <div class="row justify-content-md-center g-0 my-2">
                 <div class="col-12 col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                    <button type="submit" class="btn btn-primary w-100" id="button">Сохранить</button>
+                    <button class="btn btn-primary w-100 d-none" id="load" disabled><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span role="status">Сохраняется...</span></button>
                 </div>
             </div>
         </form>
+        <script>
+			$('#button').on('click', function () {
+				$(this).addClass('d-none');
+                $('#load').removeClass('d-none');
+			});
+		</script>
     </div>
 </div>
 <?php
@@ -327,13 +334,19 @@
                     <input type="hidden" name="item[photo][add][id]" value="<?= $item['id'] ?>">
                     <div class="row g-1">
                         <div class="col-12 col-md-8">
-                            <input class="form-control" type="file" name="upload[]" multiple>
+                            <input id="file" class="form-control" type="file" name="upload[]" multiple>
                         </div>
                         <div class="col-12 col-md-4">
-                            <button type="submit" class="btn btn-primary w-100">Загрузить</button>
+                            <button id="submit" type="submit" class="btn btn-primary w-100" disabled>Нет фото для загрузки</button>
                         </div>
                     </div>
                 </form>
+                <script>
+                    $('#file').on('change', function () {
+                        fileCount = this.files.length;
+                        $('#submit').prop('disabled', false).html('<i class="fa-solid fa-cloud-arrow-up"></i> Загрузить ' + fileCount + ' фото');
+                    });
+                </script>
             </div>
         </div>
     </div>

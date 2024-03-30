@@ -23,9 +23,13 @@
 	}
 
 	//get datetime now per city
-	function getDateTime() {
-		global $city;
-		return (new DateTimeImmutable('now', new DateTimeZone($city['timezone'])))->format('Y-m-d H:i:s');
+	function getDateTime($modify = null, $format = 'Y-m-d H:i:s') {
+		$dateNow = (new DateTimeImmutable('now'));
+		if (!is_null($modify)) {
+			$dateNow = $dateNow->modify($modify);
+		}
+
+		return $dateNow->format($format);
 	}
 
 	//send post request to api
@@ -111,15 +115,15 @@
 		$month = explode('-', $dateDay)[1];
 		$year = explode('-', $dateDay)[0];
 
-		if (date('d') == $day && date('m') == $month && date('Y') == $year) {
+		if (getDateTime(null, 'd') == $day && getDateTime(null, 'm') == $month && getDateTime(null, 'Y') == $year) {
 			$result = 'сегодня';
-		} elseif (date('d',time()-86400) == $day && date('m') == $month && date('Y') == $year) {
+		} elseif (getDateTime('-1 day', 'd') == $day && getDateTime(null, 'm') == $month && getDateTime(null, 'Y') == $year) {
 			$result = 'вчера';
 		} else {
 			$result = ltrim($day, 0).' '.$termMonth[$month];
 		}
 
-		if (date('Y') != $year) {
+		if (getDateTime(null, 'Y') != $year) {
 			$result .= ' '.$year.' года';
 		}
 

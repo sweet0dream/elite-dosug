@@ -36,7 +36,7 @@
 					</a>
 					<div class="info">
 		';
-		if($post['date_top'] > date('Y-m-d H:i:s', strtotime('-2 Days'))) {
+		if($post['date_top'] > getDateTime('-2 days')) {
 			$view .= '
 						<p class="my-1 text-center">
 							<span class="font2 text-uppercase badge text-bg-success wait_call">
@@ -76,7 +76,7 @@
 		  			<div class="col-lg-4">
 						<div class="inner_photo">
 		';
-		if($post['date_top'] > date('Y-m-d H:i:s', strtotime('-2 Days'))) {
+		if($post['date_top'] > getDateTime('-2 days')) {
 			$view .= '
 							<div class="now"><i>&#9829;</i> онлайн</div>
 			';
@@ -517,7 +517,7 @@
 			$events = (new Event($user['id']))->getAll(20);
 			$count_today_events = 0;
 			foreach($events as $today_event) {
-				if(date('Ymd', strtotime($today_event['created_at'])) === date('Ymd')) {
+				if(date('Ymd', strtotime($today_event['created_at'])) === getDateTime(null, 'Ymd')) {
 					$count_today_events++;
 				}
 			}
@@ -650,8 +650,7 @@
 						$view .= '
 													<div class="col-6 col-md-'.($v['status_vip'] == 1 ? 3 : 4).'">
 														<button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#status_top'.$v['id'].'">
-															<i class="fa-solid fa-chevron-up"></i>
-															<span class="d-inline d-lg-none d-md-none"><br> Поднять</span>
+															<i class="fa-solid fa-chevron-up"></i> <span class="d-inline d-lg-none d-md-none">Поднять</span>
 														</button>
 													</div>
 													<div class="modal fade" id="status_top'.$v['id'].'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -693,14 +692,12 @@
 													</div>
 													<div class="col-6 col-md-'.($v['status_vip'] == 1 ? 3 : 4).'">
 														<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#status_active'.$v['id'].'">
-															<i class="fa-solid fa-toggle-on"></i>
-															<span class="d-inline d-lg-none d-md-none"><br> Скрыть</span>
+															<i class="fa-solid fa-toggle-on"></i> <span class="d-inline d-lg-none d-md-none">Скрыть</span>
 														</button>
 													</div>
-													<div class="col-6 col-md-'.($v['status_vip'] == 1 ? 3 : 4).'">
+													<div class="col-'.($v['status_vip'] == 1 ? 6 : 12).' col-md-'.($v['status_vip'] == 1 ? 3 : 4).'">
 														<button type="button" class="btn btn-'.($v['status_vip'] != 1 ? 'outline-' : '').'success w-100" data-bs-toggle="modal" data-bs-target="#status_vip'.$v['id'].'">
-															<i class="fa-solid fa-star"></i>
-															<span class="d-inline d-lg-none d-md-none"><br>VIP</span>
+															<i class="fa-solid fa-star"></i> <span class="d-inline d-lg-none d-md-none">VIP</span>
 														</button>
 													</div>
 													<div class="modal fade" id="status_vip'.$v['id'].'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -739,8 +736,7 @@
 							$view .= '
 													<div class="col-6 col-md-3">
 														<button type="button" class="btn btn-'.($v['status_premium'] != 1 ? 'outline-' : '').'success w-100" data-bs-toggle="modal" data-bs-target="#status_premium'.$v['id'].'">
-															<i class="fa-solid fa-crown"></i>
-															<span class="d-inline d-lg-none d-md-none"><br>PREMIUM</span>
+															<i class="fa-solid fa-crown"></i> <span class="d-inline d-lg-none d-md-none">PREMIUM</span>
 														</button>
 													</div>
 													<div class="modal fade" id="status_premium'.$v['id'].'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -857,7 +853,7 @@
 																			</div>
 																			<div class="collapse mb-1" id="reply'.$review['id'].'">
 																				<div class="form-floating">
-																					<textarea class="form-control" name="review[reply][reply]" placeholder="Напишите ответ на отзыв'.$review['id'].'" style="height:80px;resize:none">'.(isset($review['text']['answer']) ? $review['text']['answer'] : '').'</textarea>
+																					<textarea id="label_reply'.$review['id'].'" class="form-control" name="review[reply][reply]" placeholder="Напишите ответ на отзыв" style="height:80px;resize:none">'.($review['text']['answer'] ?? '').'</textarea>
 																					<label for="label_reply'.$review['id'].'">Ответ на отзыв</label>
 																				</div>
 																			</div>
@@ -1096,7 +1092,7 @@
 			foreach($events as $key_event => $event) {
 				$view .= '
 									<p class="mb-1">
-										<small class="'.(date('Ymd', strtotime($event['created_at'])) === date('Ymd') ? 'text-success' : 'text-muted').'">'.format_date($event['created_at']).'</small><br>
+										<small class="'.(date('Ymd', strtotime($event['created_at'])) === getDateTime(null, 'Ymd') ? 'text-success' : 'text-muted').'">'.format_date($event['created_at']).'</small><br>
 										<span>'.$event['event'].'</span>
 									</p>
 									'.($key_event !== array_key_last($events) ? '<hr class="text-muted m-0" />' : '').'

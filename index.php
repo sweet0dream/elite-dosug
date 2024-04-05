@@ -9,7 +9,7 @@ ini_set('post_max_size', '200M');
 
 require('vendor.php');
 
-date_default_timezone_set($city['timezone']);
+date_default_timezone_set($city['timezone'] ?? 'Europe/Moscow');
 
 if(isset($_GET['bug']) && $_GET['bug'] == 1) {
 	//debuging

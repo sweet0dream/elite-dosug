@@ -24,7 +24,8 @@
 
 	//get datetime now per city
 	function getDateTime($modify = null, $format = 'Y-m-d H:i:s') {
-		$dateNow = (new DateTimeImmutable('now'));
+		global $city;
+		$dateNow = (new DateTimeImmutable('now', new DateTimeZone($city['timezone'])));
 		if (!is_null($modify)) {
 			$dateNow = $dateNow->modify($modify);
 		}
@@ -32,28 +33,19 @@
 		return $dateNow->format($format);
 	}
 
-	//send post request to api
-	function sendPostRequest($url, $data) {
-		$curl = curl_init($url);
-			curl_setopt($curl, CURLOPT_HEADER, false);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: application/json']);
-			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-
-		$response = [
-			'data' => json_decode(curl_exec($curl), true),
-			'code' => curl_getinfo($curl, CURLINFO_HTTP_CODE)
-		];
-			curl_close($curl);
-			
-		return $response;
-	}
-
-	//get city
+	// get city
 	function getCity($key) {
-		$city = json_decode(file_get_contents('https://rest.elited.ru/config/get_city/' . $key), true);
-		return isset($city['id']) ? $city : null;
+		$keyCache = $key . '-config';
+		$classCache = new CacheHelper(86400);
+		$result = $classCache->getData($keyCache);
+		if (!$result) {
+			$result = $classCache->setData(
+				$keyCache,
+				(new ClientHelper())->request('config/get_city/' . $key)->toArray()
+			);
+		}
+
+		return $result;
 	}
 
 	// redirect
@@ -139,36 +131,6 @@
 
 	// is mobile
 	function isMobile() {
-		/*$mobile_agent_array = [
-			'ipad',
-			'iphone',
-			'android',
-			'pocket',
-			'palm',
-			'windows ce',
-			'windowsce',
-			'cellphone',
-			'opera mobi',
-			'ipod',
-			'small',
-			'sharp',
-			'sonyericsson',
-			'symbian',
-			'opera mini',
-			'nokia',
-			'htc_',
-			'samsung',
-			'motorola',
-			'smartphone',
-			'blackberry',
-			'playstation portable',
-			'tablet browser'
-		];
-		$agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-		foreach($mobile_agent_array as $value) {
-			if(strpos($agent, $value) !== false) return true;
-		}
-		return false;*/
 		return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 	}
 
@@ -210,7 +172,7 @@
 			} else {
 				if(isset($types[$route[1]])) {
 					if(isset($route[2])) {
-						if($item = item_decode(db_connect()->where('id', $route[2])->getOne('item'))) {
+						if($item = item_decode((new DatabaseHelper('item'))->fetchOne((int)$route[2])->getResult())) {
 							return '
 								<title>'.$types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'].' - Элит Досуг '.$city['value'][0].'</title>
 								<meta name="description" content="'.$types[$route[1]]['names'][2].'. '.$item['dopinfo'].'">

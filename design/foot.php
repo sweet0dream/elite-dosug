@@ -45,9 +45,49 @@
           <p class="text-center text-white my-2">Этот сайт использует куки (COOKIES) файлы собирая предпочтения посетителей, это важно знать.</p>
           <div class="w-100 text-center">
             <img width="88" height="31" alt="" border="0" src="https://yandex.ru/cycounter?https://<?= $city['domain'] ?>.elited.ru&theme=dark&lang=ru"/>
-            <?= isset($counter[$city['domain']]) ? $counter[$city['domain']] : '' ?>
+<?php
+  if (isset($counter[$city['domain']])) {
+?>
+
+<script>
+( function () {
+        var loadedTLAnalytics = false,timerId;
+      if ( navigator.userAgent.indexOf( 'YandexMetrika' ) > -1 ) {
+             loadTLAnalytics();
+      } else {
+             window.addEventListener( 'scroll', loadTLAnalytics, { passive: true } );
+             window.addEventListener( 'touchstart', loadTLAnalytics, { passive: true } );
+             document.addEventListener( 'mouseenter', loadTLAnalytics, { passive: true } );
+            document.addEventListener( 'click', loadTLAnalytics, { passive: true } );
+            document.addEventListener( 'DOMContentLoaded', loadFallback, { passive: true } );
+     }
+ function loadFallback() {
+           timerId = setTimeout( loadTLAnalytics, 5000 );
+ } 
+function loadTLAnalytics( e ) {
+     if ( loadedTLAnalytics ) {
+          return;
+     }
+    setTimeout(function () {
+      (function(m,e,t,r,i,k,a) { m[i]=m[i]||function() { (m[i].a=m[i].a||[]).push(arguments) }; m[i].l=1*new Date(); for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } } k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a) } ) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym"); ym( <?= $counter[$city['domain']] ?>, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer", triggerEvent:true } )
+     },0);
+   loadedTLAnalytics = true;
+   clearTimeout( timerId );
+   window.removeEventListener( 'scroll', loadTLAnalytics, { passive: true} );
+   window.removeEventListener( 'touchstart', loadTLAnalytics, {passive: true} );
+   document.removeEventListener( 'mouseenter', loadTLAnalytics, { passive: true } );
+   document.removeEventListener( 'click', loadTLAnalytics, { passive: true } );
+   document.removeEventListener( 'DOMContentLoaded', loadFallback, { passive: true } );
+ }
+} )();
+</script>
+<img src="https://informer.yandex.ru/informer/<?= $counter[$city['domain']] ?>/2_1_EFEFEFFF_EFEFEFFF_0_pageviews" />
+
+<?php
+  }
+?>
           </div>
-          <p class="text-center text-white mt-2">Интим портал &laquo;Элит Досуг <?= $city['value'][0] ?>&raquo; работает с 2010 года <br>
+          <p class="text-center text-white mt-2">Интим портал <br />&laquo;Элит Досуг <?= $city['value'][0] ?>&raquo; <br />работает с 2010 года <br>
           <a href="/agreement/" class="text-white">Пользовательсткое соглашение</a><br /><a href="#" class="text-white">Менеджер по размещению рекламы</a></p>
         </div>
       </div>

@@ -1,9 +1,24 @@
 <?php
-	$itemsVips = db_connect()->where('city_id', $city['id'])->where('status_active', 1)->where('status_vip', 1)->orderBy('status_premium', 'DESC')->orderBy('date_top', 'DESC');
-	if(isset($route[1]) && isset($types[$route[1]])) {
-		$itemsVips->where('type', $route[1]);
+	$keyVipItems = $city['domain'] . (isset($route[1]) && isset($types[$route[1]]) ? '-' . $route[1] : '') . '-vip';
+	$cacheVipItems = (new CacheHelper())->getData($keyVipItems);
+	if (!$cacheVipItems) {
+		$param = [
+			'city_id' => $city['id'],
+			'status_active' => 1,
+			'status_vip' => 1
+		];
+		if(isset($route[1]) && isset($types[$route[1]])) {
+			$param['type'] = $route[1];
+		}
+		$order = [
+			'status_premium' => 'DESC',
+			'date_top' => 'DESC'
+		];
+		$cacheVipItems = (new CacheHelper())->setData(
+			$keyVipItems,
+			(new DatabaseHelper('item'))->fetchAll($param, $order)->getResult()
+		);
 	}
-	$posts = $itemsVips->get('item');
 ?>
 <div class="partVip">
 	<?= $city['id'] == 1 && !isset($_SESSION['auth']) ? renderAdv('b1') : ''?>
@@ -11,7 +26,7 @@
 		<?= isMobile() ? '<style>.partVip .item .info {bottom: -35px;}</style>' : ''?>
 <?php 
 	$count_vip = 0;
-	foreach($posts as $post) {
+	foreach($cacheVipItems as $post) {
 		echo '<div class="col-6 col-lg-2 col-md-4 col-sm-6">'.viewVip(item_decode($post)).'</div>';
 		$count_vip++;
 		if($count_vip == 4) {

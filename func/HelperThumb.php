@@ -1,20 +1,36 @@
 <?php
-    //generate thumb
-    function thumb($file, $id, $param) {
-        if($id == db_connect()->where('id', $id)->getOne('item')['id']) {
+
+class ThumbHelper
+{
+    private DatabaseHelper $db;
+    private string $file;
+    private int $id;
+
+    public function __construct(
+        string $file,
+        int $id
+    ) {
+        $this->file = $file;
+        $this->id = $id;
+        $this->db = new DatabaseHelper('item');
+    }
+
+    public function generate(array $param): string|false
+    {
+        if ($this->db->fetchOne($this->id)->getResult()) {
             global $site;
 
             if(!isset($param['width'])) $param['width'] = 0;
             if(!isset($param['height'])) $param['height'] = 0;
 
-            $thumb_path = $site['path'].'/media/photo/'.$id.'/thumb/'.$file.'_'.implode('x', $param).'.webp';
-            $thumb_url = '/media/photo/'.$id.'/thumb/'.$file.'_'.implode('x', $param).'.webp';
+            $thumb_path = $site['path'].'/media/photo/'.$this->id.'/thumb/'.$this->file.'_'.implode('x', $param).'.webp';
+            $thumb_url = '/media/photo/'.$this->id.'/thumb/'.$this->file.'_'.implode('x', $param).'.webp';
 
             if(file_exists($thumb_path)) {
                 return $thumb_url;
             } else {
-                if(!is_dir($site['path'].'/media/photo/'.$id.'/thumb/')) mkdir($site['path'].'/media/photo/'.$id.'/thumb/');
-                if(file_exists($src = $site['path'].'/media/photo/'.$id.'/'.$file.'.jpg')) {
+                if(!is_dir($site['path'].'/media/photo/'.$this->id.'/thumb/')) mkdir($site['path'].'/media/photo/'.$this->id.'/thumb/');
+                if(file_exists($src = $site['path'].'/media/photo/'.$this->id.'/'.$this->file.'.jpg')) {
                     $photo = new \claviska\SimpleImage();
                     $photo->fromFile($src);
                     if($param['width'] != 0 && $param['height'] != 0) {
@@ -39,14 +55,14 @@
         }
     }
 
-    //thumb del
-    function thumb_del($file, $id) {
+    public function remove(): void
+    {
         global $site;
-        if(is_dir($thumb_dir = $site['path'].'/media/photo/'.$id.'/thumb/')) {
+        if(is_dir($thumb_dir = $site['path'].'/media/photo/'.$this->id.'/thumb/')) {
             foreach(scandir($thumb_dir) as $v) {
                 if($v != '.' && $v != '..') {
-                    if(explode('_', $v)[0] == $file) {
-                        $count_remove[] = $site['path'].'/media/photo/'.$id.'/thumb/'.$v;
+                    if(explode('_', $v)[0] == $this->file) {
+                        $count_remove[] = $site['path'].'/media/photo/'.$this->id.'/thumb/'.$v;
                     }
                 }
             }
@@ -57,3 +73,4 @@
             }
         }
     }
+}

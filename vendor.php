@@ -5,6 +5,8 @@
     require_once('vendor/autoload.php');
     require_once('func/main.php');
 
+    $client = new ClientHelper();
+
     //load city config
     $city = getCity(explode('.', $_SERVER['HTTP_HOST'])[0]);
 

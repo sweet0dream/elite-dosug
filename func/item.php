@@ -2,8 +2,10 @@
     //post
 	function item_post($data, $files = false): void
     {
+		global $city;
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('item_'.key($data))) {
+				(new CacheHelper())->dropCacheCity($city['domain']);
 				if($files) {
 					call_user_func('item_'.key($data), $data[key($data)], $files);
 				} else {
@@ -53,9 +55,9 @@
 				'date_edit',
 				'date_top'
 			], getDateTime());
-			
-			if($id = db_connect()->insert('item', item_encode(array_merge($date, $data)))) {
-				(new Event(item_one($id)['user_id']))->add('Анкета ID '.$id.' была добавлена.');
+
+			if($id = (new DatabaseHelper('item'))->insertData(item_encode(array_merge($date, $data)))) {
+				(new EventHelper(item_one($id)['user_id']))->add('Анкета ID '.$id.' была добавлена.');
 				global $site;
 				redirect($site['url'].'/item/photo/'.$id.'/');
 			}
@@ -70,8 +72,11 @@
 			$data = item_encode($data);
 			$data['date_edit'] = getDateTime();
 			$id = $data['id']; unset($data['id']);
-			db_connect()->where('id', $id)->update('item', $data);
-			(new Event($data['user_id']))->add('Анкета ID '.$id.' была отредактирована.');
+			(new DatabaseHelper('item'))->updateData(
+				$id,
+				$data
+			);
+			(new EventHelper($data['user_id']))->add('Анкета ID '.$id.' была отредактирована.');
 		}
 	}
 
@@ -83,9 +88,8 @@
 			if($item = item_one($id, $user_id)) {
 				if(dirDel($site['path'].'/media/photo/'.$id.'/')) {
 					review_del_all($id);
-					
-					db_connect()->where('id', $id)->where('user_id', $user_id)->delete('item');
-					(new Event($user_id))->add('Анкета ID '.$id.' была удалена.');
+					(new DatabaseHelper('item'))->deleteItem($id);
+					(new EventHelper($user_id))->add('Анкета ID '.$id.' была удалена.');
 				}
 			} else {
 				return false;
@@ -113,8 +117,10 @@
 							}
 						}
 						if(!empty($photo)) {
-							
-							db_connect()->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo), 'status_real' => 0]);
+							(new DatabaseHelper('item'))->updateData(
+								$item['id'],
+								['photo' => implode(',', $photo), 'status_real' => 0]
+							);
 						}
 					}
 				}
@@ -127,8 +133,10 @@
 						thumb_del($file, $id);
 						$photo = explode(',', $item['photo']);
 						unset($photo[array_search($file, $photo)]);
-						
-						db_connect()->where('id', $item['id'])->update('item', ['photo' => implode(',', $photo)]);
+						(new DatabaseHelper('item'))->updateData(
+							$item['id'],
+							['photo' => implode(',', $photo)]
+						);
 					}
 				}
 			}
@@ -220,16 +228,18 @@
 
 						//update && events && send telegram
 						if (isset($result['update'])) {
-							$db = db_connect();
-							$db->where('id', $item['id'])->update('item', $result['update']);
+							(new DatabaseHelper('item'))->updateData(
+								$item['id'],
+								$result['update']
+							);
 						}
 						if (isset($result['event'])) {
-							(new Event($user['id']))->add($result['event']);
+							(new EventHelper($user['id']))->add($result['event']);
 						}
 						if (isset($result['telegram'])) {
 							global $site, $city;
 							if (isset($city['social']['telegamChannelId'])) {
-								(new Notify())->sendItemToTelegramChannel([
+								(new NotifyHelper())->sendItemToTelegramChannel([
 									'itemId' => $item['id'],
 									'chatId' => $city['social']['telegamChannelId'],
 									'siteUrl' => $site['url']
@@ -247,10 +257,7 @@
 
 	function item_stat_add($id): void
     {
-
-		$db = db_connect();
-		
-		$db->where('id', $id)->update('item', ['view_day' => db_connect()->inc(1), 'view_month' => db_connect()->inc(1)]);
+		(new DatabaseHelper('item'))->updateStat($id);
 	}
 
 	function item_stat_reset($id): void
@@ -260,38 +267,29 @@
 		if(date('d') == '01') {
 			$stat['view_month'] = 0;
 		}
-		db_connect()->where('id', $id)->update('item', $stat);
+		(new DatabaseHelper('item'))->updateData(
+			$id,
+			$stat
+		);
 	}
 
 	function item_one($id, $user_id = false): false|array
     {
-		if($id) {
-			
-			$db = db_connect();
-
-			$db->where('id', $id);
-			if($user_id) {
-				$db->where('user_id', $user_id);
-			}
-			return $db->getOne('item');
-		} else {
-			return false;
-		}
+		return $id ? (new DatabaseHelper('item'))->fetchOne($id, $user_id ? ['user_id' => $user_id] : null)->getResult() : false;
 	}
 
 	function item_all($user_id = false): array|Generator
     {
 		global $city;
 
-		$db = db_connect();
-
-		$db->where('city_id', $city['id']);
-		
+		$where = [
+			'city_id' => $city['id']
+		];
 		if($user_id) {
-			$db->where('user_id', $user_id);
+			$where['user_id'] = $user_id;
 		}
 		
-		return $db->get('item');
+		return (new DatabaseHelper('item'))->fetchAll($where)->getResult();
 	}
 
 	function item_all_sum($user_id) {
@@ -308,16 +306,29 @@
 		}
 	}
 
+	function item_has_active($user_id)
+	{
+		foreach (item_all($user_id) as $item) {
+			if($item['status_active'] == 1) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	function item_all_reset_status($user_id) {
 		if($items = item_all($user_id)) {
 			foreach($items as $item) {
-				$db = db_connect();
-				$db->where('id', $item['id'])->update('item', [
-					'status_active' => 0,
-					'status_premium' => 0,
-					'status_vip' => 0,
-					'sum' => 0
-				]);
+				(new DatabaseHelper('item'))->updateData(
+					$item['id'],
+					[
+						'status_active' => 0,
+						'status_premium' => 0,
+						'status_vip' => 0,
+						'sum' => 0
+					]
+				);
 			}
 			return true;
 		} else {
@@ -328,7 +339,7 @@
 	function item_abuse($data) {
 		global $city;
 		if (is_array($data)) {
-			if ((new Notify())->sendSms(
+			if ((new NotifyHelper())->sendSms(
 				'Жалоба от '.format_phone($data['phone']).' на анкету ID: '.$data['id'].' причина: '.$data['reason'],
 				$city['manager']['phone']
 			)) {

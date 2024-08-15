@@ -2,8 +2,10 @@
     //post
 	function user_post($data): void
     {
+		global $city;
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('user_'.key($data))) {
+				(new CacheHelper())->dropCacheCity($city['domain']);
 				call_user_func('user_'.key($data), $data[key($data)]);
 			} else {
 				die('no exist func: user_'.key($data).'()');
@@ -19,7 +21,7 @@
 
 			global $city;
 			
-			$db = db_connect();
+			$db = new DatabaseHelper('user');
 
 			$user = [
 				'city_id' => $city['id'],
@@ -33,20 +35,22 @@
 				'balance' => $data['balance'] ?? 0
 			];
 
-			if(isset($db->where('login', $data['login'])->getOne('user')['id'])) {
+			if(count($db->fetchAll(['login' => $data['login']])->getResult()) > 0) {
 				$errors['login'] = 'dublicate';
 			}
-
 		}
 
 		if (!isset($errors)) {
-			if ($user_id = $db->insert('user', $user)) {
-				(new Notify())->sendSms(
+			if ($user_id = $db->insertData($user)) {
+				$notify = new NotifyHelper();
+				$notify->sendSms(
 					'Личный кабинет по номеру: '.$data['phone'].' на сайте Элит Досуг '.$city['value'][0].' - '.$site['url'].'. Логин: '.$data['login'].', пароль: '.$data['password'].', секретное слово: '.$data['code'].(isset($data['balance']) ? '. На баланс зачислен бонусные: '.$data['balance'].' рублей.' : ''),
 					$data['phone']
 				);
+				$notify->sendSmsForManager('Новый пользователь на сайте Элит Досуг '.$city['value'][0].'. Логин: '.$data['login'].' / Номер: '.format_phone($data['phone']));
+
 				if (isset($data['balance'])) {
-					(new Event($user_id))->add('Бонус зачислен. Ваш баланс: '.$data['balance'].' рублей');
+					(new EventHelper($user_id))->add('Бонус зачислен. Ваш баланс: '.$data['balance'].' рублей');
 				}
 				user_login([
 					'login' => $data['login'],
@@ -71,11 +75,9 @@
 
 			global $city;
 
-			$db = db_connect();
-
-			$db->where('city_id', $city['id']);
+			$db = new DatabaseHelper('user');
 			
-			if($user = $db->where('login', $data['login'])->getOne('user')) {
+			if($user = $db->fetchAll(['city_id' => $city['id'], 'login' => $data['login']])->getResult()[0]) {
 				if(!password_verify($data['password'], $user['password'])) {
 					$errors['password'] = 'incorrect';
 				}
@@ -85,7 +87,11 @@
 		}
 
 		if(!isset($errors)) {
-			if($db->where('id', $user['id'])->update('user', ['login_date' => getDateTime()])) {
+			$auth = $db->updateData(
+				$user['id'],
+				['login_date' => getDateTime()]
+			);
+			if($auth) {
 				setcookie('auth[login]', $data['login'], time()+(60*60*24*30*365));
 				$_SESSION['auth'] = [
 					'id' => $user['id'],
@@ -107,11 +113,14 @@
 	function user_change_balance($sum, $user_id): bool
     {
 		
-		$db = db_connect();
+		$db = new DatabaseHelper('user');
 
-		$user = $db->where('id', $user_id)->getOne('user');
+		$user = $db->fetchOne($user_id)->getResult();
 		if(isset($user['id']) && $user['balance'] >= $sum && $user['balance']-$sum >= 0) {
-			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']-$sum])) {
+			if($db->updateData(
+				$user['id'],
+				['balance' => $user['balance']-$sum]
+			)) {
 				return true;
 			} else {
 				return false;
@@ -122,14 +131,17 @@
 	}
 
 	//add balance
-	function user_add_balance($sum, $user_id): bool
+	/*function user_add_balance($sum, $user_id): bool
     {
 
 		$db = db_connect();
 		
 		$user = $db->where('id', $user_id)->getOne('user');
 		if($sum > 0) {
-			if($db->where('id', $user['id'])->update('user', ['balance' => $user['balance']+$sum])) {
+			if((new DatabaseHelper('user'))->updateData(
+				$user['id'],
+				['balance' => $user['balance']+$sum]
+			)) {
 				return true;
 			} else {
 				return false;
@@ -137,41 +149,26 @@
 		} else {
 			return false;
 		}
-	}
+	}*/
 
 	//all users
-	function user_all($type = 'reg', $orderBy = [['id', 'DESC']]): array|Generator
+	function user_all(
+		$city_id = null,
+		$type = 'reg',
+		$orderBy = ['id' => 'DESC']
+	): array|Generator
     {
 		global $city;
-		$db = db_connect();
-
-		$db->where('city_id', $city['id']);
-
-		if($type) {
-			$db->where('type', $type);
-		}
-
-		foreach($orderBy as $order) {
-			$db->orderBy($order[0], $order[1]);
-		}
-
-		return $db->get('user');
+		return (new DatabaseHelper('user'))->fetchAll([
+			'city_id' => $city_id ?? $city['id'],
+			'type' => $type
+		], $orderBy)->getResult();
 	}
 
 	//one user
 	function user_one($id): false|array
     {
-		if($id) {
+		global $city;
 
-			global $city;
-
-			$db = db_connect();
-
-			$db->where('city_id', $city['id']);
-
-			$user = $db->where('id', $id)->getOne('user');
-			return isset($user['id']) ? $user : false;
-		} else {
-			return false;
-		}
+		return (new DatabaseHelper('user'))->fetchOne($id, ['city_id' => $city['id']])->getResult() ?? false;
 	}

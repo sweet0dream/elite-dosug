@@ -31,12 +31,11 @@
 				];
 			} else {
 				unset($data['captcha_q']); unset($data['captcha_a']);
-				if($id = db_connect()->insert('item_reviews', $data)) {
-					(new Notify())->sendSms(
-						'Элит Досуг '.$city['value'][0].': Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.',
-						$city['manager']['phone']
+				if($id = (new DatabaseHelper('item_reviews'))->insertData($data)) {
+					(new NotifyHelper())->sendSmsForManager(
+						'Элит Досуг '.$city['value'][0].': Отзыв к анкете ID '.$data['item_id'].': '.$data['review'].'. Оценка: '.$data['rating'].'. Вериф: '.$data['verify'].'.'
 					);
-					(new Event(item_one($data['item_id'])['user_id']))->add('Добавлен новый отзыв к анкете ID '.$data['item_id']);
+					(new EventHelper(item_one($data['item_id'])['user_id']))->add('Добавлен новый отзыв к анкете ID '.$data['item_id']);
 					setcookie('review['.$data['item_id'].'][]', $id, time()+(60*60*24*30*365));
 					header("Refresh:0");
 				}
@@ -55,9 +54,10 @@
 					if(strpos($review['review'], '||') !== false) {
 						$review['review'] = explode('||', $review['review'])[0];
 					}
-					db_connect()->where('id', $review['id'])->update('item_reviews', [
-						'review' => $review['review'].'||'.$data['reply']
-					]);
+					(new DatabaseHelper('item_reviews'))->updateData(
+						$review['id'],
+						['review' => $review['review'].'||'.$data['reply']]
+					);
 				}	
 			}
 		} else {
@@ -73,14 +73,14 @@
 				$item = item_one($data['item_id']);
 				if($item['status_premium'] == 1) {
 					if(review_del($data['id'])) {
-						(new Event($user['id']))->add('Удален отзыв в премиум анкете ID '.$item['id'].' бесплатно.');
+						(new EventHelper($user['id']))->add('Удален отзыв в премиум анкете ID '.$item['id'].' бесплатно.');
 					}
 				} else {
 					global $price_ank;
 					if($user['balance'] >= $price_ank['delete_review']) {
 						if(user_change_balance($price_ank['delete_review'], $user['id'])) {
 							if(review_del($data['id'])) {
-								(new Event($user['id']))->add('Удален отзыв в анкете ID '.$item['id'].'. С баланса списано: '.$price_ank['delete_review'].' рублей.');
+								(new EventHelper($user['id']))->add('Удален отзыв в анкете ID '.$item['id'].'. С баланса списано: '.$price_ank['delete_review'].' рублей.');
 							}
 						}
 					}
@@ -98,8 +98,7 @@
 		$review = review_item_one($id);
 		if(!empty($review) && isset($review['id'])) {
 			if(isset($review['id']) && $review['id'] == $id) {
-				db_connect()->where('id', $review['id'])->delete('item_reviews');
-				return true;
+				return (new DatabaseHelper('item_reviews'))->deleteItem($review['id']);
 			}
 		} else {
 			return false;
@@ -121,20 +120,12 @@
 
     //get all review
     function review_item_all($item_id) {
-		if($item_id) {
-			return db_connect()->where('item_id', $item_id)->orderBy('created_at', 'DESC')->get('item_reviews');
-		} else {
-            return false;
-        }
+		return $item_id ? (new DatabaseHelper('item_reviews'))->fetchAll(['item_id' => $item_id], ['created_at' => 'DESC'])->getResult() : false;
 	}
 
 	//get one review
 	function review_item_one($id) {
-		if($id) {
-			return db_connect()->where('id', $id)->getOne('item_reviews');
-		} else {
-            return false;
-        }
+		return $id ? (new DatabaseHelper('item_reviews'))->fetchOne($id)->getResult() : false;
 	}
 
 	//render one review

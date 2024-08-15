@@ -4,6 +4,8 @@
         "claviska/simpleimage": "^3.6",
         "qiwi/bill-payments-php-sdk": "^0.2.2",
         "ext-curl": "*",
-        "sweet0dream/intim-anketa-contract": "dev-main"
+        "sweet0dream/intim-anketa-contract": "dev-main",
+        "guzzlehttp/guzzle": "^7.8",
+        "monolog/monolog": "^3.7"
     }
 }

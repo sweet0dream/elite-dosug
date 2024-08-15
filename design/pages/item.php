@@ -284,7 +284,7 @@
 ?>
                     <div class="col-6 col-md-3 col-lg-2">
                         <div class="card mx-auto" style="max-width:250px">
-                            <img src="<?= thumb($photos[$i], $item['id'], ['width' => 250, 'height' => 250]) ?>" class="card-img-top">
+                            <img src="<?= (new ThumbHelper($photos[$i], $item['id']))->generate(['width' => 250, 'height' => 250]) ?>" class="card-img-top">
                             <div class="card-body p-1">
                                 <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#photo<?= $photos[$i] ?>">Удалить</button>
                             </div>

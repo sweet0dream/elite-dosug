@@ -2,8 +2,10 @@
     //post
 	function manager_post($data): void
     {
+        global $city;
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('manager_'.key($data))) {
+                (new CacheHelper())->dropCacheCity($city['domain']);
 				call_user_func('manager_'.key($data), $data[key($data)]);
 			} else {
 				die('no exist func: manager_'.key($data).'()');
@@ -13,7 +15,16 @@
 
     function manager_added_balance($data): void
     {
-        $_SESSION['response']['added_balance'] = sendPostRequest('https://rest.elited.ru/user/balance/added/', $data);
+        $request = (new ClientHelper())->request(
+            'user/balance/added',
+            'POST',
+            $data
+        );
+
+        $_SESSION['response']['added_balance'] = [
+            'code' => $request->getCode(),
+            'data' => $request->toArray()
+        ];
     }
 
     function manager_change_status_for_item($data): void
@@ -24,11 +35,20 @@
         $action = key($data);
         $value = $data[key($data)];
 
-        $request = [
+        $param = [
             'price' => $price,
             'action' => $action,
             'value' => $value
         ];
 
-        $_SESSION['response']['change_status'] = sendPostRequest('https://rest.elited.ru/item/'.$id.'/activity', $request);
+        $request = (new ClientHelper())->request(
+            'item/' . $id . '/activity',
+            'POST',
+            $param
+        );
+
+        $_SESSION['response']['change_status'] = [
+            'code' => $request->getCode(),
+            'data' => $request->toArray()
+        ];
     }

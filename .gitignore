@@ -1,3 +1,4 @@
+log/
 *.log
 media/photo/*
 media/rekl/*/*.jpg

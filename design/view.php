@@ -1,9 +1,11 @@
 <?php
 	function viewVip($post) {
 		global $site, $types;
+		//Формирование ссылки
+		$url = $site['url'].'/'.$post['type'].'/'.$post['id'].'/';
 		//Формирование фото
 		$photos = explode(',', $post['photo']); shuffle($photos);
-		$photo = thumb($photos[0], $post['id'], ['width' => 300]);
+		$photo = (new ThumbHelper($photos[0], $post['id']))->generate(['width' => 300]);
 		//Формирование возраста
 		$year = '';
 		if($post['type'] == 'ind' || $post['type'] == 'man' || $post['type'] == 'tsl') {
@@ -11,7 +13,7 @@
 		}
 		
 		$view = '
-				<div class="item" style="background-image: url(\''.$photo.'\')">
+				<div class="item" style="background-image: url(\''.$photo.'\')" onclick="location.href=\''.$url.'\';">
 					<div class="position-absolute top-0 start-0 text-white p-2 icon">
 						<i class="fa-solid fa-'.($post['status_premium'] == 1 ? 'crown' : 'star').'"></i>
 					</div>
@@ -31,7 +33,7 @@
 			';
 		}
 		$view .= '
-					<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" class="title">
+					<a href="'.$url.'" class="title">
 						<h4><span class="type">'.$types[$post['type']]['names'][0].'</span> <br><span class="name">'.$post['info']['name'].'</span>'.$year.'</h4>
 					</a>
 					<div class="info">
@@ -55,11 +57,38 @@
 	}
 
 	function viewIntro($post) {
-		global $site, $types;
-		$photos = explode(',', $post['photo']); shuffle($photos);
+		global $site, $types, $city;
+
+		$photos = explode(',', $post['photo']);
 
 		$url = $site['url'].'/'.$post['type'].'/'.$post['id'].'/';
 		$urlAlt = $types[$post['type']]['names'][0].' '.$post['info']['name'];
+		
+		$schema = '
+			<script type="application/ld+json">
+				{
+					"@context": "https://schema.org/", 
+					"@type": "Product", 
+					"name": "'.$post['info']['name'].'",
+					"image": "'.(new ThumbHelper($photos[0], $post['id']))->generate(['width' => 700]).'",
+					"description": "'.$post['dopinfo'].'",
+					"brand": {
+						"@type": "Brand",
+						"name": "'.$types[$post['type']]['names'][0].'"
+					},
+					"sku": "'.$post['id'].'",
+					"offers": {
+						"@type": "Offer",
+						"url": "'.$url.'",
+						"priceCurrency": "RUB",
+						"price": "'.$post['price']['onehour'].'"
+					}
+				}
+			</script>		
+		';
+		
+		shuffle($photos);
+
 		$name = '<span class="type">'.$types[$post['type']]['names'][0].'</span> <span class="name">'.$post['info']['name'].'</span>';
 
 		unset($post['info']['name']);
@@ -70,7 +99,9 @@
 			}
 		}
 
-		$view = '
+		$view = $schema;
+
+		$view .= '
 			<div class="card m-1 item">
 				<div class="row g-0">
 		  			<div class="col-lg-4">
@@ -89,12 +120,12 @@
 		if (isMobile()) {
 			$view .= '
 							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'">
-								<img src="'.thumb($photos[0], $post['id'], ['width' => 700]).'" class="img-fluid">
+								<img src="'.(new ThumbHelper($photos[0], $post['id']))->generate(['width' => 700]).'" class="img-fluid">
 							</a>
 			';
 		} else {
 			$view .= '
-							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'height' => 700]).'\')"></a>
+							<a href="'.$site['url'].'/'.$post['type'].'/'.$post['id'].'/" alt="'.$urlAlt.'" class="photo" style="background-image: url(\''.(new ThumbHelper($photos[0], $post['id']))->generate(['width' => 700, 'height' => 700]).'\')"></a>
 			';
 		}
 		$view .= '
@@ -116,6 +147,7 @@
 	}
 
 	function viewFull($post) {
+		$post = item_decode($post);
 		if($post['status_active'] == 1) item_stat_add($post['id']);
 
 		global $city, $types, $rao;
@@ -150,14 +182,14 @@
 			$view .= '
 							<div class="row g-0">
 								<div class="col-12 col-lg-3 d-flex align-items-stretch">
-									<div class="p-1 d-flex align-items-center" style="background-image: url(\''.thumb($photos[0], $post['id'], ['width' => 700, 'opacity' => 0.35]).'\'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
+									<div class="p-1 d-flex align-items-center" style="background-image: url(\''.(new ThumbHelper($photos[0], $post['id']))->generate(['width' => 700, 'opacity' => 0.35]).'\'); background-size: cover; background-position: center center; background-repeat: no-repeat;">
 										<div class="row justify-content-md-center g-2">
 			';
 			foreach($photos as $photo) {
 				$view .= '
 											<div class="col-12 col-md-3 col-lg-6 d-flex justify-content-center">
 												<a href="/media/photo/'.$post['id'].'/'.$photo.'.jpg" class="w-100">
-													<img src="'.thumb($photo, $post['id'], isMobile() ? ['width' => 700] : ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
+													<img src="'.(new ThumbHelper($photo, $post['id']))->generate(isMobile() ? ['width' => 700] : ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
 												</a>
 											</div>
 				';
@@ -514,7 +546,7 @@
 			}
 
 			// список events и проверка на сегодняшние события
-			$events = (new Event($user['id']))->getAll(20);
+			$events = (new EventHelper($user['id']))->getAll(20);
 			$count_today_events = 0;
 			foreach($events as $today_event) {
 				if(date('Ymd', strtotime($today_event['created_at'])) === getDateTime(null, 'Ymd')) {
@@ -565,6 +597,8 @@
 				';
 			} else {
 				global $types, $city, $site, $price_ank;
+
+				$now = new DateTimeImmutable('now');
 
 				foreach($items as $v) {
 
@@ -620,7 +654,7 @@
 					if(isset(explode(',', $v['photo'])[0])) {
 						$view .= '
 												<a href="/item/photo/'.$v['id'].'/" class="position-relative">
-													<img src="'.thumb(explode(',', $v['photo'])[0], $v['id'], ['width' => 72, 'height' => 72]).'" class="rounded">
+													<img src="'.(new ThumbHelper(explode(',', $v['photo'])[0], $v['id']))->generate(['width' => 72, 'height' => 72]).'" class="rounded">
 													<span class="position-absolute top-0 start-0 badge bg-danger">
 														<b>'.count(explode(',', $v['photo'])).'</b>
 													</span>
@@ -647,10 +681,15 @@
 												<div class="row justify-content-md-center g-1">
 					';
 					if($v['status_active'] == 1) {
+						$lastTop = new DateTimeImmutable($v['date_top']);
+						$diffTop = ($now->diff($lastTop)->days * 24 * 60) + 
+							($now->diff($lastTop)->h * 60) + 
+							$now->diff($lastTop)->i;
 						$view .= '
 													<div class="col-6 col-md-'.($v['status_vip'] == 1 ? 3 : 4).'">
-														<button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#status_top'.$v['id'].'">
+														<button type="button" class="btn btn-'.($diffTop < 60 ? 'outline-danger' : 'secondary').' w-100 position-relative" data-bs-toggle="modal" data-bs-target="#status_top'.$v['id'].'">
 															<i class="fa-solid fa-chevron-up"></i> <span class="d-inline d-lg-none d-md-none">Поднять</span>
+															'.($diffTop < 60 ? '<i class="position-absolute top-50 end-0 translate-middle-y fa-solid fa-clock text-danger" style="right:5px !important"></i>' : '').'
 														</button>
 													</div>
 													<div class="modal fade" id="status_top'.$v['id'].'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -663,15 +702,29 @@
 																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 																</div>
 																<div class="modal-body">
+						';
+						if($diffTop < 60) {
+							$remainTime = 60-$diffTop;
+							$view .= '
+																	<div class="alert alert-warning text-center p-2 m-0">
+																		<b>Поднятие этой анкеты было выполнено менее часа назад.</b> <br />
+																		Повторно поднять анкету будет возможно через '.$remainTime.' '.format_num($remainTime, ['минута', 'минуты', 'минут']).'
+						  											</div>
+							';
+						} else {
+							$view .= '
 																	'.check_price($user['balance'], $topPrice, '
 																	'.($v['date_top'] != $v['date_add'] ? '<p class="text-center text-muted">Последний раз поднималась: <br>'.format_date($v['date_top']).'</p>' : '').'
 																	<p class="text-center">С баланса спишется <br>стоимость поднятия: <b>'.$topPrice.' рублей</b></p>
 																	<p class="m-0 text-center">Поднятие <b class="text-uppercase">автоматически</b> отправляет <br>анкету в рассылку телеграм канала: <br> <a href="https://t.me/elitedosug64" class="btn btn-outline-success mt-2" target="_blank"><i class="fa-brands fa-telegram"></i> Элит Досуг '.$city['value'][0].'</a></p>
 																	').'
+							';
+						}
+						$view .= '
 																</div>
 																<div class="modal-footer">
-																	<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
-																	<button type="submit" name="item[status][action]" value="top" id="top'.$v['id'].'" class="btn btn-success"'.(!check_price($user['balance'], $topPrice) ? ' disabled' : '').'>Поднять</button>
+																	<button type="button" class="btn btn-outline-'.($diffTop > 60 ? 'secondary' : 'danger').'" data-bs-dismiss="modal">Закрыть</button>
+																	'.($diffTop > 60 ? '<button type="submit" name="item[status][action]" value="top" id="top'.$v['id'].'" class="btn btn-success"'.(!check_price($user['balance'], $topPrice) ? ' disabled' : '').'>Поднять</button>' : '').'
 																</div>
 															</form>
 															<div class="alert alert-success m-0 p-2 d-none" id="response'.$v['id'].'">
@@ -1138,7 +1191,11 @@
 		$allUsers = [];
 		$allSumBalance = 0;
 		$allItemsSummary = 0;
-		foreach(user_all('reg', [['balance', 'DESC'], ['reg_date', 'DESC']]) as $key => $regUser) {
+		foreach(user_all(
+			null, 'reg', [
+				'balance' => 'DESC', 
+				'reg_date' => 'DESC'
+			]) as $key => $regUser) {
 			if (
 				$regUser['reg_date'] == $regUser['login_date'] && 
 				$regUser['balance'] == 0 && 
@@ -1182,11 +1239,11 @@
 			$fail = [
 				404 => [
 					'title' => 'Не найдено',
-					'text' => $response['message'] ?? 'Запись не найдена'
+					'text' => 'Запись не найдена'
 				],
 				400 => [
 					'title' => 'Нет параметров',
-					'text' => $response['message'] ?? 'Неверные некоторые параметры'
+					'text' => 'Неверные некоторые параметры'
 				]
 			];
 
@@ -1208,7 +1265,7 @@
 					if ($response['actionItem'] == 'top') {
 						global $channel;
 						if (isset($city['social']['telegamChannelId'])) {
-							(new Notify())->sendItemToTelegramChannel([
+							(new NotifyHelper())->sendItemToTelegramChannel([
 								'itemId' => $response['itemId'],
 								'chatId' => $city['social']['telegamChannelId'],
 								'siteUrl' => $site['url']
@@ -1222,10 +1279,10 @@
 			}
 			
 			if (isset($event)) {
-				(new Event($response['userId']))->add($event);
+				(new EventHelper($response['userId']))->add($event);
 			}
 			if (isset($sms)) {
-				(new Notify())->sendSms(
+				(new NotifyHelper())->sendSms(
 					$sms,
 					json_decode(file_get_contents('https://rest.elited.ru/user/'.$response['userId'].'/getPhone'))->userPhone
 				);
@@ -1362,8 +1419,14 @@
 								</div>
 			';
 			if (!empty($u['items'])) {
+				$show = false;
+				if (isset($response['userId'])) {
+					if ($response['userId'] == $u['id'] && isset($key) && $key == 'change_status') {
+						$show = true;
+					}
+				}
 				$view .= '
-								<div class="collapse'.(isset($response['userId']) && $response['userId'] == $u['id'] ? ' show' : '').'" id="items'.$u['id'].'">
+								<div class="collapse'.($show ? ' show' : '').'" id="items'.$u['id'].'">
 									<div class="card mt-1">
 										<div class="card-header p-1 text-center">Управление анкетами пользователя ID: '.$u['id'].'</div>
 										<div class="card-body p-1">
@@ -1525,7 +1588,7 @@
 					<div class="col-9">
 						<h5 class="title">'.$data['title'].'</h5>
 						<div class="row meta">
-							<div class="col-6 text-left"><small class="username">@'.$data['username'].'</small></div>
+							'.($data['username'] ? '<div class="col-6 text-left"><small class="username">@'.$data['username'].'</small></div>' : '').'
 							<div class="col-6 text-right"><small class="members">'.$data['members'].' '.format_num($data['members'], ['подписчик', 'подписчика', 'подписчиков']).'</small></div>
 						</div>
 						<a href="'.$data['invite'].'" target="_blank" class="w-100 button">Подписаться на канал</a>

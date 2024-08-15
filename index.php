@@ -12,7 +12,12 @@ require('vendor.php');
 date_default_timezone_set($city['timezone'] ?? 'Europe/Moscow');
 
 if(isset($_GET['bug']) && $_GET['bug'] == 1) {
-	//debuging
+	//var_dump((new CacheHelper())->getData('sar1-config'));
+	//print_r(array_map(fn($i) => $i['info'], apcu_cache_info()['cache_list']));
+	//print_r(apcu_cache_info());
+	apcu_clear_cache();
+	//(new CacheHelper())->dropCacheCity($city['domain']);
+	//var_dump((new NotifyHelper())->sendSmsForManager('Хуй2'));
 }
 
 if (is_null($city)) {
@@ -21,7 +26,7 @@ if (is_null($city)) {
 
 //get data channel telegram
 if (isset($city['social']['telegamChannelId'])) {
-	$telegramChannelInfo = getTelegramChannelInfo($city['social']['telegamChannelId'])['data']['channelInfo'];
+	$telegramChannelInfo = getTelegramChannelInfo($city['social']['telegamChannelId']);
 }
 
 if(empty($route)) {
@@ -36,7 +41,7 @@ if(empty($route)) {
 		include $site['path'].'/design/pages/'.$route[1].'.php';
 		include $site['path'].'/design/foot.php';
 	} elseif(in_array($route[1], array_keys($types))) {
-		if(isset($route[2]) && $route[2] != 'p' && $route[2] != 'f' && !isset(db_connect()->where('id', $route[2])->getOne('item')['id'])) {
+		if(isset($route[2]) && $route[2] != 'p' && $route[2] != 'f' && !isset((new DatabaseHelper('item'))->fetchOne((int)$route[2])->getResult()['id'])) {
 			page404();
 		} else {
 			include_once $site['path'].'/design/view.php';
@@ -45,7 +50,7 @@ if(empty($route)) {
 			include $site['path'].'/design/foot.php';
 		}
 	} elseif($route[1] == 'crontab') {
-		cron_task();
+		(new CronHelper($city))->run();
 	} elseif($route[1] == 'sitemap.xml') {
 		generate_sitemap($city['domain']);
 	} elseif($route[1] == 'robots.txt') {

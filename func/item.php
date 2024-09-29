@@ -255,12 +255,16 @@
 		}
 	}
 
-	function item_stat_add($id): void
+	function item_stat_add(
+		int $id
+	): void
     {
 		(new DatabaseHelper('item'))->updateStat($id);
 	}
 
-	function item_stat_reset($id): void
+	function item_stat_reset(
+		int $id
+	): void
     {
 		
 		$stat['view_day'] = 0;
@@ -273,27 +277,37 @@
 		);
 	}
 
-	function item_one($id, $user_id = false): false|array
+	function item_one(
+		int $id,
+		?int $user_id = null
+	): false|array
     {
-		return $id ? (new DatabaseHelper('item'))->fetchOne($id, $user_id ? ['user_id' => $user_id] : null)->getResult() : false;
+		return $id ? (new DatabaseHelper('item'))->fetchOne($id, !is_null($user_id) ? ['user_id' => $user_id] : null)->getResult() : false;
 	}
 
-	function item_all($user_id = false): array|Generator
+	function item_all(
+		?int $user_id = null,
+		?int $city_id = null
+	): array|Generator
     {
 		global $city;
 
 		$where = [
-			'city_id' => $city['id']
+			'city_id' => $city_id ?? $city['id']
 		];
-		if($user_id) {
+		if(!is_null($user_id)) {
 			$where['user_id'] = $user_id;
 		}
 		
 		return (new DatabaseHelper('item'))->fetchAll($where)->getResult();
 	}
 
-	function item_all_sum($user_id) {
-		if($items = item_all($user_id)) {
+	function item_all_sum(
+		int $user_id,
+		?int $city_id = null
+	): int|false
+	{
+		if($items = item_all($user_id, $city_id)) {
 			$all_sum = 0;
 			foreach($items as $item) {
 				if($item['status_active'] == 1) {
@@ -306,9 +320,12 @@
 		}
 	}
 
-	function item_has_active($user_id)
+	function item_has_active(
+		int $user_id,
+		?int $city_id = null
+	): bool
 	{
-		foreach (item_all($user_id) as $item) {
+		foreach (item_all($user_id, $city_id) as $item) {
 			if($item['status_active'] == 1) {
 				return true;
 			}
@@ -317,8 +334,12 @@
 		return false;
 	}
 
-	function item_all_reset_status($user_id) {
-		if($items = item_all($user_id)) {
+	function item_all_reset_status(
+		int $user_id,
+		?int $city_id = null
+	): bool
+	{
+		if($items = item_all($user_id, $city_id)) {
 			foreach($items as $item) {
 				(new DatabaseHelper('item'))->updateData(
 					$item['id'],

@@ -9,10 +9,10 @@ class DatabaseHelper
     private DB $connect;
     private const PARAM_DB = [
         'type' => 'mysql',
-        'host' => '81.31.244.196',
-        'username' => 'admin_api', 
+        'host' => '127.0.0.1',
+        'username' => 'elite_api', 
         'password' => 'Trash2012!',
-        'dbname'=> 'admin_api',
+        'dbname'=> 'elite_api',
         'charset' => 'utf8'
     ];
 

@@ -50,7 +50,9 @@ if(empty($route)) {
 			include $site['path'].'/design/foot.php';
 		}
 	} elseif($route[1] == 'crontab') {
-		(new CronHelper($city))->run();
+		(new CronHelper(
+			(new ClientHelper())->request('config/get_all_cities')->toArray()
+		))->run();
 	} elseif($route[1] == 'sitemap.xml') {
 		generate_sitemap($city['domain']);
 	} elseif($route[1] == 'robots.txt') {

@@ -6,20 +6,24 @@ use Monolog\Handler\StreamHandler;
 
 class CronHelper
 {
+    private array $cities;
     private array $city;
     private Logger $log;
 
-    public function __construct(array $city)
+    public function __construct(array $cities)
     {
-        $this->city = $city;
-        $this->log = (new Logger('cron', [
-            new StreamHandler('log/cron/' . $this->city['name'] . (new DateTimeImmutable('now'))->format('Ymd') . '.log')
-        ]));
+        $this->cities = $cities;
     }
 
     public function run(): void
     {
-        $this->process();
+        foreach ($this->cities as $city) {
+            $this->city = $city;
+            $this->log = (new Logger('cron', [
+                new StreamHandler('log/cron/' . (new DateTimeImmutable('now'))->format('d-m-Y') . '/' . $city['name'] . '.log')
+            ]));
+            $this->process();
+        }
     }
 
     private function process(): void
@@ -30,8 +34,8 @@ class CronHelper
             fn($user) => $this->validateUser($user) ? $user : null, 
             user_all($this->city['id'])
         )) as $validUser) {
-            $changeSum = item_all_sum($validUser['id']);
-            if (user_change_balance($changeSum, $validUser['id'])) {
+            $changeSum = item_all_sum($validUser['id'], $this->city['id']);
+            if ($changeSum > 0 && user_change_balance($changeSum, $validUser['id'])) {
                 $residualBalance = $validUser['balance']-$changeSum;
                 $textEvent = sprintf(
                     'За размещение списано: %s рублей, остаток баланса: %s рублей.',
@@ -98,8 +102,7 @@ class CronHelper
 
     private function conditionsUser(array $user): Iterator
     {
-        yield 'balance 0' => $user['balance'] == 0;
-        yield 'hasn\'t items active' => !item_has_active($user['id']);
-        yield 'not enough to pay' => $user['balance'] < item_all_sum($user['id']);
+        yield 'hasn\'t items active' => !item_has_active($user['id'], $this->city['id']);
+        yield 'not enough to pay' => $user['balance'] > 0 && $user['balance'] < item_all_sum($user['id']);
     }
 }

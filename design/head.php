@@ -29,9 +29,8 @@
 	<!--charset-->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
 	<?= itMeta($route) ?>
-
+	
 	<link rel="icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
 	<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
 	<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">

@@ -274,15 +274,12 @@
 													<div class="name"><b>'.$v['name'].'</b></div>
 				';
 				foreach($v['value'] as $ik => $iv) {
-					if(isset($post['service'][$k]) && in_array($ik, $post['service'][$k])) {
-						$view .= '
-													<p class="m-0"><b>'.$v['name'].' '.$iv.'</b></p>
-						';
-					} else {
-						$view .= '
-													<p class="m-0 text-muted opacity-25"><s>'.$v['name'].' '.$iv.'</s></p>
-						';
-					}
+					$view .= sprintf(
+						isset($post['service'][$k]) && in_array($ik, $post['service'][$k])
+						? '<p class="m-0 i"><b>%s</b></p>'
+						: '<p class="m-0 i text-muted opacity-25"><s>%s</s></p>',
+						ucfirst($iv)
+					);
 				}
 				$view .= '
 												</div>

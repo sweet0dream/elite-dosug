@@ -130,7 +130,7 @@
 				if($item = item_one($id)) {
 					$path = $site['path'].'/media/photo/'.$id.'/';
 					if(unlink($path.$file.'.jpg')) {
-						thumb_del($file, $id);
+						(new ThumbHelper($file, $id))->remove();
 						$photo = explode(',', $item['photo']);
 						unset($photo[array_search($file, $photo)]);
 						(new DatabaseHelper('item'))->updateData(

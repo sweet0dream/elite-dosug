@@ -406,6 +406,14 @@ nav .mobile:focus {
     color: #222;
     text-shadow: 1px 1px 0px #fff;
 }
+.full .service .part p.i {
+    position: relative;
+    z-index: 5;
+    text-shadow: -0 -1px 0 #FFFFFF, 0 -1px 0 #FFFFFF, -0 1px 0 #FFFFFF, 0 1px 0 #FFFFFF, -1px -0 0 #FFFFFF, 1px -0 0 #FFFFFF, -1px 0 0 #FFFFFF, 1px 0 0 #FFFFFF, -1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF, -1px -1px 0 #FFFFFF, 1px -1px 0 #FFFFFF, -1px 1px 0 #FFFFFF, 1px 1px 0 #FFFFFF;
+}
+.full .service .part p.i::first-letter {
+    text-transform: uppercase
+}
 .full .service .part:hover .name,
 .full .service .part:focus .name {
     color: #fff;

@@ -21,7 +21,7 @@
                 if(isMobile()) {
                     $view .= '
                             <div class="hov d-flex justify-content-center align-items-center">
-                                <a href="tel:'.$v['phone'].'" class="btn btn-danger">Позвонить '.(isset($v['value']) ? 'в &laquo;'.$v['value'].'&raquo;' : $v[0]).'</a>
+                                <a href="tel:'.format_phone($v['phone']).'" class="btn btn-danger">Позвонить '.(isset($v['value']) ? 'в &laquo;'.$v['value'].'&raquo;' : $v[0]).'</a>
                             </div>
                     ';
                 }

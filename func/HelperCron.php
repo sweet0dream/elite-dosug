@@ -17,10 +17,11 @@ class CronHelper
 
     public function run(): void
     {
+        $now = new DateTimeImmutable('now');
         foreach ($this->cities as $city) {
             $this->city = $city;
             $this->log = (new Logger('cron', [
-                new StreamHandler('log/cron/' . (new DateTimeImmutable('now'))->format('d-m-Y') . '/' . $city['name'] . '.log')
+                new StreamHandler('log/cron/' . $now->format('Y') . '/' . $now->format('m') . '/' . $now->format('d') . '/' . $city['name'] . '.log')
             ]));
             $this->process();
         }

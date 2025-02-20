@@ -6,10 +6,11 @@
 		$result = (new CacheHelper())->getData($keyCache);
 
 		if (!$result) {
-			$getData = (new ClientHelper())->request('notify/telegram/get_channel_info', 'POST', ['chatId' => $city['social']['telegamChannelId']])->toArray();
+			$getData = (new ClientHelper())->request('notify/telegram/get_channel_info', 'POST', ['chatId' => $city['social']['telegamChannelId']]);
+			if ($getData->getCode() != 200) { return; }
 			$result = (new CacheHelper())->setData(
 				$keyCache,
-				$getData['channelInfo']
+				$getData->toArray()['channelInfo']
 			);
 		}
 

@@ -163,76 +163,93 @@
 		global $city;
 		if(is_array($route)) {
 			global $types;
+
+			$sitename = 'Элит Досуг ' . $city['value'][0];
+			$metaResult = [];
 			if(empty($route)) {
-				return '
-					<title>Проститутки ' . $city['value'][1] . ' готовы обслужить клиента - Элит Досуг ' . $city['value'][0] . '</title>
-					<meta name="description" content="Круглосуточно проститутки ' . $city['value'][1] . ' с нашего сайта обслуживают много клиентов. Индивидуалки ' . $city['value'][1] . ' работают в разных концах города для Вашего досуга и отдыха.">
-					<meta name="keywords" content="проститутки ' . $city['value'][1] . ', индивидуалки ' . $city['value'][1] . ', интим салоны ' . $city['value'][1] . ', мужчины по вызову ' . $city['value'][1] . ', трансы ' . $city['value'][1] . '">
-				';
+				$metaResult = [
+					'title' => sprintf('На любой вкус проститутки %1$s в удобное время суток обслужат клиента и индивидуалки %1$s для Вас работают сегодня', $city['value'][1]),
+					'description' => sprintf('Индивидуалки %1$s в разных районах города примут с удовольствием клиента - мы поможем выбрать досуг на вечер или ночь. Проститутки %1$s это девушки или трансы и отдых для искушенных мужчин в будни и выходные.', $city['value'][1]),
+					'keywords' => sprintf('проститутки %1$s, индивидуалки %1$s, интим салоны %1$s, мужчины по вызову %1$s, трансы %1$s', mb_strtolower($city['value'][1]))
+				];
 			} else {
 				if(isset($types[$route[1]])) {
 					if(isset($route[2])) {
 						if($item = item_decode((new DatabaseHelper('item'))->fetchOne((int)$route[2])->getResult())) {
-							return '
-								<title>'.$types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'].' - Элит Досуг '.$city['value'][0].'</title>
-								<meta name="description" content="'.$types[$route[1]]['names'][2].'. '.$item['dopinfo'].'">
-								<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
-							';
+							$metaResult = [
+								'title' => $types[$item['type']]['names'][0].' '.$item['info']['name'].($item['type'] != 'sal' ? ', '.$types[$item['type']]['fields']['info']['year']['value'][$item['info']['year']] : '').', ID: '.$item['id'],
+								'description' => $types[$route[1]]['names'][2].'. '.$item['dopinfo'],
+								'keywords' => $types[$route[1]]['meta']['keywords']
+							];
 						} elseif($route[2] == 'p') {
-							return '
-								<title>'.$types[$route[1]]['meta']['title'].(isset($route[3]) ? ', '.$route[3].' страница' : '').' - Элит Досуг ' . $city['value'][0] . '</title>
-								<meta name="description" content="'.$types[$route[1]]['meta']['description'].(isset($route[3]) ? ' '.$route[3].' страница' : '').'">
-								<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
-							';
+							$metaResult = [
+								'title' => $types[$route[1]]['meta']['title'].(isset($route[3]) ? ', '.$route[3].' страница' : ''),
+								'description' => $types[$route[1]]['meta']['description'].(isset($route[3]) ? ' '.$route[3].' страница' : ''),
+								'keywords' => $types[$route[1]]['meta']['keywords']
+							];
 						}
 					} else {
-						return '
-							<title>'.$types[$route[1]]['meta']['title'].' - Элит Досуг ' . $city['value'][0] . '</title>
-							<meta name="description" content="'.$types[$route[1]]['meta']['description'].'">
-							<meta name="keywords" content="'.$types[$route[1]]['meta']['keywords'].'">
-						';
+						$metaResult = [
+							'title' => $types[$route[1]]['meta']['title'],
+							'description' => $types[$route[1]]['meta']['description'],
+							'keywords' => $types[$route[1]]['meta']['keywords']
+						];
 					}
 				} elseif($route[1] == 'user') {
-					return '
-						<title>Личный кабинет - Элит Досуг ' . $city['value'][0] . '</title>
-						<meta name="description" content="Личный кабинет сайта Элит Досуг для управления рекламой.">
-						<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
-					';
+					$metaResult = [
+						'title' => 'Личный кабинет',
+						'description' => 'Личный кабинет сайта Элит Досуг для управления рекламой.',
+						'keywords' => 'личный кабинет'
+					];
 				} elseif($route[1] == 'item') {
 					if(isset($route[2])) {
 						if($route[2] == 'add') {
-							return '
-								<title>Добавление анкеты - Элит Досуг ' . $city['value'][0] . '</title>
-								<meta name="description" content="Добавление анкеты.">
-								<meta name="keywords" content="добавление анкеты, проститутки ' . $city['value'][1] . '">
-							';
+							$metaResult = [
+								'title' => 'Добавление анкеты',
+								'description' => 'Добавление анкеты.',
+								'keywords' => 'добавление анкеты'
+							];
 						} elseif($route[2] == 'edit') {
-							return '
-								<title>Редактирование анкеты - Элит Досуг ' . $city['value'][0] . '</title>
-								<meta name="description" content="Редактирование анкеты.">
-								<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
-							';
+							$metaResult = [
+								'title' => 'Редактирование анкеты',
+								'description' => 'Редактирование анкеты.',
+								'keywords' => 'личный кабинет'
+							];
 						} elseif($route[2] == 'photo') {
-							return '
-								<title>Фото анкеты - Элит Досуг ' . $city['value'][0] . '</title>
-								<meta name="description" content="Фото анкеты.">
-								<meta name="keywords" content="личный кабинет, проститутки ' . $city['value'][1] . '">
-							';
+							$metaResult = [
+								'title' => 'Фото анкеты',
+								'description' => 'Фото анкеты.',
+								'keywords' => 'личный кабинет'
+							];
 						}
 					}
 				} elseif($route[1] == 'placement') {
-					return '
-						<title>Размещение рекламы - Элит Досуг ' . $city['value'][0] . '</title>
-						<meta name="description" content="Информация и стоимость размещения рекламы">
-						<meta name="keywords" content="реклама сайт досуг, размещение элит досуг">
-					';
+					$metaResult = [
+						'title' => 'Размещение рекламы',
+						'description' => 'Информация и стоимость размещения рекламы.',
+						'keywords' => 'реклама сайт досуг, размещение элит досуг'
+					];
 				} elseif($route[1] == 'agreement') {
-					return '
-						<title>Пользовательское соглашение - Элит Досуг ' . $city['value'][0] . '</title>
-						<meta name="description" content="Пользовательское соглашение и положение об использовании Сайта Элит Досуг">
-						<meta name="keywords" content="соглашение об использовании">
-					';
+					$metaResult = [
+						'title' => 'Пользовательское соглашение',
+						'description' => 'Пользовательское соглашение и положение об использовании Сайта Элит Досуг.',
+						'keywords' => 'соглашение об использовании'
+					];
 				}
+			}
+
+			if (!empty($metaResult)) {
+				$result = '';
+
+				foreach ($metaResult as $key => $value) {
+					$result .= match ($key) {
+						'title' => '<title>' . $value . ' - ' . $sitename . '</title>',
+						'description' => '<meta name="description" content="' . $value . '">',
+						'keywords' => '<meta name="keywords" content="' . $value . '">'
+					};
+				}
+
+				return $result;
 			}
 		} else {
 			return false;

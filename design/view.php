@@ -1262,11 +1262,7 @@
 					if ($response['actionItem'] == 'top') {
 						global $channel;
 						if (isset($city['social']['telegamChannelId'])) {
-							(new NotifyHelper())->sendItemToTelegramChannel([
-								'itemId' => $response['itemId'],
-								'chatId' => $city['social']['telegamChannelId'],
-								'siteUrl' => $site['url']
-							]);
+							(new NotifyHelper())->sendItemToTelegramChannel($response['itemId']);
 						}
 					}
 					$sms = 'Элит Досуг '.$city['value'][0].': Анкета ID: '.$response['itemId'].' '.$termMessage[$response['actionItem']].' менеджером.'.(isset($response['sumItem']) ? ' Расход: '.$response['sumItem'].' рублей в день.' : '').(isset($response['userOutBalance']) ? ' Списано с баланса: '.$response['userOutBalance'].' рублей.' : '');

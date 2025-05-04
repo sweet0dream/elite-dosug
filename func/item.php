@@ -239,11 +239,7 @@
 						if (isset($result['telegram'])) {
 							global $site, $city;
 							if (isset($city['social']['telegamChannelId'])) {
-								(new NotifyHelper())->sendItemToTelegramChannel([
-									'itemId' => $item['id'],
-									'chatId' => $city['social']['telegamChannelId'],
-									'siteUrl' => $site['url']
-								]);
+								(new NotifyHelper())->sendItemToTelegramChannel($item['id']);
 							}
 						}
 

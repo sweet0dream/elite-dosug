@@ -34,12 +34,11 @@ class NotifyHelper
         return $this->sendSms($text, $city['manager']['phone']);
     }
 
-    public function sendItemToTelegramChannel(array $data): bool
+    public function sendItemToTelegramChannel(string $itemId): bool
     {
         return $this->client->request(
-            'notify/telegram/send_item_to_channel',
-            'POST',
-            $data
+            'notify/telegram/send_item_to_channel/' . $itemId,
+            'GET'
         )->getCode() == 200 ? true : false;
     }
 }

@@ -4,7 +4,7 @@ use \ClientHelper as Client;
 
 class NotifyHelper
 {
-    private $restLink = 'https://rest.elited.ru/';
+    private $senderMs = 'https://sender.elited.ru/';
     private Client $client;
 
     public function __construct() {
@@ -17,13 +17,13 @@ class NotifyHelper
     ): bool
     {
         return $this->client->request(
-            'notify/sms/add',
+            $this->senderMs . 'to_sms',
             'POST',
             [
                 'phone' => $phone,
-                'text' => $text
+                'message' => $text
             ]
-        )->getCode() == 200 ? true : false;
+        )->getCode() == 201 ? true : false;
     }
 
     public function sendSmsForManager(

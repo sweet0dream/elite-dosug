@@ -280,7 +280,6 @@
 <?php
             $photos = explode(',', $item['photo']);
             for($i = 0; $i < count($photos); ++$i) {
-                if(file_exists($site['path'].'/media/photo/'.$item['id'].'/'.$photos[$i].'.jpg')) {
 ?>
                     <div class="col-6 col-md-3 col-lg-2">
                         <div class="card mx-auto" style="max-width:250px">
@@ -301,7 +300,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body p-2">
-                                            <img src="<?= $site['url'].'/media/photo/'.$item['id'].'/'.$photos[$i].'.jpg' ?>" class="img-fluid img-thumbnail">
+                                            <img src="<?= 'https://media.elited.ru/'.$item['id'].'/'.$photos[$i].'.webp' ?>" class="img-fluid img-thumbnail">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -314,7 +313,6 @@
                         <!-- !modal<? $photos[$i] ?> -->
                     </div>
 <?php
-                }
             }
 ?>
                 </div>

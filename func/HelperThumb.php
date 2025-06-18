@@ -15,44 +15,12 @@ class ThumbHelper
         $this->db = new DatabaseHelper('item');
     }
 
-    public function generate(array $param): string|false
+    public function generate(array $param): string
     {
-        if ($this->db->fetchOne($this->id)->getResult()) {
-            global $site;
+        if(!isset($param['width'])) $param['width'] = 0;
+        if(!isset($param['height'])) $param['height'] = 0;
 
-            if(!isset($param['width'])) $param['width'] = 0;
-            if(!isset($param['height'])) $param['height'] = 0;
-
-            $thumb_path = $site['path'].'/media/photo/'.$this->id.'/thumb/'.$this->file.'_'.implode('x', $param).'.webp';
-            $thumb_url = '/media/photo/'.$this->id.'/thumb/'.$this->file.'_'.implode('x', $param).'.webp';
-
-            if(file_exists($thumb_path)) {
-                return $thumb_url;
-            } else {
-                if(!is_dir($site['path'].'/media/photo/'.$this->id.'/thumb/')) mkdir($site['path'].'/media/photo/'.$this->id.'/thumb/');
-                if(file_exists($src = $site['path'].'/media/photo/'.$this->id.'/'.$this->file.'.jpg')) {
-                    $photo = new \claviska\SimpleImage();
-                    $photo->fromFile($src);
-                    if($param['width'] != 0 && $param['height'] != 0) {
-                        $photo->thumbnail($param['width'], $param['height']);
-                    } else {
-                        if($param['width'] == 0) {
-                            $photo->fitToHeight($param['height']);
-                        } elseif($param['height'] == 0) {
-                            $photo->fitToWidth($param['width']);
-                        }
-                    }
-                    if(isset($param['opacity'])) {
-                        $photo->opacity($param['opacity']);
-                    }
-                    if($photo->toFile($thumb_path, 'image/webp', 100)) {
-						return $thumb_url;
-					}
-                } else {
-                    return false;
-                }
-            }
-        }
+        return 'https://media.elited.ru/' . $this->id . '/' . implode('x', $param) . '/' . $this->file . '.webp';
     }
 
     public function remove(): void

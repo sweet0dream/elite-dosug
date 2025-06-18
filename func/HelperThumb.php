@@ -2,7 +2,6 @@
 
 class ThumbHelper
 {
-    private DatabaseHelper $db;
     private string $file;
     private int $id;
 
@@ -12,19 +11,20 @@ class ThumbHelper
     ) {
         $this->file = $file;
         $this->id = $id;
-        $this->db = new DatabaseHelper('item');
     }
 
-    public function generate(?array $param = null): string
+    public function generate(?array $param): string
     {
-        if (is_null($param)) {
-            return 'https://media.elited.ru/' . $this->id . '/' . $this->file . '.webp';
-        }
-
+        
         if(!isset($param['width'])) $param['width'] = 0;
         if(!isset($param['height'])) $param['height'] = 0;
 
         return 'https://media.elited.ru/' . $this->id . '/' . implode('x', $param) . '/' . $this->file . '.webp';
+    }
+
+    public function view(): string
+    {
+        return 'https://media.elited.ru/' . $this->id . '/' . $this->file . '.webp';
     }
 
     public function remove(): void

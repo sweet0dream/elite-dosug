@@ -264,7 +264,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body p-1">            
+            <div class="card-body p-1">
 <?php
         if($item['status_real'] == 1) {
 ?>
@@ -300,7 +300,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body p-2">
-                                            <img src="<?= (new ThumbHelper($photos[$i], $post['id']))->generate() ?>" class="img-fluid img-thumbnail">
+                                            <img src="<?= (new ThumbHelper($photos[$i], $item['id']))->view() ?>" class="img-fluid img-thumbnail">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>

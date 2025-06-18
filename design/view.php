@@ -188,7 +188,7 @@
 			foreach($photos as $photo) {
 				$view .= '
 											<div class="col-12 col-md-3 col-lg-6 d-flex justify-content-center">
-												<a href="'.(new ThumbHelper($photo, $post['id']))->generate().'" class="w-100">
+												<a href="'.(new ThumbHelper($photo, $post['id']))->view().'" class="w-100">
 													<img src="'.(new ThumbHelper($photo, $post['id']))->generate(isMobile() ? ['width' => 700] : ['width' => 700, 'height' => 700]).'" class="border border-2 rounded-4 w-100">
 												</a>
 											</div>

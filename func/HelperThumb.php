@@ -15,8 +15,12 @@ class ThumbHelper
         $this->db = new DatabaseHelper('item');
     }
 
-    public function generate(array $param): string
+    public function generate(?array $param = null): string
     {
+        if (is_null($param)) {
+            return 'https://media.elited.ru/' . $this->id . '/' . $this->file . '.webp';
+        }
+
         if(!isset($param['width'])) $param['width'] = 0;
         if(!isset($param['height'])) $param['height'] = 0;
 
@@ -25,20 +29,12 @@ class ThumbHelper
 
     public function remove(): void
     {
-        global $site;
-        if(is_dir($thumb_dir = $site['path'].'/media/photo/'.$this->id.'/thumb/')) {
-            foreach(scandir($thumb_dir) as $v) {
-                if($v != '.' && $v != '..') {
-                    if(explode('_', $v)[0] == $this->file) {
-                        $count_remove[] = $site['path'].'/media/photo/'.$this->id.'/thumb/'.$v;
-                    }
-                }
-            }
-            if(is_array($count_remove) && !empty($count_remove)) {
-                foreach($count_remove as $v) {
-                    unlink($v);
-                }
-            }
-        }
+        $media = curl_init();
+			curl_setopt($media, CURLOPT_URL, 'https://media.elited.ru/' . $this->id . '/' . $this->file);
+			curl_setopt($media, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($media, CURLOPT_CUSTOMREQUEST, 'DELETE');
+			curl_exec($media);
+			curl_close($media);
+			curl_reset($media);
     }
 }

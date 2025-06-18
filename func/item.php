@@ -106,14 +106,24 @@
 				$id = $data[key($data)]['id'];
 				if($item = item_one($id)) {
 					if($item['id'] == $id) {
-						$path = $site['path'].'/media/photo/'.$id.'/';
-						if(!is_dir($path)) mkdir($path);
-						if($item['photo'] != '') $photo = explode(',', $item['photo']);
+						if($item['photo'] != '') {
+							$photo = explode(',', $item['photo']);
+						};
 						foreach($files as $file) {
-							$filename = $id.date('YmdHis').rand(1111,9999);
-							$img = new \claviska\SimpleImage();
-							if($img->fromFile($file)->bestFit(1000,1000)->toFile($path.$filename.'.jpg', 'image/jpeg', 100)) {
-								$photo[] = $filename;
+							$mediaUpload = curl_init();
+								curl_setopt($mediaUpload, CURLOPT_URL, 'https://media.elited.ru/' . $id . '/save');
+								curl_setopt($mediaUpload, CURLOPT_RETURNTRANSFER, true);
+								curl_setopt($mediaUpload, CURLOPT_POST, true);
+								curl_setopt($mediaUpload, CURLOPT_HTTPHEADER, [
+									'Content-Type: application/octet-stream',
+								]);
+								curl_setopt($mediaUpload, CURLOPT_POSTFIELDS, file_get_contents($file));
+								$result = json_decode(curl_exec($mediaUpload));
+								curl_close($mediaUpload);
+								curl_reset($mediaUpload);
+
+							if ($result->uploaded) {
+								$photo[] = $result->filename;
 							}
 						}
 						if(!empty($photo)) {
@@ -128,16 +138,13 @@
 				$id = $data[key($data)]['id'];
 				$file = $data[key($data)]['file'];
 				if($item = item_one($id)) {
-					$path = $site['path'].'/media/photo/'.$id.'/';
-					if(unlink($path.$file.'.jpg')) {
-						(new ThumbHelper($file, $id))->remove();
-						$photo = explode(',', $item['photo']);
-						unset($photo[array_search($file, $photo)]);
-						(new DatabaseHelper('item'))->updateData(
-							$item['id'],
-							['photo' => implode(',', $photo)]
-						);
-					}
+					(new ThumbHelper($file, $id))->remove();
+					$photo = explode(',', $item['photo']);
+					unset($photo[array_search($file, $photo)]);
+					(new DatabaseHelper('item'))->updateData(
+						$item['id'],
+						['photo' => implode(',', $photo)]
+					);
 				}
 			}
 		} else {

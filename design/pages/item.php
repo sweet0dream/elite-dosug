@@ -300,7 +300,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body p-2">
-                                            <img src="<?= 'https://media.elited.ru/'.$item['id'].'/'.$photos[$i].'.webp' ?>" class="img-fluid img-thumbnail">
+                                            <img src="<?= (new ThumbHelper($photos[$i], $post['id']))->generate() ?>" class="img-fluid img-thumbnail">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>

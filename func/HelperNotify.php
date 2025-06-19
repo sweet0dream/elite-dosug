@@ -20,10 +20,11 @@ class NotifyHelper
             $this->senderMs . 'to_sms',
             'POST',
             [
-                'phone' => $phone,
+                'phone' => (string) $phone,
                 'message' => $text
-            ]
-        )->getCode() == 201 ? true : false;
+            ],
+            true
+        )->getCode() === 201 ? true : false;
     }
 
     public function sendSmsForManager(

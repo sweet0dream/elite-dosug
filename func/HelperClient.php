@@ -27,7 +27,8 @@ class ClientHelper
     public function request(
         string $url,
         string $method = 'GET',
-        array $param = null
+        array $param = null,
+        bool $rewriteUrl = false,
     ): self
     {
         if (!is_null($param)) {
@@ -42,7 +43,7 @@ class ClientHelper
             $this->setResponse(
                 $this->client->request(
                     $method,
-                    self::REST . '/' . $url,
+                    $rewriteUrl ? $url : self::REST . '/' . $url,
                     $param ?? []
                 )
             );

@@ -15,9 +15,14 @@ class ThumbHelper
 
     public function generate(?array $param): string
     {
-        
-        if(!isset($param['width'])) $param['width'] = 0;
-        if(!isset($param['height'])) $param['height'] = 0;
+        switch (true) {
+            case !isset($param['width']):
+                $param['width'] = 0;
+                break;
+            case !isset($param['height']):
+                $param['height'] = 0;
+                break;
+        }
 
         return 'https://media.elited.ru/' . $this->id . '/' . implode('x', $param) . '/' . $this->file . '.webp';
     }

@@ -5,7 +5,6 @@
 		global $city;
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('user_'.key($data))) {
-				(new CacheHelper())->dropCacheCity($city['domain']);
 				call_user_func('user_'.key($data), $data[key($data)]);
 			} else {
 				die('no exist func: user_'.key($data).'()');
@@ -156,19 +155,19 @@
 		$city_id = null,
 		$type = 'reg',
 		$orderBy = ['id' => 'DESC']
-	): array|Generator
+	): array
     {
 		global $city;
-		return (new DatabaseHelper('user'))->fetchAll([
+		return new DatabaseHelper('user')->fetchAll([
 			'city_id' => $city_id ?? $city['id'],
 			'type' => $type
 		], $orderBy)->getResult();
 	}
 
 	//one user
-	function user_one($id): false|array
+	function user_one($id): ?array
     {
 		global $city;
 
-		return (new DatabaseHelper('user'))->fetchOne($id, ['city_id' => $city['id']])->getResult() ?? false;
+		return new DatabaseHelper('user')->fetchOne($id, ['city_id' => $city['id']])->getResult() ?? null;
 	}

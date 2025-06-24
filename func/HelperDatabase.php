@@ -7,21 +7,22 @@ class DatabaseHelper
     private ?array $result = null;
 
     private DB $connect;
-    private const PARAM_DB = [
-        'type' => 'mysql',
-        'host' => '127.0.0.1',
-        'username' => 'elite_api', 
-        'password' => 'Trash2012!',
-        'dbname'=> 'elite_api',
-        'charset' => 'utf8'
-    ];
+
+    private const string TYPE = 'mysql';
+    private const string CHARSET = 'utf8';
 
     public function __construct(
-        private string $table
+        private readonly string $table
     )
     {
-        $this->connect = new PDODb(self::PARAM_DB);
-        $this->table = $table;
+        $this->connect = new PDODb([
+            'type' => self::TYPE,
+            'host' => getenv('DB_HOST'),
+            'username' => getenv('DB_USER'),
+            'password' => getenv('DB_PASS'),
+            'dbname'=> getenv('DB_NAME'),
+            'charset' => self::CHARSET,
+        ]);
     }
 
     public function fetchAll(
@@ -47,7 +48,7 @@ class DatabaseHelper
         return $this;
     }
 
-    public function getTotalPages()
+    public function getTotalPages(): int
     {
         return $this->connect->totalPages;
     }

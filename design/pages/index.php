@@ -17,18 +17,12 @@
 			<div class="row justify-content-md-center g-0">
 <?php
 	$keyIndexItems = $city['domain'] . '-index';
-	$cacheIndexItems = (new CacheHelper())->getData($keyIndexItems);
-	if (!$cacheIndexItems) {
-		$cacheIndexItems = (new CacheHelper())->setData(
-			$keyIndexItems,
-			(new DatabaseHelper('item'))->fetchAll([
-				'city_id' => $city['id'],
-				'status_active' => 1
-			], [
-				'date_top' => 'DESC'
-			])->getResult()
-		);
-	}
+	$cacheIndexItems = (new DatabaseHelper('item'))->fetchAll([
+        'city_id' => $city['id'],
+        'status_active' => 1
+    ], [
+        'date_top' => 'DESC'
+    ])->getResult();
 	foreach($cacheIndexItems as $post) {
 		echo '<div class="col-12 col-lg-4 col-md-6">'.viewIntro(item_decode($post)).'</div>';
 	}

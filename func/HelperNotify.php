@@ -4,7 +4,7 @@ use \ClientHelper as Client;
 
 class NotifyHelper
 {
-    private $senderMs = 'https://sender.elited.ru/';
+    private string $senderMs = 'https://sender.elited.ru/';
     private Client $client;
 
     public function __construct() {
@@ -17,14 +17,14 @@ class NotifyHelper
     ): bool
     {
         return $this->client->request(
-            $this->senderMs . 'to_sms',
-            'POST',
-            [
+            url:$this->senderMs . 'to_sms',
+            method: 'POST',
+            param: [
                 'phone' => (string) $phone,
                 'message' => $text
             ],
-            true
-        )->getCode() === 201 ? true : false;
+            rewriteUrl: true
+        )->getCode() === 201;
     }
 
     public function sendSmsForManager(
@@ -38,8 +38,7 @@ class NotifyHelper
     public function sendItemToTelegramChannel(string $itemId): bool
     {
         return $this->client->request(
-            'notify/telegram/send_item_to_channel/' . $itemId,
-            'GET'
-        )->getCode() == 200 ? true : false;
+            url:'notify/telegram/send_item_to_channel/' . $itemId,
+        )->getCode() == 200;
     }
 }

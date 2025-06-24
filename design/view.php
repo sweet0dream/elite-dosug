@@ -1090,9 +1090,9 @@
 										Пополнение баланса ВРЕМЕННО возможно <br />
 										только в ручном режиме, <br />
 										для пополнения баланса свяжитесь с менеджером<br />
-										<a href="tel:'.format_phone($city['manager']['phone']).'" class="btn btn-success mt-1">'.format_phone($city['manager']['phone']).'</a>
+										<a href="tel:+79271111111" class="btn btn-success mt-1">'.format_phone(9271111111).'</a>
 										<a href="tg://resolve?domain=elited_admin" class="btn btn-success mt-1"><i class="fa-solid fa-paper-plane"></i></a>
-										<a href="https://wa.me/+7'.$city['manager']['phone'].'" class="btn btn-success mt-1"><i class="fa-brands fa-whatsapp"></i></a>
+										<a href="https://wa.me/+79271111111" class="btn btn-success mt-1"><i class="fa-brands fa-whatsapp"></i></a>
 									</div>
 									<!--<div class="form-floating mt-2">
 										<input type="number" min="1000" max="200000" step="500" class="form-control" name="payment[create_invoice][amount]" value="'.((count($items) > 0 ? count($items)*1000 : 1000)).'" required>
@@ -1561,30 +1561,6 @@
 			';
 		}
 		$view .= '
-					</div>
-				</div>
-			</div>
-		';
-		return $view;
-	}
-
-	function viewWidgetTelegramFooter($data) {
-		$view = '
-			<div class="widget telegram text-center">
-				<div class="icon">
-					<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAABDdJREFUeJyt1ltMU3ccB/AzwLopIGCGLgadE2aRm8D2sCVeHkx4MNMHedQlbjPRLPHJvS5BmBuCzDAsuDkHbI6VAlIuk42hIrKhVC4KKHIthQqF3ksLtuW7b7nJ2uJ1/+STc87//H7f32lJcxAELyu+yuaTUD0Vkvj79IeJVx6nUM17NfZ+miIHGege96Ws+ZS10bSafd7iPNf2ykn/+CrrDjaksVFLeAYn9bH+s+2V1nD2+y0bHltufi1Wbg6Mq7AcZGEdGyyEF6CKq5jMi5VbdjFH5HVIzGXjmphy0wEO6yEn4SXY6GrMZZM4uszg858B20r0/lFlhoPUG11mxCuyM0cWVapPYK7v7ACxdNwnUqbdESnT1W0r0TkJ/wMjM7Npi7h4QhC2SsdDOCiNFxbCi9gmm8Ceah2O3TQhudbgfr+P2clbf9OIhHeLxj6gCcLzer9Ug2M3DKgctGHaOQPXkg/YEPHrqHutNKJoNFTYckmdQngWcdEj7JZrIOmwYMjswHz24ip8YPbs+0WtoVjhnZ+HazYXquCN+NIwkipGcaJRB2nPJAZNdtiZrjQ+RsuYFVqrY3HI6Ra91ww6LLydr+zflK/Egs0FSsQVqZAkf4QvGrWoHrRi3OaEg09utTtxS21FXrsWBZ0GqMz2xSEnGsaxNGcB8/OEsIv9U4SNFJ4/gKTyEXzZpMWVwUk8nv9OZnjQ2uyoHTThSO0IJO16qC0OLP3GDtWo4crxolTYcKHXQdj4Yy8+kqugGLXBwideCHAd64fMOF43gn3lQ5B2mzjQgaXLyafYLVPCleNFqfDW+W49YcP33Ygr7MXxv4ZxoW0c15VG3NNMIrdFg72lA9hbpsTFDgP0U064/c2550Ase105XkiFdZKue+ty78NlfW4XNp2/j8TCh9gj7cG+kj7EF3QjJv8hTjVpoHP7BAur3zCNzT88mM+Yy1ok6UoX3szpkIae64Q77s9yncf89ABnm8cw7XD/DHOrcdiM9ZIOjwxy0H5hbXb7J+QkrM2+6+bJXpjkLj6W9+KRedpjyHeKMS+9s9ooQgg+2xZFvYQnWt2Oc9by+pC8Bwq1afb3srA+/2PQS33rDOXwPEgIympZHZR158iaM3dUBJfAeXPnCqxZcu4SIWnFkaoeFHdq8GefDuG89ujNutNAO4O+bfEVAs40C4GZzeEBmc3nAzJu2wjPIzDjFiLOKRApUXjez2xW0VHmBi++T/wzbvv5n761i66uTm+yE16BiTmpzAzzeDOuSm8SrfrmH/EbX/8te/1Uo5HwElTsT2VOCId5f8+zyIcSVn51M1uU1tBHeE4zK9MaGth3lP1h9PT/Vljsy6YtotQbyStS64tXnKzXEJbhoHZR2o0c1u9kb/DT05csv5P1LiK/k9dDKc4v5dph35RruVQ6T0rp3N/P+xF8mCDyXS7vX8Aq0rJwm7AzAAAAAElFTkSuQmCC" />
-				</div>
-				<div class="row g-1">
-					<div class="col-3">
-						<div class="avatar" style="background-image: url(\''.$data['avatar'].'\')"></div>
-					</div>
-					<div class="col-9">
-						<h5 class="title">'.$data['title'].'</h5>
-						<div class="row meta">
-							'.($data['username'] ? '<div class="col-6 text-left"><small class="username">@'.$data['username'].'</small></div>' : '').'
-							<div class="col-6 text-right"><small class="members">'.$data['members'].' '.format_num($data['members'], ['подписчик', 'подписчика', 'подписчиков']).'</small></div>
-						</div>
-						<a href="'.$data['invite'].'" target="_blank" class="w-100 button">Подписаться на канал</a>
 					</div>
 				</div>
 			</div>

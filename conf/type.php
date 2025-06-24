@@ -3,7 +3,7 @@ use Sweet0dream\IntimAnketaContract;
 
     $rao = isset($city['rao']) ? array_merge([
         'Только выезд'
-    ], $city['rao']) : null;
+    ], explode(',', $city['rao'])) : null;
 
 	if (isset($city['value'])) {
 
@@ -16,7 +16,7 @@ use Sweet0dream\IntimAnketaContract;
 				'description' => sprintf('Милые проститутки и индивидуалки %1$s стоят на страже сексуальных фантазий своих клиентов для выполнения их желаний. Проститутки %1$s на любой вкус и кошелёк клиенты которых будут довольны.', $city['value'][1]),
 				'keywords' => sprintf('индивидуалки %1$s, проститутки %1$s, шлюхи %1$s, бляди %1$s', mb_strtolower($city['value'][1]))
 			],
-			'fields' => (new IntimAnketaContract('ind'))->getField(),
+			'fields' => new IntimAnketaContract('ind')->getField(),
 			'validate' => function ($data) {
 				if(is_array($data)) {
 					$errors = [];
@@ -58,7 +58,7 @@ use Sweet0dream\IntimAnketaContract;
 				'description' => sprintf('Интим салоны проститутки %1$s сейчас открыты для визитов и вызова индивидуалки %1$s в городе. Низкие цены за досуг вызывают восторг и удовлетворение твоих желаний.', $city['value'][1]),
 				'keywords' => sprintf('интим салоны %1$s, интимсалоны %1$s, проститутки %1$s, шлюхи %1$s, бляди %1$s', mb_strtolower($city['value'][1]))
 			],
-			'fields' => (new IntimAnketaContract('sal'))->getField(),
+			'fields' => new IntimAnketaContract('sal')->getField(),
 			'validate' => function ($data) {
 				if(is_array($data)) {
 					$errors = [];
@@ -100,7 +100,7 @@ use Sweet0dream\IntimAnketaContract;
 				'description' => sprintf('Женщинам доступны мужчины по вызову %1$s для голодных до мужской ласки девушек и парней. Мужчины проститутки %1$s удовлетворят самые похотливые фантазии люой клиентки и эротические мечты сбудутся.', $city['value'][1]),
 				'keywords' => sprintf('мужчины секс %1$s, мужской эскорт %1$s, проститутки %1$s', mb_strtolower($city['value'][1]))
 			],
-			'fields' => (new IntimAnketaContract('man'))->getField(),
+			'fields' => new IntimAnketaContract('man')->getField(),
 			'validate' => function ($data) {
 				if(is_array($data)) {
 					$errors = [];
@@ -142,7 +142,7 @@ use Sweet0dream\IntimAnketaContract;
 				'description' => sprintf('Транссексуалки %1$s будут нежно ласкать тебя - окунись в экзотическую атмосферу, в этом помогут трансы %1$s и тебя будут удовлетворять девочки с членом', $city['value'][1]),
 				'keywords' => sprintf('трансы %1$s, транссексуалки %1$s, проститутки %1$s', mb_strtolower($city['value'][1]))
 			],
-			'fields' => (new IntimAnketaContract('tsl'))->getField(),
+			'fields' => new IntimAnketaContract('tsl')->getField(),
 			'validate' => function ($data) {
 				if(is_array($data)) {
 					$errors = [];

@@ -1,7 +1,8 @@
 <?php
+    global $site;
     $content = '';
-    if(isset($_SESSION['auth']) && isset($_SESSION['auth']['id'])) {
-        $user = (new DatabaseHelper('user'))->fetchOne($_SESSION['auth']['id'])->getResult();
+    if(isset($_SESSION['auth']['id'])) {
+        $user = new DatabaseHelper('user')->fetchOne($_SESSION['auth']['id'])->getResult();
         if($user) {
             if($user['id'] == $_SESSION['auth']['id']) {
                 if(isset($route[2]) && $route[2] == 'logout') {

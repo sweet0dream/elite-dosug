@@ -5,7 +5,6 @@
 		global $city;
 		if(is_array($data) && isset($data[key($data)])) {
 			if(function_exists('item_'.key($data))) {
-				(new CacheHelper())->dropCacheCity($city['domain']);
 				if($files) {
 					call_user_func('item_'.key($data), $data[key($data)], $files);
 				} else {

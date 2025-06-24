@@ -1,4 +1,7 @@
-	<!-- modal -->
+<?php
+    global$city, $price_ank, $price_adv;
+?>
+<!-- modal -->
 	<div class="modal fade" id="placement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -8,11 +11,11 @@
 				</div>
 				<div class="modal-body">
 					<div class="nav justify-content-center nav-tabs" id="nav-tab" role="tablist">
-						<button class="nav-link <?= (!isset($modalTab) || (isset($modalTab) && $modalTab == 'login') ? 'active' : '') ?>" id="nav-login-tab" data-bs-toggle="tab" data-bs-target="#nav-login" type="button" role="tab" aria-controls="nav-login" aria-selected="true">Вход</button>
+						<button class="nav-link <?= (!isset($modalTab) || ($modalTab == 'login') ? 'active' : '') ?>" id="nav-login-tab" data-bs-toggle="tab" data-bs-target="#nav-login" type="button" role="tab" aria-controls="nav-login" aria-selected="true">Вход</button>
 						<button class="nav-link <?= (isset($modalTab) && $modalTab == 'regin' ? 'active' : '') ?>" id="nav-regin-tab" data-bs-toggle="tab" data-bs-target="#nav-regin" type="button" role="tab" aria-controls="nav-regin" aria-selected="false">Регистрация</button>
 					</div>
 					<div class="tab-content" id="nav-tabContent">
-						<div class="tab-pane fade <?= (!isset($modalTab) || (isset($modalTab) && $modalTab == 'login') ? 'show active' : '') ?>" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab" tabindex="0">
+						<div class="tab-pane fade <?= (!isset($modalTab) || ($modalTab == 'login') ? 'show active' : '') ?>" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab" tabindex="0">
 							<form method="post" class="mt-2 mb-0">
 								<?= isset($errors) && !is_array($errors) ? '<div class="alert alert-danger text-center mb-2" role="alert"><strong>Неизвестная ошибка</strong></div>' : '' ?>
 								<div class="form-floating mb-2">
@@ -23,35 +26,41 @@
 									<input type="password" class="form-control<?= isset($errors['login']['password']) ? ' is-invalid' : '' ?>" id="userLoginPassword" name="user[login][password]" placeholder="Введите значение" required>
 									<label for="userLoginPassword"><span class="text-danger">*</span> <?= isset($errors['login']['password']) ? '<span class="text-danger">Неправильный пароль</span>' : 'Ваш пароль' ?></label>
 								</div>
-								<? if(isset($errors['login']['password']) && $errors['login']['password'] == 'incorrect') : ?>
+                                <?php
+                                if(isset($errors['login']['password']) && $errors['login']['password'] == 'incorrect') : ?>
 								<div class="alert alert-danger text-center p-2 mb-2" role="alert">
 									<p class="mb-2">Забыли пароль?</p>
 									<a href="#" class="btn btn-outline-danger btn-sm w-100">Восстановить</a>
 								</div>
-								<? endif ?>
+                                <?php
+                                endif ?>
 								<button type="submit" class="btn btn-<?= isset($errors) ? 'danger' : 'primary' ?> w-100">Войти</button>
 							</form>
 						</div>
 						<div class="tab-pane fade <?= (isset($modalTab) && $modalTab == 'regin' ? 'show active' : '') ?>" id="nav-regin" role="tabpanel" aria-labelledby="nav-regin-tab" tabindex="0">
 							<form method="post" class="mt-2 mb-0">
-								<? if($city['user_start_balance']) : ?>
+                                <?php
+                                if($city['user_start_balance']) : ?>
 								<input type="hidden" name="user[regin][balance]" value="<?= $city['user_start_balance'] ?>">
 								<div class="alert alert-success text-center mb-2 p-1">
 									<p class="mb-1"><strong>Приятный бонус!</strong></p>
 									<p class="m-0">При регистрации Вам автоматически зачисляется <br />бонус <?= $city['user_start_balance'] ?> рублей для оплаты размещения анкет.</p>
 								</div>
-								<? endif ?>
+                                <?php
+                                endif ?>
 								<?= isset($errors) && !is_array($errors) ? '<div class="alert alert-danger text-center mb-2" role="alert"><strong>Неизвестная ошибка</strong></div>' : '' ?>
 								<div class="form-floating mb-2">
 									<input type="text" class="form-control<?= isset($errors['regin']['login']) ? ' is-invalid' : '' ?>" id="userReginLogin" name="user[regin][login]" <?= (isset($value['regin']['login']) && $value['regin']['login'] != '' ? 'value="'.$value['regin']['login'].'"' : '') ?> required>
 									<label for="userReginLogin"><span class="text-danger">*</span> <?= isset($errors['regin']['login']) ? '<span class="text-danger">Такой логин уже существует - используйте другой</span>' : 'Придумайте логин (только латинские буквы и цифры)' ?></label>
 								</div>
-								<? if(isset($errors['regin']['login']) && $errors['regin']['login'] == 'dublicate') : ?>
+                                <?php
+                                if(isset($errors['regin']['login']) && $errors['regin']['login'] == 'dublicate') : ?>
 								<div class="alert alert-danger text-center p-2 mb-2" role="alert">
 									<p class="mb-2">Возможно указанный логин принадлежит Вам, попробуйте:</p>
 									<a href="#" class="btn btn-outline-danger btn-sm w-100">Восстановить пароль</a>
 								</div>
-								<? endif ?>
+                                <?php
+                                endif ?>
 								<div class="form-floating mb-2">
 									<input type="password" class="form-control" id="userReginPassword" name="user[regin][password]" required>
 									<label for="userReginPassword"><span class="text-danger">*</span> Придумайте пароль (только латинские буквы и цифры)</label>
@@ -77,13 +86,10 @@
 								<a href="tg://resolve?domain=elited_admin" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-solid fa-paper-plane"></i></a>
 							</div>
 							<div class="col">
-								<a href="https://wa.me/+7<?= $city['manager']['phone'] ?>" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-whatsapp"></i></a>
-							</div>
-							<div class="col">
-								<a href="viber://chat?number=%2B<?= $city['manager']['phone'] ?>" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-viber"></i></a>
+								<a href="https://wa.me/+7927 ?>" class="btn btn-info btn-lg w-100 text-white my-1"><i class="fa-brands fa-whatsapp"></i></a>
 							</div>
 						</div>
-						<a href="tel:+7<?= $city['manager']['phone'] ?>" class="btn btn-info w-100 text-white my-1"><i class="fa-solid fa-mobile-screen-button"></i> +7<?= $city['manager']['phone'] ?></a>
+						<a href="tel:+7927" class="btn btn-info w-100 text-white my-1"><i class="fa-solid fa-mobile-screen-button"></i> +7927</a>
 					</div>
 
 				</div>
@@ -237,10 +243,10 @@
 		</div>
 	</div>
 		<?php if(isset($modalOpen)) : ?>
-	<script>
-		$(document).ready(function() {
-			$('#placement').modal('show');
-		});
-	</script>
+            <script>
+                $(document).ready(function() {
+                    $('#placement').modal('show');
+                });
+            </script>
 		<?php endif ?>
 	<!--!modal-->

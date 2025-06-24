@@ -4,7 +4,7 @@ use \ClientHelper as Client;
 
 class EventHelper
 {
-    private $user_id;
+    private ?int $user_id;
     private Client $client;
 
     public function __construct(
@@ -27,7 +27,7 @@ class EventHelper
             'user/' . $this->user_id . '/event/add',
             'POST',
             ['event' => $event]
-        )->getCode() == 200 ? true : false;
+        )->getCode() == 200;
     }
 
     public function getAll($count = false): array
@@ -44,7 +44,7 @@ class EventHelper
             'user/' . $this->user_id . '/event/clear',
             'POST',
             $datetime ? ['datetime' => $datetime] : []
-        )->getCode() == 200 ? true : false;
+        )->getCode() == 200;
     }
 
 }

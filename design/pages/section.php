@@ -1,14 +1,7 @@
 <?php
     $content = '';
 	if(isset($route[2]) && $route[2] != 'p') {
-        $itemKey = $city['domain'] . '-item-' . $route[2];
-        $item = (new CacheHelper())->getData($itemKey);
-        if (!$item) {
-            $item = (new CacheHelper())->setData(
-                $itemKey,
-                (new DatabaseHelper('item'))->fetchOne((int)$route[2])->getResult()
-            );
-        }
+        $item = (new DatabaseHelper('item'))->fetchOne((int)$route[2])->getResult();
         if(isset($item['id'])) {
             if($route[1] == $item['type']) {
                 $content .= viewFull($item);
@@ -30,26 +23,16 @@
         $keySectionItems = $city['domain'] . '-' . $route[1] . '-' . (isset($current_page) ? $current_page : 1);
         $totalPagesKey = $city['domain'] . '-' . $route[1] . '-totalpage';
 
-        $items = (new CacheHelper())->getData($keySectionItems);
-        $total_pages = (new CacheHelper())->getData($totalPagesKey);
+        $sectionItems = (new DatabaseHelper('item'))->fetchAll([
+            'city_id' => $city['id'],
+            'type' => $route[1],
+            'status_active' => 1
+        ], [
+            'date_top' => 'DESC'
+        ], ($current_page ?? 1));
 
-        if (!$items || !$total_pages) {
-            $sectionItems = (new DatabaseHelper('item'))->fetchAll([
-				'city_id' => $city['id'],
-                'type' => $route[1],
-				'status_active' => 1
-			], [
-				'date_top' => 'DESC'
-            ], (isset($current_page) ? $current_page : 1));
-            $items = (new CacheHelper())->setData(
-                $keySectionItems,
-                $sectionItems->getResult()
-            );
-            $total_pages = (new CacheHelper())->setData(
-                $totalPagesKey,
-                ['pages' => $sectionItems->getTotalPages()]
-            );
-        }
+        $items = $sectionItems->getResult();
+        $total_pages = ['pages' => $sectionItems->getTotalPages()];
 
         $total_pages = $total_pages['pages'];
 

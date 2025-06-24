@@ -1,8 +1,6 @@
 <?php
-	/*if(isset($_COOKIE['auth'])) {
-		print_r($_COOKIE['auth']);
-	}*/
-	if(isset($_SESSION['response'])) {
+    global $city, $route;
+    if(isset($_SESSION['response'])) {
 		if(isset($_SESSION['response']['modal'])) {
 			$modalOpen = 1; $modalTab = $_SESSION['response']['modal'];
 		}
@@ -63,8 +61,8 @@
 	<script defer src="/assets/custom.js"></script>
 </head>
 <body>
-	<?= $city['id'] == 1 && !isset($_SESSION['auth']) ? renderAdv('b0') : '' ?>
-	<? include 'menu.php'; ?>
+	<?= !isset($_SESSION['auth']) ? renderAdv('b0') : '' ?>
+	<?php include 'menu.php'; ?>
 <?php
 		if(!isset($_SESSION['auth'])) {
 			include 'modal.php';

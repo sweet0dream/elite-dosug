@@ -7,9 +7,9 @@ use GuzzleHttp\Exception\ServerException;
 
 class ClientHelper
 {
-    const METHOD_GET = 'GET';
+    const string METHOD_GET = 'GET';
 
-    const REST = 'https://rest.elited.ru';
+    const string REST = 'https://rest.elited.ru';
 
     private Client $client;
 
@@ -27,7 +27,7 @@ class ClientHelper
     public function request(
         string $url,
         string $method = 'GET',
-        array $param = null,
+        ?array $param = null,
         bool $rewriteUrl = false,
     ): self
     {

@@ -9,10 +9,12 @@ sitemap.xml
 robots.txt
 web.conf
 client
-web.conf
 *.tpl
 *.stpl
 conf/site.php
 *.old
 vendor
 admin
+.docker
+tmp/*
+.env

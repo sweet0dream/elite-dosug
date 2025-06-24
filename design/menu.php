@@ -1,5 +1,6 @@
 <?php
-	$logo_img = '/assets/images/logo/';
+    global $site, $city, $types;
+    $logo_img = '/assets/images/logo/';
 	if (file_exists($site['path'] . '/assets/images/logo/' . $city['domain'] . '.webp')) {
 		$logo_img .= $city['domain'];
 	} else {
@@ -24,9 +25,9 @@
 					<a class="nav-link<?= (isset($route[1]) && $route[1] == $k ? ' active' : '') ?> text-center" title="<?= $types[$k]['names'][2]?>" href="/<?= $k ?>/"><?= $v['names'][1] ?></a>
 				</li>
 				<?php endforeach ?>
-				<?= isset($telegramChannelInfo) ? '<li class="nav-item"><a href="'.$telegramChannelInfo['invite'].'" target="_blank" class="nav-link text-info text-center"><i class="fa-brands fa-telegram"></i> Telegram</a></li>' : '' ?>
+				<li class="nav-item"><a href="#" target="_blank" class="nav-link text-info text-center"><i class="fa-brands fa-telegram"></i> Telegram</a></li>
 			</ul>
-			<?php if(isset($_SESSION['auth']) && isset($_SESSION['auth']['type'])) : ?>
+			<?php if(isset($_SESSION['auth']['type'])) : ?>
 			<a href="<?= $site['url'].'/user/' ?>" class="btn btn-light"><?= ($_SESSION['auth']['type'] == 'man' ? 'Управление' : 'Личный кабинет') ?></a>
 			<?php else : ?>
 			<button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#placement">Размещение</button>

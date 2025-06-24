@@ -27,17 +27,10 @@
         <div class="col-12 col-md-6">
           <div class="row g-1">
             <div class="col-12 col-lg-6">
-              <?= isset($telegramChannelInfo) ? viewWidgetTelegramFooter($telegramChannelInfo) : '' ?>
             </div>
             <div class="col-12 col-lg-6"></div>
           </div>
           <div class="w-100 pt-2 text-secondary">
-            <?php
-              foreach ($city['offer'] as $offer) {
-                $linkOffers[] = '<a href="https://' . $offer['domain'] . '.elited.ru" target="_blank" class="text-white">Проститутки ' . $offer['value'][1] . '</a>';
-              }
-            ?>
-            В других городах: <?= implode(' / ', $linkOffers) ?>
           </div>
         </div>
         <div class="col-12 col-md-3">

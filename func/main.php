@@ -23,7 +23,8 @@
 	}
 
 	//get datetime now per city
-	function getDateTime($modify = null, $format = 'Y-m-d H:i:s') {
+	function getDateTime($modify = null, $format = 'Y-m-d H:i:s'): string
+    {
 		global $city;
 		$dateNow = (new DateTimeImmutable('now', new DateTimeZone($city['timezone'])));
 		if (!is_null($modify)) {
@@ -34,26 +35,25 @@
 	}
 
 	// get city
-	function getCity($key) {
-		$keyCache = $key . '-config';
-		$classCache = new CacheHelper(86400);
-		$result = $classCache->getData($keyCache);
-		if (!$result) {
-			$result = $classCache->setData(
-				$keyCache,
-				(new ClientHelper())->request('config/get_city/' . $key)->toArray()
-			);
-		}
+	function getCity(string $key): ?array
+    {
+        $getCity = new DatabaseHelper('city')->fetchAll(['domain' => $key])->getResult()[0];
 
-		return $result;
+        if (!$getCity) {
+            return null;
+        }
+
+        $getCity['value'] = explode('/', $getCity['value']);
+
+        return $getCity;
 	}
 
 	// redirect
-	function redirect($url) { 
+	function redirect($url) {
 		if(!headers_sent()) {
 			header('Location: '.$url);
-			exit; 
-		} else {
+            exit;
+        } else {
         	return '
 				<script type="text/javascript">
 					window.location="'.$url.'";
@@ -62,12 +62,13 @@
 					<meta http-equiv="refresh" content="0;url='.$url.'" />
 				</noscript>
 			';
-        	exit; 
-		}
-	}
+        }
+        exit;
+    }
 
 	// not found
-	function page404() {
+	function page404(): void
+    {
 		global $site;
 		header('HTTP/1.1 404 Not Found');
 		header('Status: 404 Not Found');
@@ -84,7 +85,8 @@
 	}
 
 	// date
-	function format_date($date) {
+	function format_date($date): string
+    {
 		$termMonth = [
 			'01' => 'января',
 			'02' => 'февраля',
@@ -125,17 +127,20 @@
 	}
 
 	// phone
-	function format_phone($phone) {
+	function format_phone($phone): string
+    {
         return preg_replace('/^(\d{3})(\d{3})(\d{2})(\d{2})$/iu', '+7($1)$2-$3-$4', $phone);
     }
 
 	// is mobile
-	function isMobile() {
+	function isMobile(): bool
+    {
 		return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
 	}
 
 	// directory delete
-	function dirDel($dir) {
+	function dirDel($dir): bool
+    {
 		if(is_dir($dir)) {
 			$d = opendir($dir);  
 			while(($entry = readdir($d)) !== false) { 
@@ -161,6 +166,7 @@
 	// meta data
 	function itMeta($route) {
 		global $city;
+
 		if(is_array($route)) {
 			global $types;
 
